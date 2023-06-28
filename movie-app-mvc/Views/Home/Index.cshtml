@@ -68,6 +68,7 @@ else
                     <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                         <input type="hidden" name="title" value="@movie.title" />
                         <input type="hidden" name="overview" value="@movie.overview" />
+                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
                         <button type="submit">Save</button>
                     </form>
 

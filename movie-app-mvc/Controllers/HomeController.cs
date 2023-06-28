@@ -102,7 +102,7 @@ public class HomeController : Controller
 
     }
 
-    public async Task<IActionResult> SaveMovie(string title, string overview, string searchQuery, int page = 1)
+    public async Task<IActionResult> SaveMovie(string title, string overview, string poster, string searchQuery, int page = 1)
     {
         if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(overview))
         {
@@ -110,10 +110,11 @@ public class HomeController : Controller
             {
                 connection.Open();
 
-                string query = "INSERT INTO savedMovies (Title, Overview) VALUES (@Title, @Overview)";
+                string query = "INSERT INTO savedMovies (Title, Overview, Poster) VALUES (@Title, @Overview, @Poster)";
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.Parameters.AddWithValue("@Title", title);
                 command.Parameters.AddWithValue("@Overview", overview);
+                command.Parameters.AddWithValue("@Poster", poster);
                 command.ExecuteNonQuery();
             }
 
@@ -146,12 +147,14 @@ public class HomeController : Controller
                     int id = reader.GetInt32("Id");
                     string title = reader.GetString("Title");
                     string overview = reader.GetString("Overview");
+                    string poster = reader.GetString("Poster");
 
                     SavedMovie savedMovie = new SavedMovie
                     {
                         Id = id,
                         Title = title,
-                        Overview = overview
+                        Overview = overview,
+                        Poster = poster
                     };
 
                     savedMovies.Add(savedMovie);
