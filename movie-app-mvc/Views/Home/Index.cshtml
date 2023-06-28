@@ -15,7 +15,7 @@
 </div>
 
 
-
+<a href="Home/savedMovies">Saved Movies</a>
 
 <div>
     <form method="get" action="@Url.Action("Index")">
@@ -65,11 +65,12 @@ else
             <div class="card-content">
                 <h2>@movie.title</h2>
                 <div class="button-container">
-                    <form method="post" action="@Url.Action("SaveMovie", "Home")">
+                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                         <input type="hidden" name="title" value="@movie.title" />
                         <input type="hidden" name="overview" value="@movie.overview" />
                         <button type="submit">Save</button>
                     </form>
+
                 </div>
             </div>
         </div>

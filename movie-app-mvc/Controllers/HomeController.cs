@@ -102,24 +102,29 @@ public class HomeController : Controller
 
     }
 
-    [HttpPost]
     public async Task<IActionResult> SaveMovie(string title, string overview, string searchQuery, int page = 1)
     {
-        // Save the movie to the database
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(overview))
         {
-            connection.Open();
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
 
-            string query = "INSERT INTO savedMovies (Title, Overview) VALUES (@Title, @Overview)";
-            MySqlCommand command = new MySqlCommand(query, connection);
-            command.Parameters.AddWithValue("@Title", title);
-            command.Parameters.AddWithValue("@Overview", overview);
-            command.ExecuteNonQuery();
+                string query = "INSERT INTO savedMovies (Title, Overview) VALUES (@Title, @Overview)";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Title", title);
+                command.Parameters.AddWithValue("@Overview", overview);
+                command.ExecuteNonQuery();
+            }
+
+            // Redirect back to the current page with the same search query and page number
+            return RedirectToAction("Index", new { searchQuery, page });
         }
 
-        // Redirect back to the current page with the same query and page number
-        return RedirectToAction("Index", new { searchQuery, page });
+        return View();
     }
+
+
 
 
     public IActionResult SavedMovies()
