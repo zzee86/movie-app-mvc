@@ -1,0 +1,11 @@
+﻿@model List<movie_app_mvc.Models.SavedMovie>
+
+<h1>Saved Movies</h1>
+
+@foreach (var movie in Model)
+{
+    <div class="card">
+        <h2>@movie.Title</h2>
+        <p>@movie.Overview</p>
+    </div>
+}

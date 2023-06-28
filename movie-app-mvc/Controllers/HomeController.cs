@@ -3,7 +3,8 @@ using movie_app_mvc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
-
+using movie_app_mvc.Models;
+using MySql.Data.MySqlClient;
 
 namespace movie_app_mvc.Controllers;
 
@@ -13,6 +14,8 @@ public class HomeController : Controller
     int currentPage = 1;
     int totalPages = 5;
     int pageSize = 20;
+    private string connectionString = "server=localhost;database=saved_movies;user=root;";
+
 
     // Task<IActionResult> when communicating with db or web requests
     public async Task<IActionResult> Index(string searchQuery, int page = 1)
@@ -98,5 +101,59 @@ public class HomeController : Controller
         return View("Index");
 
     }
-}
 
+    [HttpPost]
+    public async Task<IActionResult> SaveMovie(string title, string overview, string searchQuery, int page = 1)
+    {
+        // Save the movie to the database
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "INSERT INTO savedMovies (Title, Overview) VALUES (@Title, @Overview)";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Title", title);
+            command.Parameters.AddWithValue("@Overview", overview);
+            command.ExecuteNonQuery();
+        }
+
+        // Redirect back to the current page with the same query and page number
+        return RedirectToAction("Index", new { searchQuery, page });
+    }
+
+
+    public IActionResult SavedMovies()
+    {
+        List<SavedMovie> savedMovies;
+
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "SELECT * FROM savedMovies";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                savedMovies = new List<SavedMovie>();
+
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32("Id");
+                    string title = reader.GetString("Title");
+                    string overview = reader.GetString("Overview");
+
+                    SavedMovie savedMovie = new SavedMovie
+                    {
+                        Id = id,
+                        Title = title,
+                        Overview = overview
+                    };
+
+                    savedMovies.Add(savedMovie);
+                }
+            }
+        }
+
+        return View(savedMovies);
+    }
+}
