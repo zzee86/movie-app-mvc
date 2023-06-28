@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<movie_app_mvc.Models.MovieInfo.Result>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -7,3 +9,64 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+
+
+
+<div>
+    <form method="get" action="@Url.Action("Index")">
+        <input type="text" name="searchQuery" placeholder="Search for movies" />
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+
+
+<div>
+    Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)
+</div>
+
+
+
+
+@if (ViewBag.CurrentPage > 1)
+{
+    <a href="/Home/Index?page=@(ViewBag.CurrentPage - 1)&searchQuery=@ViewBag.SearchQuery">Back</a>
+}
+else
+{
+    <span>Back</span>
+}
+
+@if (ViewBag.CurrentPage < ViewBag.TotalPages)
+{
+    <a href="/Home/Index?page=@(ViewBag.CurrentPage + 1)&searchQuery=@ViewBag.SearchQuery">Next</a>
+}
+else
+{
+    <span>Next</span>
+}
+
+
+
+
+
+<div class="card-container">
+    @foreach (var movie in Model)
+    {
+        <div class="card">
+            <div class="card-image">
+                <img src="@movie.poster_path_url" alt="Movie Poster" />
+            </div>
+            <div class="card-content">
+                <h2>@movie.title</h2>
+
+                <form method="post" action="@Url.Action("SaveMovie", "Home")">
+                    <input type="hidden" name="title" value="@movie.title" />
+                    <input type="hidden" name="overview" value="@movie.overview" />
+                    <button type="submit">Save</button>
+                </form>
+
+            </div>
+        </div>
+    }
+</div>
