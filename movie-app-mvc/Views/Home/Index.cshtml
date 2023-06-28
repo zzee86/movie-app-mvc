@@ -4,6 +4,11 @@
     ViewData["Title"] = "Home Page";
 }
 
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
@@ -59,13 +64,13 @@ else
             </div>
             <div class="card-content">
                 <h2>@movie.title</h2>
-
-                <form method="post" action="@Url.Action("SaveMovie", "Home")">
-                    <input type="hidden" name="title" value="@movie.title" />
-                    <input type="hidden" name="overview" value="@movie.overview" />
-                    <button type="submit">Save</button>
-                </form>
-
+                <div class="button-container">
+                    <form method="post" action="@Url.Action("SaveMovie", "Home")">
+                        <input type="hidden" name="title" value="@movie.title" />
+                        <input type="hidden" name="overview" value="@movie.overview" />
+                        <button type="submit">Save</button>
+                    </form>
+                </div>
             </div>
         </div>
     }

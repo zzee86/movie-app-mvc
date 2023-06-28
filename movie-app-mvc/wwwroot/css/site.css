@@ -20,3 +20,70 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+
+
+
+/* Design */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 5em 5em;
+}
+
+.card {
+    width: 185px;
+    height: 359px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-image img {
+    width: 185px;
+    height: 274px;
+    object-fit: cover;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.card-content {
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .card-content h2 {
+        font-size: 1rem;
+        margin: 0;
+        height: 40px;
+        overflow: hidden;
+    }
+
+    .card-content .button-container {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .card-content form {
+        display: flex;
+        justify-content: center;
+    }
+
+    .card-content button {
+        width: 169px;
+        height: 36px;
+        font-size: 1rem;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
