@@ -75,6 +75,8 @@ public class HomeController : Controller
                 movie.title = movie.name;
             }
 
+            movie.IsSaved = MovieIsSaved(movie.title);
+
             movieResults.Add(movie);
         }
 
@@ -126,8 +128,6 @@ public class HomeController : Controller
     }
 
 
-
-
     public IActionResult SavedMovies()
     {
         List<SavedMovie> savedMovies;
@@ -164,4 +164,48 @@ public class HomeController : Controller
 
         return View(savedMovies);
     }
+
+
+    private bool MovieIsSaved(string title)
+    {
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "SELECT COUNT(*) FROM savedMovies WHERE Title = @Title";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Title", title);
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
+    }
+
+
+    public async Task<IActionResult> RemoveMovie(string title, string searchQuery, int page = 1)
+    {
+        if (!string.IsNullOrEmpty(title))
+        {
+            // Remove the movie from the database
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "DELETE FROM savedMovies WHERE Title = @Title";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Title", title);
+                command.ExecuteNonQuery();
+            }
+
+            // Build the URL for the savedMovies action with the search query and page number
+            var url = Url.Action("savedMovies", "Home", new { searchQuery, page });
+
+            // Redirect to the savedMovies action with the search query and page number
+            return Redirect(url);
+        }
+
+        return View();
+    }
+
+
 }

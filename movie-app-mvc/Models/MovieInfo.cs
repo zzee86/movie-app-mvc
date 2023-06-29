@@ -23,6 +23,7 @@ namespace movie_app_mvc.Models
             public int vote_count { get; set; }
             public string poster_path_url => string.Format("https://image.tmdb.org/t/p/w185{0}", poster_path);
             //public string poster_path_url => string.IsNullOrEmpty(poster_path) ? "no_image.png" : $"https://image.tmdb.org/t/p/w185{poster_path}";
+            public bool IsSaved { get; set; }
 
 
         }

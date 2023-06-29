@@ -31,13 +31,12 @@
             <div class="card-content">
                 <h2>@movie.Title</h2>
                 <div class="button-container">
-                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                             <input type="hidden" name="title" value="@movie.Title" />
                             <input type="hidden" name="overview" value="@movie.Overview" />
                             <input type="hidden" name="poster" value="@movie.Poster" />
-                            <button type="submit">Save</button>
+                            <button type="submit">Remove</button>
                         </form>
-
                 </div>
             </div>
         </div>

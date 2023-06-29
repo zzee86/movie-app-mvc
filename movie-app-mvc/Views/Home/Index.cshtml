@@ -65,13 +65,22 @@ else
             <div class="card-content">
                 <h2>@movie.title</h2>
                 <div class="button-container">
-                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                        <input type="hidden" name="title" value="@movie.title" />
-                        <input type="hidden" name="overview" value="@movie.overview" />
-                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                        <button type="submit">Save</button>
-                    </form>
-
+                    @if (movie.IsSaved)
+                    {
+                        <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                            <input type="hidden" name="title" value="@movie.title" />
+                            <button type="submit">Remove</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                            <input type="hidden" name="title" value="@movie.title" />
+                            <input type="hidden" name="overview" value="@movie.overview" />
+                            <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                            <button type="submit">Save</button>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
