@@ -1,216 +1,206 @@
-﻿using System.Diagnostics;
-using movie_app_mvc.Models;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
-using movie_app_mvc.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using movie_app_mvc.Models;
 
-namespace movie_app_mvc.Controllers;
-
-public class HomeController : Controller
+namespace movie_app_mvc.Controllers
 {
-
-    int currentPage = 1;
-    int totalPages = 5;
-    int pageSize = 20;
-    private string connectionString = "server=localhost;database=saved_movies;user=root;";
-
-
-    // Task<IActionResult> when communicating with db or web requests
-    public async Task<IActionResult> Index(string searchQuery, int page = 1)
+    public class HomeController : Controller
     {
-        currentPage = page;
+        private string connectionString = "server=localhost;database=saved_movies;user=root;";
 
-        if (string.IsNullOrEmpty(searchQuery))
+        public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
-            return await LoadMovies(currentPage);
-        }
-        else
-        {
-            return await SearchMovies(searchQuery, page);
-        }
-    }
-
-    public async Task<ActionResult> LoadMovies(int page)
-    {
-        string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
-        MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
-
-        if (movieInfo != null)
-        {
-            List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-
-            return View(movieResults);
-        }
-        return View("Index");
-    }
-
-    private async Task<MovieInfo.Root> FetchMovies(string url)
-    {
-        using (HttpClient client = new HttpClient())
-        {
-            var response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-            var info = JsonConvert.DeserializeObject<MovieInfo.Root>(json);
-
-            return info;
-        }
-    }
-
-    private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
-    {
-        List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
-
-        foreach (var movie in results)
-        {
-            if (string.IsNullOrEmpty(movie.title))
+            if (string.IsNullOrEmpty(searchQuery))
             {
-                // Use the name property if title is empty
-                movie.title = movie.name;
+                return await LoadMovies(page);
+            }
+            else
+            {
+                return await SearchMovies(searchQuery, page);
+            }
+        }
+
+        public async Task<IActionResult> LoadMovies(int page)
+        {
+            string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = movieInfo.total_pages;
+
+                return View(movieResults);
             }
 
-            movie.IsSaved = MovieIsSaved(movie.title);
-
-            movieResults.Add(movie);
+            return View("Index");
         }
 
-        return movieResults;
-    }
-
-    private async Task<IActionResult> SearchMovies(string searchQuery, int pageNumber = 1)
-    {
-
-        string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={searchQuery}&page={pageNumber}";
-        MovieInfo.Root movieInfo = await FetchMovies(url);
-
-        if (movieInfo != null)
+        private async Task<MovieInfo.Root> FetchMovies(string url)
         {
-            List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
-
-            // Pass the current page, total pages, and search query to the view
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.TotalPages = totalPages;
-            ViewBag.SearchQuery = searchQuery;
-
-            return View(movieResults);
-        }
-        return View("Index");
-
-    }
-
-    public async Task<IActionResult> SaveMovie(string title, string overview, string poster, string searchQuery, int page = 1)
-    {
-        if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(overview))
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (HttpClient client = new HttpClient())
             {
-                connection.Open();
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-                string query = "INSERT INTO savedMovies (Title, Overview, Poster) VALUES (@Title, @Overview, @Poster)";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Title", title);
-                command.Parameters.AddWithValue("@Overview", overview);
-                command.Parameters.AddWithValue("@Poster", poster);
-                command.ExecuteNonQuery();
+                var json = await response.Content.ReadAsStringAsync();
+                var info = JsonConvert.DeserializeObject<MovieInfo.Root>(json);
+
+                return info;
             }
-
-            // Redirect back to the current page with the same search query and page number
-            return RedirectToAction("Index", new { searchQuery, page });
         }
 
-        return View();
-    }
-
-
-    public IActionResult SavedMovies()
-    {
-        List<SavedMovie> savedMovies;
-
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
         {
-            connection.Open();
+            List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
 
-            string query = "SELECT * FROM savedMovies";
-            MySqlCommand command = new MySqlCommand(query, connection);
-            using (MySqlDataReader reader = command.ExecuteReader())
+            foreach (var movie in results)
             {
-                savedMovies = new List<SavedMovie>();
-
-                while (reader.Read())
+                if (string.IsNullOrEmpty(movie.title))
                 {
-                    int id = reader.GetInt32("Id");
-                    string title = reader.GetString("Title");
-                    string overview = reader.GetString("Overview");
-                    string poster = reader.GetString("Poster");
+                    // Use the name property if title is empty
+                    movie.title = movie.name;
+                }
 
-                    SavedMovie savedMovie = new SavedMovie
-                    {
-                        Id = id,
-                        Title = title,
-                        Overview = overview,
-                        Poster = poster
-                    };
+                movie.IsSaved = MovieIsSaved(movie.title);
 
-                    savedMovie.IsSaved = MovieIsSaved(title);
-                    savedMovies.Add(savedMovie);
+                movieResults.Add(movie);
+            }
+
+            return movieResults;
+        }
+
+        private async Task<IActionResult> SearchMovies(string searchQuery, int pageNumber = 1)
+        {
+            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={searchQuery}&page={pageNumber}";
+            MovieInfo.Root movieInfo = await FetchMovies(url);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+
+                ViewBag.CurrentPage = pageNumber;
+                ViewBag.TotalPages = movieInfo.total_pages;
+                ViewBag.SearchQuery = searchQuery;
+
+                return View(movieResults);
+            }
+
+            return View("Index");
+        }
+
+        public async Task<IActionResult> SaveMovie(string title, string overview, string poster, string searchQuery, string name, int page = 1)
+        {
+            if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(overview))
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = "INSERT INTO savedMovies (title, overview, poster) VALUES (@Title, @Overview, @Poster)";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@Title", title);
+                    command.Parameters.AddWithValue("@Overview", overview);
+                    command.Parameters.AddWithValue("@Poster", poster);
+                    command.ExecuteNonQuery();
+                }
+
+                // Redirect back to the current page with the same search query and page number
+                return RedirectToAction("Index", new { searchQuery, page });
+            }
+
+            List<SavedMovie> movies = GetMoviesFromDatabase(name);
+            return View();
+        }
+
+        public IActionResult SavedMovies(string title)
+        {
+            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title);
+            return View(savedMovies);
+        }
+
+        public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
+        {
+            if (!string.IsNullOrEmpty(title))
+            {
+                // Remove the movie from the database
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = "DELETE FROM savedMovies WHERE title = @Title";
+                    MySqlCommand command = new MySqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@Title", title);
+                    command.ExecuteNonQuery();
                 }
             }
+
+            // Determine the referring URL to refresh the current page
+            string referringUrl = Request.Headers["Referer"].ToString();
+            if (string.IsNullOrEmpty(referringUrl))
+            {
+                // If referring URL is empty, redirect to the home page
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // Redirect back to the referring URL
+                return Redirect(referringUrl);
+            }
         }
 
-        return View(savedMovies);
-    }
-
-
-    private bool MovieIsSaved(string title)
-    {
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        private List<SavedMovie> GetMoviesFromDatabase(string title)
         {
-            connection.Open();
+            List<SavedMovie> movies = new List<SavedMovie>();
 
-            string query = "SELECT COUNT(*) FROM savedMovies WHERE Title = @Title";
-            MySqlCommand command = new MySqlCommand(query, connection);
-            command.Parameters.AddWithValue("@Title", title);
-
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            return count > 0;
-        }
-    }
-
-
-
-    public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
-    {
-        if (!string.IsNullOrEmpty(title))
-        {
-            // Remove the movie from the database
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "DELETE FROM savedMovies WHERE Title = @Title";
+                string query = string.IsNullOrEmpty(title) ? "SELECT * FROM savedMovies" : $"SELECT * FROM savedMovies WHERE title LIKE '%{title}%'";
                 MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Title", title);
-                command.ExecuteNonQuery();
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        SavedMovie movie = new SavedMovie
+                        {
+                            Id = reader.GetInt32("id"),
+                            Title = reader.GetString("title"),
+                            Overview = reader.GetString("overview"),
+                            Poster = reader.GetString("poster")
+                        };
+
+                        movies.Add(movie);
+                    }
+                }
             }
-        }
-        // Determine the referring URL to refresh the current page
-        string referringUrl = Request.Headers["Referer"].ToString();
-        if (string.IsNullOrEmpty(referringUrl))
-        {
-            // If referring URL is empty, redirect to the home page
-            return RedirectToAction("Index");
-        }
-        else
-        {
-            // Redirect back to the referring URL
-            return Redirect(referringUrl);
+
+            return movies;
         }
 
+        private bool MovieIsSaved(string title)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @Title";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Title", title);
+
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                return count > 0;
+            }
+        }
     }
 }
