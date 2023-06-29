@@ -6,6 +6,7 @@
 
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 
@@ -63,13 +64,15 @@ else
                 <img src="@movie.poster_path_url" alt="Movie Poster" />
             </div>
             <div class="card-content">
-                <h2>@movie.title</h2>
+                <div class="titleHolder">
+                    <h2>@movie.title</h2>
+                </div>
                 <div class="button-container">
                     @if (movie.IsSaved)
                     {
                         <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                             <input type="hidden" name="title" value="@movie.title" />
-                            <button type="submit">Remove</button>
+                            <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
                         </form>
                     }
                     else
@@ -86,3 +89,5 @@ else
         </div>
     }
 </div>
+
+<script src="~/js/site/js/your-script.js"></script>

@@ -157,6 +157,7 @@ public class HomeController : Controller
                         Poster = poster
                     };
 
+                    savedMovie.IsSaved = MovieIsSaved(title);
                     savedMovies.Add(savedMovie);
                 }
             }
@@ -182,7 +183,8 @@ public class HomeController : Controller
     }
 
 
-    public async Task<IActionResult> RemoveMovie(string title, string searchQuery, int page = 1)
+
+    public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
     {
         if (!string.IsNullOrEmpty(title))
         {
@@ -196,16 +198,19 @@ public class HomeController : Controller
                 command.Parameters.AddWithValue("@Title", title);
                 command.ExecuteNonQuery();
             }
-
-            // Build the URL for the savedMovies action with the search query and page number
-            var url = Url.Action("savedMovies", "Home", new { searchQuery, page });
-
-            // Redirect to the savedMovies action with the search query and page number
-            return Redirect(url);
+        }
+        // Determine the referring URL to refresh the current page
+        string referringUrl = Request.Headers["Referer"].ToString();
+        if (string.IsNullOrEmpty(referringUrl))
+        {
+            // If referring URL is empty, redirect to the home page
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            // Redirect back to the referring URL
+            return Redirect(referringUrl);
         }
 
-        return View();
     }
-
-
 }

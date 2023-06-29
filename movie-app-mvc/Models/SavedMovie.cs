@@ -14,6 +14,8 @@ namespace movie_app_mvc.Models
 
         public string Poster { get; set; }
 
+        public bool IsSaved { get; set; }
+
     }
 }
 

@@ -1,4 +1,6 @@
-﻿html {
+﻿@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+html {
     font-size: 14px;
 }
 
@@ -8,10 +10,10 @@
     }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
-
+*/
 html {
     position: relative;
     min-height: 100%;
@@ -19,6 +21,7 @@ html {
 
 body {
     margin-bottom: 60px;
+    background-color: black;
 }
 
 
@@ -35,20 +38,17 @@ body {
 .card {
     width: 185px;
     height: 359px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 3px;
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
+    background-color: #1A1A1A;
 }
 
-    .card.remove {
-        background-color: red;
-    }
 
 .card-image img {
     width: 185px;
-    height: 274px;
+    height: 240px;
     object-fit: cover;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -57,6 +57,7 @@ body {
 .card-content {
     padding: 10px;
     flex-grow: 1;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -67,30 +68,41 @@ body {
         margin: 0;
         height: 40px;
         overflow: hidden;
+        color: white;
     }
 
-    .card-content .button-container {
-        margin-top: 0 !important;
-        display: flex;
-        justify-content: center;
+.titleHolder {
+    max-height: 200px;
+}
+
+.card-content .button-container {
+    margin-top: 0 !important;
+    display: flex;
+    justify-content: center;
+}
+
+.card-content form .button-container {
+    margin-top: 0;
+}
+
+.card-content form {
+    display: flex;
+    justify-content: center;
+}
+
+.card-content button {
+    width: 169px;
+    height: 30px;
+    font-size: 1rem;
+    background-color: #2C2C2C;
+    color: #5899EF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+    .card-content button.saved {
+        color: #FFE5E5;
     }
 
-    .card-content form .button-container {
-        margin-top: 0;
-    }
-
-    .card-content form {
-        display: flex;
-        justify-content: center;
-    }
-
-    .card-content button {
-        width: 169px;
-        height: 30px;
-        font-size: 1rem;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }

@@ -1,5 +1,23 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(document).ready(function () {
+    // Event handler for remove movie form submission
+    $("form.remove-movie").on("submit", function (event) {
+        event.preventDefault();
 
-// Write your JavaScript code.
+        var form = $(this);
 
+        $.post(form.attr("action"), form.serialize())
+            .done(function (response) {
+                if (response.success) {
+                    // Reload the current page
+                    location.reload();
+                } else {
+                    // Handle failure or display an error message
+                    console.log("Failed to remove the movie.");
+                }
+            })
+            .fail(function () {
+                // Handle failure or display an error message
+                console.log("Failed to remove the movie.");
+            });
+    });
+});
