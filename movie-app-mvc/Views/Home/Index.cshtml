@@ -9,85 +9,116 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
+<!-- Navigation Bar-->
+<!--<div class="navbar fixed-top" id="navbar">
+    <div class="container">
+        <a class="logo" href="index.html">KKS<span>Housing</span></a>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+        <img id="mobile-cta" class="mobile-menu" src="images/menu.svg"
+             alt="Open Navigation">
 
+        <nav>
+            <img id="mobile-exit" class="mobile-menu-exit" src="images/exit.svg"
+                 alt="Close Navigation">
 
-<a href="Home/savedMovies">Saved Movies</a>
+            <ul>
+            </ul>
 
-<div>
-    <form method="get" action="@Url.Action("Index")">
-        <input type="text" name="searchQuery" placeholder="Search for movies" />
-        <button type="submit">Search</button>
-    </form>
-</div>
+            <ul class="primary-nav">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>-->
 
-
-
-<div>
-    Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)
-</div>
-
-
-
-
-@if (ViewBag.CurrentPage > 1)
-{
-    <a href="/Home/Index?page=@(ViewBag.CurrentPage - 1)&searchQuery=@ViewBag.SearchQuery">Back</a>
-}
-else
-{
-    <span>Back</span>
-}
-
-@if (ViewBag.CurrentPage < ViewBag.TotalPages)
-{
-    <a href="/Home/Index?page=@(ViewBag.CurrentPage + 1)&searchQuery=@ViewBag.SearchQuery">Next</a>
-}
-else
-{
-    <span>Next</span>
-}
+<header>
+    <!-- Navbar -->
+    <nav>
+        <a class="active" href="#home">Home</a>
+        <a href="#other">Another Button</a>
+    </nav>
+</header>
 
 
 
+<main>
 
+    <div class="filters">
+        <a href="Home/savedMovies">Saved Movies</a>
 
-<div class="card-container">
-    @foreach (var movie in Model)
-    {
-        <div class="card">
-            <div class="card-image">
-                <img src="@movie.poster_path_url" alt="Movie Poster" />
-            </div>
-            <div class="card-content">
-                <div class="titleHolder">
-                    <h2>@movie.title</h2>
-                </div>
-                <div class="button-container">
-                    @if (movie.IsSaved)
-                    {
-                        <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                            <input type="hidden" name="title" value="@movie.title" />
-                            <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                            <input type="hidden" name="title" value="@movie.title" />
-                            <input type="hidden" name="overview" value="@movie.overview" />
-                            <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                            <button type="submit">Save</button>
-                        </form>
-                    }
-                </div>
-            </div>
+        <div>
+            <form method="get" action="@Url.Action("Index")">
+                <input type="text" name="searchQuery" placeholder="Search for movies" />
+                <button type="submit">Search</button>
+            </form>
         </div>
-    }
-</div>
 
-<script src="~/js/site/js/your-script.js"></script>
+
+
+        <div>
+            <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
+        </div>
+
+
+
+        <!-- Next and Back buttons -->
+        <div class="pagination-container">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <a href="/Home/Index?page=@(ViewBag.CurrentPage - 1)&searchQuery=@ViewBag.SearchQuery" class="back-button">Back</a>
+            }
+            else
+            {
+                <span>Back</span>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <a href="/Home/Index?page=@(ViewBag.CurrentPage + 1)&searchQuery=@ViewBag.SearchQuery" class="next-button">Next</a>
+            }
+            else
+            {
+                <span>Next</span>
+            }
+        </div>
+
+
+
+
+        <div class="card-container">
+            @foreach (var movie in Model)
+            {
+                <div class="card">
+                    <div class="card-image">
+                        <img src="@movie.poster_path_url" alt="Movie Poster" />
+                    </div>
+                    <div class="card-content">
+                        <div class="titleHolder">
+                            <h2>@movie.title</h2>
+                        </div>
+                        <div class="button-container">
+                            @if (movie.IsSaved)
+                            {
+                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                    <input type="hidden" name="title" value="@movie.title" />
+                                    <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                    <input type="hidden" name="title" value="@movie.title" />
+                                    <input type="hidden" name="overview" value="@movie.overview" />
+                                    <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                    <button type="submit">Save</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+</main>
