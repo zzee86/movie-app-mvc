@@ -1,37 +1,80 @@
-﻿@model List<movie_app_mvc.Models.SavedMovie>
-
-<h1>Saved Movies</h1>
-
-<head>
+﻿<head>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
 
-<div>
-    <form method="get" action="@Url.Action("savedMovies")">
-        <input type="text" name="title" placeholder="Filter Movies" />
-        <button type="submit">Search</button>
-    </form>
-</div>
+<header>
+    <!-- Navbar -->
+    <nav>
+        <a href="/">Home</a>
+        <a class="active" href="Home/savedMovies">Saved</a>
+    </nav>
+</header>
 
-<div class="card-container">
-    @foreach (var movie in Model)
-    {
-        <div class="card">
-            <div class="card-image">
-                <img src="@movie.Poster" alt="Movie Poster" />
+
+<main>
+
+    <div>
+        <form method="get" action="@Url.Action("SavedMovies")">
+            <input type="text" name="title" placeholder="Filter Movies" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="pagination">
+        @if (Model.Count > 0)
+        {
+            int currentPage = ViewBag.SavedPage ?? 1;
+            int totalPages = ViewBag.TotalPages ?? 1;
+            string searchQuery = ViewBag.SearchQuery;
+
+            <span>Page @currentPage / @totalPages </span>
+
+            <div class="pagination-container">
+                @if (currentPage > 1)
+                {
+                    <a href="@Url.Action("SavedMovies", new { title = searchQuery, page = ViewBag.PreviousPage })" class="back-button">Back</a>
+                }
+                else
+                {
+                    <span>Back</span>
+
+                }
+
+                @if (ViewBag.HasNextPage)
+                {
+                    <a href="@Url.Action("SavedMovies", new { title = searchQuery, page = ViewBag.NextPage })" class="next-button">Next</a>
+                }
+                else
+                {
+                    <span>Next</span>
+                }
             </div>
-            <div class="card-content">
-                <h2>@movie.Title</h2>
-                <div class="button-container">
-                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                        <input type="hidden" name="title" value="@movie.Title" />
-                        <input type="hidden" name="overview" value="@movie.Overview" />
-                        <input type="hidden" name="poster" value="@movie.Poster" />
-                        <button type="submit" class="saved">Remove</button>
-                    </form>
+        }
+    </div>
+
+
+    <div class="card-container">
+        @foreach (var movie in Model)
+        {
+            <div class="card">
+                <div class="card-image">
+                    <img src="@movie.Poster" alt="Movie Poster" />
+                </div>
+                <div class="card-content">
+                    <h2>@movie.Title</h2>
+                    <div class="button-container">
+                        <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                            <input type="hidden" name="title" value="@movie.Title" />
+                            <input type="hidden" name="overview" value="@movie.Overview" />
+                            <input type="hidden" name="poster" value="@movie.Poster" />
+                            <button type="submit" class="saved">Remove</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+
+
+</main>

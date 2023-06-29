@@ -33,6 +33,9 @@ a {
     color: white;
     text-decoration: none;
 }
+h4 {
+    color:white;
+}
 
 span {
     color: white;
@@ -115,7 +118,6 @@ nav {
     grid-gap: 20px;
     margin: 2em 2em;
 }
-
 
 .card {
     width: 185px;

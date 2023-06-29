@@ -117,18 +117,54 @@ namespace movie_app_mvc.Controllers
                 }
 
                 // Redirect back to the current page with the same search query and page number
-                return RedirectToAction("Index", new { searchQuery, page });
+                return RedirectToAction("SavedMovies", new { title = searchQuery, page });
             }
 
-            List<SavedMovie> movies = GetMoviesFromDatabase(name);
-            return View();
+            List<SavedMovie> movies = GetMoviesFromDatabase(searchQuery, page, 40); // Pass the required parameters
+            return View(movies); // Pass the retrieved movies to the view
         }
 
-        public IActionResult SavedMovies(string title)
+
+
+        public IActionResult SavedMovies(string title, int page = 1)
         {
-            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title);
+            int pageSize = 32;
+            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, page, pageSize);
+            ViewBag.SavedPage = page;
+            ViewBag.SearchQuery = title;
+
+            // Get the total count of movies for pagination
+            int totalCount = GetTotalMovieCount(title);
+
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.TotalPages = totalPages;
+
+            // Calculate if there are more movies beyond the current page
+            bool hasNextPage = (page * pageSize) < totalCount;
+
+            // Set ViewBag variables for pagination
+            ViewBag.HasNextPage = hasNextPage;
+            ViewBag.NextPage = page + 1;
+            ViewBag.PreviousPage = page - 1;
+
             return View(savedMovies);
         }
+
+        private int GetTotalMovieCount(string title)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = string.IsNullOrEmpty(title) ? "SELECT COUNT(*) FROM savedMovies" : $"SELECT COUNT(*) FROM savedMovies WHERE title LIKE '%{title}%'";
+                MySqlCommand command = new MySqlCommand(query, connection);
+
+                return Convert.ToInt32(command.ExecuteScalar());
+            }
+        }
+
+
+
 
         public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
         {
@@ -160,7 +196,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private List<SavedMovie> GetMoviesFromDatabase(string title)
+        private List<SavedMovie> GetMoviesFromDatabase(string title, int page, int pageSize)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
 
@@ -169,6 +205,7 @@ namespace movie_app_mvc.Controllers
                 connection.Open();
 
                 string query = string.IsNullOrEmpty(title) ? "SELECT * FROM savedMovies" : $"SELECT * FROM savedMovies WHERE title LIKE '%{title}%'";
+                query += $" LIMIT {pageSize} OFFSET {(page - 1) * pageSize}";
                 MySqlCommand command = new MySqlCommand(query, connection);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -190,6 +227,8 @@ namespace movie_app_mvc.Controllers
 
             return movies;
         }
+
+
 
         private bool MovieIsSaved(string title)
         {
