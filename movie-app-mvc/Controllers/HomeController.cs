@@ -13,6 +13,9 @@ namespace movie_app_mvc.Controllers
     public class HomeController : Controller
     {
         private string connectionString = "server=localhost;database=saved_movies;user=root;";
+        private const int PageSize = 20;
+
+
 
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
