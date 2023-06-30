@@ -165,7 +165,8 @@ namespace movie_app_mvc.Controllers
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO savedMovies (title, overview, poster) VALUES (@Title, @Overview, @Poster)";
+                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion) VALUES (@Title, @Overview, @Poster, NOW())";
+
                     MySqlCommand command = new MySqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Title", title);
                     command.Parameters.AddWithValue("@Overview", overview);
@@ -194,6 +195,7 @@ namespace movie_app_mvc.Controllers
 
         public IActionResult SavedMovies(string title, int page = 1)
         {
+
             int pageSize = 28;
             List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, page, pageSize);
             ViewBag.SavedPage = page;
@@ -271,7 +273,7 @@ namespace movie_app_mvc.Controllers
                 connection.Open();
 
                 string query = string.IsNullOrEmpty(title) ? "SELECT * FROM savedMovies" : $"SELECT * FROM savedMovies WHERE title LIKE '%{title}%'";
-                query += $" LIMIT {pageSize} OFFSET {(page - 1) * pageSize}";
+                query += $" ORDER BY dateTimeInsertion DESC LIMIT {pageSize} OFFSET {(page - 1) * pageSize}";
                 MySqlCommand command = new MySqlCommand(query, connection);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
