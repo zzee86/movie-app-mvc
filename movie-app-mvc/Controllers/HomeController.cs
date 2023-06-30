@@ -173,19 +173,28 @@ namespace movie_app_mvc.Controllers
                     command.ExecuteNonQuery();
                 }
 
-                // Redirect back to the current page with the same search query and page number
-                return RedirectToAction("SavedMovies", new { title = searchQuery, page });
-            }
 
-            List<SavedMovie> movies = GetMoviesFromDatabase(searchQuery, page, 32); // Pass the required parameters
-            return View(movies); // Pass the retrieved movies to the view
+            }
+            // Determine the referring URL to refresh the current page
+            string referringUrl = Request.Headers["Referer"].ToString();
+            if (string.IsNullOrEmpty(referringUrl))
+            {
+                // If referring URL is empty, redirect to the home page
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // Redirect back to the referring URL
+                return Redirect(referringUrl);
+
+            }
         }
 
 
 
         public IActionResult SavedMovies(string title, int page = 1)
         {
-            int pageSize = 32;
+            int pageSize = 28;
             List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, page, pageSize);
             ViewBag.SavedPage = page;
             ViewBag.SearchQuery = title;
