@@ -6,7 +6,6 @@
 
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <!-- Navigation Bar-->
@@ -33,32 +32,25 @@
     </div>
 </div>-->
 
-<header>
-    <!-- Navbar -->
-    <nav>
-        <a class="active" href="/">Home</a>
-        <a href="Home/savedMovies">Saved</a>
-    </nav>
-</header>
+@Html.Partial("_NavBar")
 
 
 <main>
 
     <div class="filters">
-        <a href="Home/savedMovies">Saved Movies</a>
-
-        <div>
-            <form method="get" action="@Url.Action("Index")">
-                <input type="text" name="searchQuery" placeholder="Search for movies" />
-                <button type="submit">Search</button>
-            </form>
+        <div class="search-right-container">
+            <div class="search-content">
+                <form method="get" action="@Url.Action("Index")">
+                    <div class="search-bar">
+                        <input type="text" name="searchQuery" placeholder="Search for movies" />
+                    </div>
+                    <div class="page-info">
+                        <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
+                    </div>
+                </form>
+            </div>
         </div>
 
-
-
-        <div>
-            <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
-        </div>
 
 
 

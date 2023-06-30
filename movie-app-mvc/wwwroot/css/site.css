@@ -73,6 +73,35 @@ nav {
     padding: 2.3em;
 }
 
+.search-right-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-right:3em;
+}
+
+.search-content {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+
+    .search-bar input[type="text"] {
+        width: 300px; /* Adjust the width as desired */
+        margin-right: 10px;
+    }
+
+
+.page-info {
+    margin-top: 10px;
+}
+
+
 
 .pagination-container {
     display: flex;

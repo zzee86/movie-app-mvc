@@ -120,7 +120,7 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("SavedMovies", new { title = searchQuery, page });
             }
 
-            List<SavedMovie> movies = GetMoviesFromDatabase(searchQuery, page, 40); // Pass the required parameters
+            List<SavedMovie> movies = GetMoviesFromDatabase(searchQuery, page, 32); // Pass the required parameters
             return View(movies); // Pass the retrieved movies to the view
         }
 
