@@ -40,6 +40,8 @@ namespace movie_app_mvc.Controllers
 
                 ViewBag.CurrentPage = page;
                 ViewBag.TotalPages = movieInfo.total_pages;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
 
                 return View(movieResults);
             }
@@ -61,6 +63,36 @@ namespace movie_app_mvc.Controllers
             }
         }
 
+        //private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
+        //{
+        //    List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
+
+        //    foreach (var movie in results)
+        //    {
+        //        if (string.IsNullOrEmpty(movie.title))
+        //        {
+        //            // Use the name property if title is empty
+        //            movie.title = movie.name;
+        //        }
+
+        //        if (movie.known_for != null && movie.known_for.Count > 0)
+        //        {
+        //            movie.title = movie.known_for[0].title;
+        //            movie.poster_path = movie.known_for[0].poster_path;
+        //        }
+
+        //        //if (string.IsNullOrEmpty(movie.poster_path) && movie.known_for != null && movie.known_for.Count > 0)
+        //        //{
+        //        //    movie.poster_path = movie.known_for[0].poster_path;
+        //        //}
+
+        //        movie.IsSaved = MovieIsSaved(movie.title);
+
+        //        movieResults.Add(movie);
+        //    }
+
+        //    return movieResults;
+        //}
         private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
@@ -73,6 +105,23 @@ namespace movie_app_mvc.Controllers
                     movie.title = movie.name;
                 }
 
+                if (string.IsNullOrEmpty(movie.poster_path) && (movie.known_for == null || movie.known_for.Count == 0))
+                {
+                    // Exclude the movie if it doesn't have a poster and no known_for data
+                    continue;
+                }
+
+                if (movie.known_for != null && movie.known_for.Count > 0)
+                {
+                    bool hasValidKnownFor = movie.known_for.Any(k => !string.IsNullOrEmpty(k.title) && !string.IsNullOrEmpty(k.poster_path));
+
+                    if (hasValidKnownFor)
+                    {
+                        // Filter out the movie if it has a valid known_for
+                        continue;
+                    }
+                }
+
                 movie.IsSaved = MovieIsSaved(movie.title);
 
                 movieResults.Add(movie);
@@ -80,6 +129,12 @@ namespace movie_app_mvc.Controllers
 
             return movieResults;
         }
+
+
+
+
+
+
 
         private async Task<IActionResult> SearchMovies(string searchQuery, int pageNumber = 1)
         {
@@ -89,6 +144,8 @@ namespace movie_app_mvc.Controllers
             if (movieInfo != null)
             {
                 List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+
+
 
                 ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = movieInfo.total_pages;
