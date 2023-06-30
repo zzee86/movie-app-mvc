@@ -186,7 +186,20 @@ nav {
 
 .titleHolder {
     max-height: 200px;
+    overflow: hidden;
 }
+    .titleHolder h2 {
+        font-size: 1rem;
+        margin: 0;
+        height: 40px; /* Adjust the height as desired for two lines */
+        line-height: 20px; /* Adjust the line-height as desired */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2; /* Limit the title to two lines */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: white;
+    }
 
 .card-content .button-container {
     margin-top: 0 !important;
