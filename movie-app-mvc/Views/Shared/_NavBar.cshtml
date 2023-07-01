@@ -2,6 +2,12 @@
 <header>
     <!-- Navbar -->
     <nav>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p>Welcome, <span>@User.Identity.Name</span></p>
+        }
+
+        <a href="@Url.Action("Index", "Login")">Login</a>
         <a href="@Url.Action("Index")">Home</a>
         <a href="@Url.Action("savedMovies", "Home")">Saved</a>
     </nav>

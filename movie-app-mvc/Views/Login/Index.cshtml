@@ -1,0 +1,55 @@
+﻿
+@model List<movie_app_mvc.Models.MovieInfo.Result>
+
+@{
+    ViewData["Title"] = "Login Page";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+
+
+@Html.Partial("_NavBar")
+
+
+
+<h2>Register Page</h2>
+
+@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<form asp-action="Register" method="post">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+
+
+<form asp-action="Login" method="post">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
