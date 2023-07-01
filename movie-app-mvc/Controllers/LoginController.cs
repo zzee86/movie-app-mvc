@@ -9,18 +9,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using movie_app_mvc.Models;
 
 namespace movie_app_mvc.Controllers
 {
     public class LoginController : Controller
     {
         private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
+        private readonly string _connectionString = "server=localhost;database=saved_movies;user=root;";
 
-        public LoginController()
-        {
-            _connectionString = "server=localhost;database=saved_movies;user=root;";
-        }
+        //public LoginController()
+        //{
+        //    _connectionString = "server=localhost;database=saved_movies;user=root;";
+        //}
 
         // GET: /<controller>/
         public IActionResult Index()
@@ -34,10 +35,14 @@ namespace movie_app_mvc.Controllers
             // Validate login credentials
             if (ValidateLogin(email, password))
             {
+                // Get the username associated with the email
+                string username = GetUsernameByEmail(email);
+
                 // Set authentication cookie with user's name
                 var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, email) // Replace with the appropriate claim type and value
+            new Claim(ClaimTypes.Name, email),
+            new Claim("Username", username) // Add the username as a claim
         };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
@@ -51,6 +56,18 @@ namespace movie_app_mvc.Controllers
             ViewData["ErrorMessage"] = "Invalid email or password.";
             return View("Index");
         }
+
+
+
+
+        public IActionResult Logout()
+        {
+            // Perform the logout logic
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+
+            return RedirectToAction("Index", "Login");
+        }
+
 
 
         public IActionResult Register()
@@ -133,5 +150,31 @@ namespace movie_app_mvc.Controllers
                 }
             }
         }
+
+        private string GetUsernameByEmail(string email)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var query = "SELECT username FROM loginDetails WHERE email = @Email";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return reader.GetString("username");
+                        }
+                    }
+                }
+            }
+
+            // Return null if the email does not have an associated username
+            return null;
+        }
+
     }
 }

@@ -46,6 +46,10 @@
                     </div>
                     <div class="page-info">
                         <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
+                        @if (@User.Identity.IsAuthenticated)
+                        {
+                            <h4>@User.FindFirst("Username")?.Value</h4>
+                        }
                     </div>
                 </form>
             </div>

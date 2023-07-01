@@ -367,9 +367,6 @@ namespace movie_app_mvc.Controllers
 
         private bool MovieIsSaved(string title, string userID)
         {
-
-
-
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -383,6 +380,5 @@ namespace movie_app_mvc.Controllers
                 return count > 0;
             }
         }
-
     }
 }
