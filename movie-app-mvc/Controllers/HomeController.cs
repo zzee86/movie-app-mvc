@@ -19,24 +19,30 @@ namespace movie_app_mvc.Controllers
 
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
+            // Get the user ID of the logged-in user
+            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+
+            // Retrieve the user ID from the loginDetails table
+            string testing = GetUserIdByEmail(email);
+
             if (string.IsNullOrEmpty(searchQuery))
             {
-                return await LoadMovies(page);
+                return await LoadMovies(page, testing);
             }
             else
             {
-                return await SearchMovies(searchQuery, page);
+                return await SearchMovies(searchQuery, testing,  page);
             }
         }
 
-        public async Task<IActionResult> LoadMovies(int page)
+        public async Task<IActionResult> LoadMovies(int page, string userID)
         {
             string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
 
                 ViewBag.CurrentPage = page;
                 ViewBag.TotalPages = movieInfo.total_pages;
@@ -93,7 +99,7 @@ namespace movie_app_mvc.Controllers
 
         //    return movieResults;
         //}
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
 
@@ -122,7 +128,7 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                movie.IsSaved = MovieIsSaved(movie.title);
+                movie.IsSaved = MovieIsSaved(movie.title, userID);
 
                 movieResults.Add(movie);
             }
@@ -136,14 +142,14 @@ namespace movie_app_mvc.Controllers
 
 
 
-        private async Task<IActionResult> SearchMovies(string searchQuery, int pageNumber = 1)
+        private async Task<IActionResult> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
         {
             string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={searchQuery}&page={pageNumber}";
             MovieInfo.Root movieInfo = await FetchMovies(url);
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
 
 
 
@@ -359,19 +365,24 @@ namespace movie_app_mvc.Controllers
 
 
 
-        private bool MovieIsSaved(string title)
+        private bool MovieIsSaved(string title, string userID)
         {
+
+
+
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @Title";
+                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @title AND userID = @userID";
                 MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Title", title);
+                command.Parameters.AddWithValue("@title", title);
+                command.Parameters.AddWithValue("@userID", userID);
 
                 int count = Convert.ToInt32(command.ExecuteScalar());
                 return count > 0;
             }
         }
+
     }
 }
