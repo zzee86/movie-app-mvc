@@ -159,58 +159,100 @@ namespace movie_app_mvc.Controllers
 
         public async Task<IActionResult> SaveMovie(string title, string overview, string poster, string searchQuery, string name, int page = 1)
         {
+            // Get the user ID of the logged-in user
+            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+
+            // Retrieve the user ID from the loginDetails table
+            string userId = GetUserIdByEmail(email);
+            if (userId == null)
+            {
+                // User ID not found
+                // Handle the error or redirect as needed
+                return RedirectToAction("Index");
+            }
+
             if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(overview))
             {
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion) VALUES (@Title, @Overview, @Poster, NOW())";
+                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion, userId) VALUES (@Title, @Overview, @Poster, NOW(), @UserId)";
 
                     MySqlCommand command = new MySqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Title", title);
                     command.Parameters.AddWithValue("@Overview", overview);
                     command.Parameters.AddWithValue("@Poster", poster);
+                    command.Parameters.AddWithValue("@UserId", userId);
                     command.ExecuteNonQuery();
                 }
-
-
             }
+
             // Determine the referring URL to refresh the current page
             string referringUrl = Request.Headers["Referer"].ToString();
             if (string.IsNullOrEmpty(referringUrl))
             {
-                // If referring URL is empty, redirect to the home page
+                // If the referring URL is empty, redirect to the home page
                 return RedirectToAction("Index");
             }
             else
             {
                 // Redirect back to the referring URL
                 return Redirect(referringUrl);
-
             }
         }
+
+        private string GetUserIdByEmail(string email)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT userID FROM loginDetails WHERE email = @Email";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Email", email);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        // Return the user ID if found
+                        return reader.GetString("userID");
+                    }
+                }
+            }
+
+            // Return null if user ID not found
+            return null;
+        }
+
 
 
 
         public IActionResult SavedMovies(string title, int page = 1)
         {
+            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+
+            string userId = GetUserIdByEmail(email);
+            if (userId == null)
+            {
+                // User ID not found
+                // Handle the error or redirect as needed
+                return RedirectToAction("Index");
+            }
 
             int pageSize = 28;
-            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, page, pageSize);
+            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userId, page, pageSize);
             ViewBag.SavedPage = page;
             ViewBag.SearchQuery = title;
 
-            // Get the total count of movies for pagination
-            int totalCount = GetTotalMovieCount(title);
+            int totalCount = GetTotalMovieCount(title, userId);
 
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
             ViewBag.TotalPages = totalPages;
 
-            // Calculate if there are more movies beyond the current page
             bool hasNextPage = (page * pageSize) < totalCount;
 
-            // Set ViewBag variables for pagination
             ViewBag.HasNextPage = hasNextPage;
             ViewBag.NextPage = page + 1;
             ViewBag.PreviousPage = page - 1;
@@ -218,18 +260,28 @@ namespace movie_app_mvc.Controllers
             return View(savedMovies);
         }
 
-        private int GetTotalMovieCount(string title)
+
+        private int GetTotalMovieCount(string title, string userId)
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = string.IsNullOrEmpty(title) ? "SELECT COUNT(*) FROM savedMovies" : $"SELECT COUNT(*) FROM savedMovies WHERE title LIKE '%{title}%'";
+                string query = string.IsNullOrEmpty(title)
+                    ? "SELECT COUNT(*) FROM savedMovies WHERE userId = @UserId"
+                    : "SELECT COUNT(*) FROM savedMovies WHERE userId = @UserId AND title LIKE @Title";
+
                 MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                if (!string.IsNullOrEmpty(title))
+                {
+                    command.Parameters.AddWithValue("@Title", $"%{title}%");
+                }
 
                 return Convert.ToInt32(command.ExecuteScalar());
             }
         }
+
 
 
 
@@ -264,7 +316,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private List<SavedMovie> GetMoviesFromDatabase(string title, int page, int pageSize)
+        private List<SavedMovie> GetMoviesFromDatabase(string title, string userId, int page, int pageSize)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
 
@@ -272,9 +324,17 @@ namespace movie_app_mvc.Controllers
             {
                 connection.Open();
 
-                string query = string.IsNullOrEmpty(title) ? "SELECT * FROM savedMovies" : $"SELECT * FROM savedMovies WHERE title LIKE '%{title}%'";
+                string query = string.IsNullOrEmpty(title)
+                    ? "SELECT * FROM savedMovies WHERE userId = @UserId"
+                    : "SELECT * FROM savedMovies WHERE userId = @UserId AND title LIKE @Title";
+
                 query += $" ORDER BY dateTimeInsertion DESC LIMIT {pageSize} OFFSET {(page - 1) * pageSize}";
                 MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
+                if (!string.IsNullOrEmpty(title))
+                {
+                    command.Parameters.AddWithValue("@Title", $"%{title}%");
+                }
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -295,6 +355,7 @@ namespace movie_app_mvc.Controllers
 
             return movies;
         }
+
 
 
 
