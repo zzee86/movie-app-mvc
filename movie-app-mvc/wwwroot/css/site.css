@@ -19,6 +19,14 @@ html {
     min-height: 100%;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+}
+
+p, span {
+    font-family: 'Roboto', sans-serif;
+}
+
 body {
     margin: 0;
     background-color: black;
@@ -33,8 +41,9 @@ a {
     color: white;
     text-decoration: none;
 }
+
 h4 {
-    color:white;
+    color: white;
 }
 
 span {
@@ -69,13 +78,14 @@ nav {
     }
 
 
-.trending-movies{
-    margin-left:2.5em;
+.trending-movies {
+    margin-left: 2.5em;
 }
+
 .trending-text {
     color: white;
     font-size: 1.5em;
-    margin-bottom:0;
+    margin-bottom: 0;
 }
 
 .filters {
@@ -85,7 +95,7 @@ nav {
 .search-right-container {
     display: flex;
     justify-content: flex-end;
-    padding-right:3em;
+    padding-right: 3em;
 }
 
 .search-content {
@@ -152,9 +162,9 @@ nav {
 /* Layout */
 .movies-container {
     overflow-x: auto;
-    white-space: nowrap;
+    /*    white-space: nowrap;*/
     margin: 1.5em 2em 2.5em 2em;
-/*    width: 95%;*/
+    /*    width: 95%;*/
 }
 
 .card-container {
@@ -170,9 +180,11 @@ nav {
     flex-direction: column;
     background-color: #1A1A1A;
 }
+
     .card:last-child {
         margin-right: 0;
     }
+
 .card-image img {
     width: 185px;
     height: 240px;
@@ -193,22 +205,22 @@ nav {
     .card-content h2 {
         font-size: 1rem;
         margin: 0;
-        height: 40px;
         overflow: hidden;
         color: white;
     }
 
 .titleHolder {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
     height: 44px;
     line-height: 22px;
+    width: 100%;
 }
 
     .titleHolder h2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 1rem;
         margin: 0;
         color: white;
