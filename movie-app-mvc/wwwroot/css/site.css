@@ -74,7 +74,8 @@ nav {
 }
 .trending-text {
     color: white;
-    font-size: 2em;
+    font-size: 1.5em;
+    margin-bottom:0;
 }
 
 .filters {
@@ -152,9 +153,8 @@ nav {
 .movies-container {
     overflow-x: auto;
     white-space: nowrap;
-    padding: 10px;
-    margin: 2em 2em;
-    width: 93%;
+    margin: 1.5em 2em 2.5em 2em;
+/*    width: 95%;*/
 }
 
 .card-container {
@@ -165,13 +165,14 @@ nav {
     width: 185px;
     height: 359px;
     border-radius: 3px;
-    margin-right: 20px; /* Add margin-right to create spacing between cards */
+    margin-right: 1em; /* Add margin-right to create spacing between cards */
     display: flex;
     flex-direction: column;
     background-color: #1A1A1A;
 }
-
-
+    .card:last-child {
+        margin-right: 0;
+    }
 .card-image img {
     width: 185px;
     height: 240px;
@@ -207,27 +208,28 @@ nav {
     line-height: 22px;
 }
 
-.titleHolder h2 {
-    font-size: 1rem;
-    margin: 0;
-    color: white;
-}
-
-
+    .titleHolder h2 {
+        font-size: 1rem;
+        margin: 0;
+        color: white;
+    }
 
 .card-content .button-container {
     margin-top: 0 !important;
     display: flex;
     justify-content: center;
+    margin-bottom: 0; /* Remove the margin-bottom */
 }
 
 .card-content form .button-container {
     margin-top: 0;
+    margin-bottom: 0; /* Remove the margin-bottom */
 }
 
 .card-content form {
     display: flex;
     justify-content: center;
+    margin-bottom: 0; /* Remove the margin-bottom */
 }
 
 .card-content button {
@@ -240,6 +242,7 @@ nav {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 15px;
+    margin-bottom: 0; /* Remove the margin-bottom */
 }
 
     .card-content button.saved {
