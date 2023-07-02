@@ -17,6 +17,25 @@ namespace movie_app_mvc.Controllers
 
 
 
+        //public async Task<IActionResult> Index(string searchQuery, int page = 1)
+        //{
+        //    // Get the user ID of the logged-in user
+        //    string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+
+        //    // Retrieve the user ID from the loginDetails table
+        //    string testing = GetUserIdByEmail(email);
+
+        //    if (string.IsNullOrEmpty(searchQuery))
+        //    {
+        //        return await LoadMovies(page, testing);
+        //        return await LoadPopularMovies(page, testing);
+        //    }
+        //    else
+        //    {
+        //        return await SearchMovies(searchQuery, testing,  page);
+        //    }
+        //}
+
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
             // Get the user ID of the logged-in user
@@ -25,17 +44,39 @@ namespace movie_app_mvc.Controllers
             // Retrieve the user ID from the loginDetails table
             string testing = GetUserIdByEmail(email);
 
+            List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
+            List<MovieInfo.Result> popularMovies = new List<MovieInfo.Result>();
+            List<MovieInfo.Result> topRatedMovies = new List<MovieInfo.Result>();
+
             if (string.IsNullOrEmpty(searchQuery))
             {
-                return await LoadMovies(page, testing);
+                trendingMovies = await LoadMovies(page, testing);
+                popularMovies = await LoadPopularMovies(page, testing);
+                topRatedMovies = await LoadTopRatedMovies(page, testing);
             }
             else
             {
-                return await SearchMovies(searchQuery, testing,  page);
+                trendingMovies = await SearchMovies(searchQuery, testing, page);
             }
+
+            ViewBag.CurrentPage = page;
+            ViewBag.SearchQuery = searchQuery;
+
+            var viewModel = new MoviesViewModel
+            {
+                TrendingMovies = trendingMovies,
+                PopularMovies = popularMovies,
+                TopRatedMovies = topRatedMovies
+            };
+
+            return View(viewModel);
         }
 
-        public async Task<IActionResult> LoadMovies(int page, string userID)
+
+
+
+
+        public async Task<List<MovieInfo.Result>> LoadMovies(int page, string userID)
         {
             string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
@@ -48,12 +89,70 @@ namespace movie_app_mvc.Controllers
                 ViewBag.TotalPages = movieInfo.total_pages;
                 //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
 
-
-                return View(movieResults);
+                return movieResults;
             }
 
-            return View("Index");
+            return null;
         }
+
+        public async Task<List<MovieInfo.Result>> LoadPopularMovies(int page, string userID)
+        {
+            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = movieInfo.total_pages;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
+                return movieResults;
+            }
+
+            return null;
+        }
+
+        public async Task<List<MovieInfo.Result>> LoadTopRatedMovies(int page, string userID)
+        {
+            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = movieInfo.total_pages;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
+                return movieResults;
+            }
+
+            return null;
+        }
+
+
+        //public async Task<IActionResult> LoadPopularMovies(int page, string userID)
+        //{
+        //    string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+        //    MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
+
+        //    if (movieInfo != null)
+        //    {
+        //        List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+
+        //        ViewBag.CurrentPage = page;
+        //        ViewBag.TotalPages = movieInfo.total_pages;
+        //        //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
+
+        //        return View(movieResults);
+        //    }
+
+        //    return View("Index");
+        //}
 
         private async Task<MovieInfo.Root> FetchMovies(string url)
         {
@@ -142,7 +241,7 @@ namespace movie_app_mvc.Controllers
 
 
 
-        private async Task<IActionResult> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
+        private async Task<List<MovieInfo.Result>> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
         {
             string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={searchQuery}&page={pageNumber}";
             MovieInfo.Root movieInfo = await FetchMovies(url);
@@ -151,17 +250,16 @@ namespace movie_app_mvc.Controllers
             {
                 List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
 
-
-
                 ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = movieInfo.total_pages;
                 ViewBag.SearchQuery = searchQuery;
 
-                return View(movieResults);
+                return movieResults;
             }
 
-            return View("Index");
+            return null;
         }
+
 
         public async Task<IActionResult> SaveMovie(string title, string overview, string poster, string searchQuery, string name, int page = 1)
         {

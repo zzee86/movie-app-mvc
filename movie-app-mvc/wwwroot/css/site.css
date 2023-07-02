@@ -21,7 +21,7 @@ html {
 
 body {
     margin: 0;
-    background-color: rebeccapurple;
+    background-color: black;
     text-decoration: none;
 }
 
@@ -68,6 +68,14 @@ nav {
         font-weight: bold;
     }
 
+
+.trending-movies{
+    margin-left:2.5em;
+}
+.trending-text {
+    color: white;
+    font-size: 2em;
+}
 
 .filters {
     padding: 2.3em;
