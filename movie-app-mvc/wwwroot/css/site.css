@@ -149,18 +149,23 @@ nav {
 
 
 /* Layout */
-.card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-    grid-gap: 20px;
+.movies-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
     margin: 2em 2em;
+    width: 93%;
+}
+
+.card-container {
+    display: inline-flex; /* Change to inline-flex to ensure all cards stay in a single row */
 }
 
 .card {
     width: 185px;
     height: 359px;
     border-radius: 3px;
-    margin-bottom: 20px;
+    margin-right: 20px; /* Add margin-right to create spacing between cards */
     display: flex;
     flex-direction: column;
     background-color: #1A1A1A;
@@ -193,21 +198,22 @@ nav {
     }
 
 .titleHolder {
-    max-height: 200px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+    height: 44px;
+    line-height: 22px;
 }
-    .titleHolder h2 {
-        font-size: 1rem;
-        margin: 0;
-        height: 40px; /* Adjust the height as desired for two lines */
-        line-height: 20px; /* Adjust the line-height as desired */
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2; /* Limit the title to two lines */
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: white;
-    }
+
+.titleHolder h2 {
+    font-size: 1rem;
+    margin: 0;
+    color: white;
+}
+
+
 
 .card-content .button-container {
     margin-top: 0 !important;

@@ -84,38 +84,40 @@
         <div class="trending-movies">
             <h3 class="trending-text">Trending</h3>
         </div>
-        <div class="card-container">
-            @foreach (var movie in Model.TrendingMovies)
-            {
-                <div class="card">
-                    <div class="card-image">
-                        <img src="@movie.poster_path_url" alt="Movie Poster" />
-                    </div>
-                    <div class="card-content">
-                        <div class="titleHolder">
-                            <h2>@movie.title</h2>
+        <div class="movies-container">
+            <div class="card-container">
+                @foreach (var movie in Model.TrendingMovies)
+                {
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="@movie.poster_path_url" alt="Movie Poster" />
                         </div>
-                        <div class="button-container">
-                            @if (movie.IsSaved)
-                            {
-                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.title" />
-                                    <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.title" />
-                                    <input type="hidden" name="overview" value="@movie.overview" />
-                                    <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                    <button type="submit">Save</button>
-                                </form>
-                            }
+                        <div class="card-content">
+                            <div class="titleHolder">
+                                <h2>@movie.title</h2>
+                            </div>
+                            <div class="button-container">
+                                @if (movie.IsSaved)
+                                {
+                                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.title" />
+                                        <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.title" />
+                                        <input type="hidden" name="overview" value="@movie.overview" />
+                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                        <button type="submit">Save</button>
+                                    </form>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
 
 
@@ -128,41 +130,43 @@
         <div class="trending-movies">
             <h3 class="trending-text">Popular</h3>
         </div>
-        <div class="card-container">
-            @foreach (var movie in Model.PopularMovies)
-            {
-                <div class="card">
-                    <div class="card-image">
-                        <img src="@movie.poster_path_url" alt="Movie Poster" />
-                    </div>
-                    <div class="card-content">
-                        <div class="titleHolder">
-                            <h2>@movie.title</h2>
-                        </div>
-                        <div class="button-container">
-                            @if (movie.IsSaved)
-                            {
-                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.title" />
-                                    <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.title" />
-                                    <input type="hidden" name="overview" value="@movie.overview" />
-                                    <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                    <button type="submit">Save</button>
-                                </form>
-                            }
-                        </div>
-                    </div>
-                </div>
-            }
-            }
-        </div>
+        <div class="movies-container">
 
+            <div class="card-container">
+                @foreach (var movie in Model.PopularMovies)
+                {
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="@movie.poster_path_url" alt="Movie Poster" />
+                        </div>
+                        <div class="card-content">
+                            <div class="titleHolder">
+                                <h2>@movie.title</h2>
+                            </div>
+                            <div class="button-container">
+                                @if (movie.IsSaved)
+                                {
+                                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.title" />
+                                        <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.title" />
+                                        <input type="hidden" name="overview" value="@movie.overview" />
+                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                        <button type="submit">Save</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
 
 
 
@@ -170,38 +174,40 @@
         <div class="trending-movies">
             <h3 class="trending-text">Top Rated</h3>
         </div>
-        <div class="card-container">
-            @foreach (var movie in Model.TopRatedMovies)
-            {
-                <div class="card">
-                    <div class="card-image">
-                        <img src="@movie.poster_path_url" alt="Movie Poster" />
-                    </div>
-                    <div class="card-content">
-                        <div class="titleHolder">
-                            <h2>@movie.title</h2>
+        <div class="movies-container">
+            <div class="card-container">
+                @foreach (var movie in Model.TopRatedMovies)
+                {
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="@movie.poster_path_url" alt="Movie Poster" />
                         </div>
-                        <div class="button-container">
-                            @if (movie.IsSaved)
-                            {
-                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.title" />
-                                    <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.title" />
-                                    <input type="hidden" name="overview" value="@movie.overview" />
-                                    <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                    <button type="submit">Save</button>
-                                </form>
-                            }
+                        <div class="card-content">
+                            <div class="titleHolder">
+                                <h2>@movie.title</h2>
+                            </div>
+                            <div class="button-container">
+                                @if (movie.IsSaved)
+                                {
+                                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.title" />
+                                        <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.title" />
+                                        <input type="hidden" name="overview" value="@movie.overview" />
+                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                        <button type="submit">Save</button>
+                                    </form>
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
-            }
+                }
+
+            </div>
         </div>
 </main>
