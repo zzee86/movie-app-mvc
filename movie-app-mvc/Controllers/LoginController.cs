@@ -59,13 +59,12 @@ namespace movie_app_mvc.Controllers
 
 
 
-
         public IActionResult Logout()
         {
             // Perform the logout logic
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
 
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "Home");
         }
 
 
