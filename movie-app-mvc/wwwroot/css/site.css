@@ -29,7 +29,7 @@ p, span {
 
 body {
     margin: 0;
-    background-color: black;
+    background-color: #191919;
     text-decoration: none;
 }
 
@@ -305,7 +305,7 @@ p, span {
 
 body {
     margin: 0;
-    background-color: black;
+    background-color: #191919;
     text-decoration: none;
 }
 
@@ -445,7 +445,7 @@ nav {
     margin-right: 1em;
     display: flex;
     flex-direction: column;
-    background-color: #1A1A1A;
+    background-color: #202020;
 }
 
     .card:last-child {
