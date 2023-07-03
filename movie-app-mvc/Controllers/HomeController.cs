@@ -261,7 +261,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        public async Task<IActionResult> SaveMovie(string title, string overview, string poster, string searchQuery, string name, int page = 1)
+        public async Task<IActionResult> SaveMovie(string title, string overview, string poster, double rating, string searchQuery, string name, int page = 1)
         {
             // Get the user ID of the logged-in user
             string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
@@ -281,13 +281,14 @@ namespace movie_app_mvc.Controllers
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion, userId) VALUES (@Title, @Overview, @Poster, NOW(), @UserId)";
+                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion, userId, rating) VALUES (@Title, @Overview, @Poster, NOW(), @UserId, @Rating)";
 
                     MySqlCommand command = new MySqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Title", title);
                     command.Parameters.AddWithValue("@Overview", overview);
                     command.Parameters.AddWithValue("@Poster", poster);
                     command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@Rating", rating);
                     command.ExecuteNonQuery();
                 }
             }
@@ -449,7 +450,8 @@ namespace movie_app_mvc.Controllers
                             Id = reader.GetInt32("id"),
                             Title = reader.GetString("title"),
                             Overview = reader.GetString("overview"),
-                            Poster = reader.GetString("poster")
+                            Poster = reader.GetString("poster"),
+                            Rating = reader.GetDouble("rating")
                         };
 
                         movies.Add(movie);

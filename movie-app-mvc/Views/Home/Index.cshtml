@@ -46,10 +46,10 @@
                     </div>
                     <div class="page-info">
                         <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
-                        @if (@User.Identity.IsAuthenticated)
-                        {
-                            <h4>@User.FindFirst("Username")?.Value</h4>
-                        }
+                        @*@if (@User.Identity.IsAuthenticated)
+                            {
+                                <h4>@User.FindFirst("Username")?.Value</h4>
+                            }*@
                     </div>
                 </form>
             </div>
@@ -87,7 +87,7 @@
                     @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
                     {<text>Trending</text>}
                 else
-                {<text>Similar Movies</text>}
+                {<text>Similar Results</text>}
                 </h3>
             </div>
             <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
@@ -96,6 +96,14 @@
                     {
                         <div class="card">
                             <div class="card-image">
+                                <div class="overlay">
+                                    <!-- Overlay content -->
+                                    <div class="image-container">
+                                        <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                    </div>
+                                    @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
+                                    <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                </div>
                                 <img src="@movie.poster_path_url" alt="Movie Poster" />
                             </div>
                             <div class="card-content">
@@ -118,6 +126,7 @@
                                                 <input type="hidden" name="title" value="@movie.title" />
                                                 <input type="hidden" name="overview" value="@movie.overview" />
                                                 <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                                <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
                                                 <button type="submit">Save</button>
                                             </form>
                                         }
@@ -152,6 +161,13 @@
                         {
                             <div class="card">
                                 <div class="card-image">
+                                    <div class="overlay">
+                                        <!-- Overlay content -->
+                                        <div class="image-container">
+                                            <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                        </div>
+                                        <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                    </div>
                                     <img src="@movie.poster_path_url" alt="Movie Poster" />
                                 </div>
                                 <div class="card-content">
@@ -174,6 +190,7 @@
                                                     <input type="hidden" name="title" value="@movie.title" />
                                                     <input type="hidden" name="overview" value="@movie.overview" />
                                                     <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                                    <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
                                                     <button type="submit">Save</button>
                                                 </form>
                                             }
@@ -204,6 +221,13 @@
                         {
                             <div class="card">
                                 <div class="card-image">
+                                    <div class="overlay">
+                                        <!-- Overlay content -->
+                                        <div class="image-container">
+                                            <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                        </div>
+                                        <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                    </div>
                                     <img src="@movie.poster_path_url" alt="Movie Poster" />
                                 </div>
                                 <div class="card-content">
@@ -226,6 +250,7 @@
                                                     <input type="hidden" name="title" value="@movie.title" />
                                                     <input type="hidden" name="overview" value="@movie.overview" />
                                                     <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                                    <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
                                                     <button type="submit">Save</button>
                                                 </form>
                                             }

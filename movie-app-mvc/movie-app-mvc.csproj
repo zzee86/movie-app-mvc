@@ -19,6 +19,7 @@
     <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="Views\Login\" />
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -28,5 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\js\" />
+    <Content Remove="wwwroot\Images\" />
   </ItemGroup>
 </Project>
