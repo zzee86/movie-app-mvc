@@ -181,8 +181,8 @@ nav {
     background-color: #1A1A1A;
 }
 
-    /* Previous Css*/
-    .card-container-full{
+/* Previous Css*/
+.card-container-full {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
     grid-gap: 20px;
@@ -201,9 +201,9 @@ nav {
 
 */
 
-    .card:last-child {
-        margin-right: 0;
-    }
+.card:last-child {
+    margin-right: 0;
+}
 
 .card-image img {
     width: 185px;
@@ -280,3 +280,311 @@ nav {
     .card-content button.saved {
         color: #FFE5E5;
     }
+
+
+/* Login Page */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+}
+
+p, span {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: black;
+    text-decoration: none;
+}
+
+main {
+    padding: 8px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+h4 {
+    color: white;
+}
+
+span {
+    color: white;
+}
+
+/* Navbar */
+header {
+    background-color: #2C2C2C;
+}
+
+nav {
+    overflow: hidden;
+    margin-right: 5em;
+    text-align: right; /* Aligns the navbar content to the right */
+}
+
+    nav a {
+        display: inline-block; /* Displays the navbar links horizontally */
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+        nav a:hover {
+            font-weight: bold;
+        }
+
+    nav .active {
+        font-weight: bold;
+    }
+
+.trending-movies {
+    margin-left: 2.5em;
+}
+
+.trending-text {
+    color: white;
+    font-size: 1.5em;
+    margin-bottom: 0;
+}
+
+.filters {
+    padding: 2.3em;
+}
+
+.search-right-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 3em;
+}
+
+.search-content {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+    .search-bar input[type="text"] {
+        width: 300px; /* Adjust the width as desired */
+        margin-right: 10px;
+    }
+
+.page-info {
+    margin-top: 10px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+    .pagination-container a {
+        display: inline-block;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: 18px;
+        color: white;
+        text-decoration: none;
+        border: 2px solid white;
+        border-radius: 4px;
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+
+    .pagination-container span {
+        display: inline-block;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: 18px;
+        color: white;
+        border: 2px solid white;
+        border-radius: 4px;
+        opacity: 0.3; /* To visually indicate disabled state */
+        cursor: not-allowed; /* To prevent clicking on disabled state */
+        margin-right: 1em;
+        margin-left: 1em;
+    }
+
+/* Layout */
+.movies-container {
+    overflow-x: auto;
+    margin: 1.5em 2em 2.5em 2em;
+}
+
+.card-container {
+    display: inline-flex;
+}
+
+.card {
+    width: 185px;
+    height: 359px;
+    border-radius: 3px;
+    margin-right: 1em;
+    display: flex;
+    flex-direction: column;
+    background-color: #1A1A1A;
+}
+
+    .card:last-child {
+        margin-right: 0;
+    }
+
+.card-image img {
+    width: 185px;
+    height: 240px;
+    object-fit: cover;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.card-content {
+    padding: 10px;
+    flex-grow: 1;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .card-content h2 {
+        font-size: 1rem;
+        margin: 0;
+        overflow: hidden;
+        color: white;
+    }
+
+.titleHolder {
+    height: 44px;
+    line-height: 22px;
+    width: 100%;
+}
+
+    .titleHolder h2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1rem;
+        margin: 0;
+        color: white;
+    }
+
+.card-content .button-container {
+    margin-top: 0 !important;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.card-content form .button-container {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.card-content form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.card-content button {
+    width: 169px;
+    height: 30px;
+    font-size: 1rem;
+    background-color: #2C2C2C;
+    color: #5899EF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+    .card-content button.saved {
+        color: #FFE5E5;
+    }
+
+/* Login Page */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #f8f8f8;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+.btn-primary {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+}
+
+    .btn-primary:hover {
+        background-color: #0069d9;
+    }
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
