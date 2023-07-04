@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using movie_app_mvc.Models;
 using System.Web;
+using Microsoft.EntityFrameworkCore;
 
 namespace movie_app_mvc.Controllers
 {
@@ -503,5 +504,50 @@ namespace movie_app_mvc.Controllers
 
             return View(movie);
         }
+
+
+
+
+        public ActionResult SavedMovieDetails(string title)
+        {
+            List<SavedMovie> movies = new List<SavedMovie>();
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM savedMovies WHERE title = @Title";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Title", title);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        SavedMovie movie = new SavedMovie
+                        {
+                            Id = reader.GetInt32("id"),
+                            Title = reader.GetString("title"),
+                            Overview = reader.GetString("overview"),
+                            Poster = reader.GetString("poster"),
+                            Rating = reader.GetDouble("rating")
+                        };
+
+                        movies.Add(movie);
+                    }
+                }
+            }
+
+            SavedMovie selectedMovie = movies.FirstOrDefault();
+
+            if (selectedMovie == null)
+            {
+                // Handle the case when no movie is found with the given title
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(selectedMovie);
+        }
+
     }
 }

@@ -92,20 +92,24 @@
             @foreach (var movie in Model)
             {
                 <div class="card">
-                    <div class="card-image">
-                        <div class="overlay">
-                            <!-- Overlay content -->
-                            <div class="image-container">
-                                <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                    <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
+                        <div class="card-image">
+                            <div class="overlay">
+                                <!-- Overlay content -->
+                                <div class="image-container">
+                                    <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                </div>
+                                <h2>@movie.Rating</h2>
                             </div>
-                            <h2>@movie.Rating</h2>
+                            <img src="@movie.Poster" alt="Movie Poster" />
                         </div>
-                        <img src="@movie.Poster" alt="Movie Poster" />
-                    </div>
+                    </a>
                     <div class="card-content">
-                        <div class="titleHolder">
-                            <h2>@movie.Title</h2>
-                        </div>
+                        <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
+                            <div class="titleHolder">
+                                <h2>@movie.Title</h2>
+                            </div>
+                        </a>
                         <div class="button-container">
                             <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                 <input type="hidden" name="title" value="@movie.Title" />
