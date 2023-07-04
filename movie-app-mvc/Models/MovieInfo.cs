@@ -31,6 +31,14 @@ namespace movie_app_mvc.Models
 
             public List<KnownFor> known_for { get; set; }
 
+
+
+
+            // For video
+            public string key { get; set; }
+
+            public string type { get; set; }
+
         }
 
 

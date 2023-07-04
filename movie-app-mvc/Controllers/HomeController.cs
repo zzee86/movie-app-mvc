@@ -487,14 +487,11 @@ namespace movie_app_mvc.Controllers
 
 
 
-        public async Task<ActionResult> MovieDetails(string title)
+        public async Task<ActionResult> MovieDetails(string title, int id)
         {
             string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
-            MovieInfo.Root movieDetails;
-
-            movieDetails = await FetchMovies(apiUrl);
-
-            MovieInfo.Result movie = movieDetails.results.FirstOrDefault(); // Get the first movie from the results (or null if no items)
+            MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
+            MovieInfo.Result movie = movieDetails.results.FirstOrDefault();
 
             if (movie == null)
             {
@@ -502,8 +499,19 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(movie);
+            string apiUrl2 = $"https://api.themoviedb.org/3/movie/{id.ToString()}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            MovieInfo.Root movieDetails2 = await FetchMovies(apiUrl2);
+            MovieInfo.Result movie2 = movieDetails2.results.FirstOrDefault();
+
+            ViewBag.testingID = id;
+            //movie2.key = "testing";
+
+            //ViewBag.movieKey = movie2?.key;
+
+            return View("~/Views/Home/MovieDetails.cshtml", movie);
         }
+
+
 
 
 
@@ -548,6 +556,5 @@ namespace movie_app_mvc.Controllers
 
             return View(selectedMovie);
         }
-
     }
 }

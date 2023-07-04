@@ -661,3 +661,9 @@ h2 {
     display: none;
     z-index: 9999;
 }
+
+
+.moviesDetailsContainer{
+    padding: 2em;
+    color:white;
+}
