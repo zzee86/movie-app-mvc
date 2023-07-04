@@ -499,20 +499,56 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            string apiUrl2 = $"https://api.themoviedb.org/3/movie/{id.ToString()}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-            MovieInfo.Root movieDetails2 = await FetchMovies(apiUrl2);
-            MovieInfo.Result movie2 = movieDetails2.results.FirstOrDefault();
+
+            string media_type = (movie.media_type == "movie") ? "movie" : "tv";
+
+
+            //string apiUrl2 = (media_type == "movie") ? $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/{seasonNumber}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+
+            string apiUrl2 = (media_type == "movie") ? $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+
+            VideoInfo.Root videoDetails = await FetchVideos(apiUrl2);
+            VideoInfo.Result video = videoDetails.results.FirstOrDefault(v => v.type.Equals("Trailer", StringComparison.OrdinalIgnoreCase));
+
 
             ViewBag.testingID = id;
-            //movie2.key = "testing";
 
-            //ViewBag.movieKey = movie2?.key;
+            ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
+
 
             return View("~/Views/Home/MovieDetails.cshtml", movie);
         }
 
 
 
+
+        private async Task<VideoInfo.Root> FetchVideos(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                var info = JsonConvert.DeserializeObject<VideoInfo.Root>(json);
+
+                return info;
+            }
+        }
+
+        //private async Task<TvShowDetails.Root> FetchTvShows(string url)
+        //{
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        var response = await client.GetAsync(url);
+        //        response.EnsureSuccessStatusCode();
+
+        //        var json = await response.Content.ReadAsStringAsync();
+        //        var info = JsonConvert.DeserializeObject<TvShowDetails.Root>(json);
+
+        //        return info;
+        //    }
+        //}
 
 
 
