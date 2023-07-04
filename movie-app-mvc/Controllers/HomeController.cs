@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using movie_app_mvc.Models;
+using System.Web;
 
 namespace movie_app_mvc.Controllers
 {
@@ -479,6 +480,28 @@ namespace movie_app_mvc.Controllers
                 int count = Convert.ToInt32(command.ExecuteScalar());
                 return count > 0;
             }
+        }
+
+
+
+
+
+        public async Task<ActionResult> MovieDetails(string title)
+        {
+            string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
+            MovieInfo.Root movieDetails;
+
+            movieDetails = await FetchMovies(apiUrl);
+
+            MovieInfo.Result movie = movieDetails.results.FirstOrDefault(); // Get the first movie from the results (or null if no items)
+
+            if (movie == null)
+            {
+                // Handle the case when no movie is found with the given title
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(movie);
         }
     }
 }

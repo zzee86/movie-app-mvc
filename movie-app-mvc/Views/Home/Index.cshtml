@@ -95,21 +95,27 @@
                     @foreach (var movie in Model.TrendingMovies)
                     {
                         <div class="card">
-                            <div class="card-image">
-                                <div class="overlay">
-                                    <!-- Overlay content -->
-                                    <div class="image-container">
-                                        <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+
+                            <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
+                                <div class="card-image">
+                                    <div class="overlay">
+                                        <!-- Overlay content -->
+                                        <div class="image-container">
+                                            <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                        </div>
+                                        @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
+                                        <h2>@Math.Round(movie.vote_average, 1)</h2>
                                     </div>
-                                    @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
-                                    <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                    <img src="@movie.poster_path_url" alt="Movie Poster" />
                                 </div>
-                                <img src="@movie.poster_path_url" alt="Movie Poster" />
-                            </div>
+                            </a>
                             <div class="card-content">
-                                <div class="titleHolder">
-                                    <h2>@movie.title</h2>
-                                </div>
+                                <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
+
+                                    <div class="titleHolder">
+                                        <h2>@movie.title</h2>
+                                    </div>
+                                </a>
                                 <div class="button-container">
                                     @if (User.Identity.IsAuthenticated)
                                     {
@@ -139,6 +145,7 @@
                                     }
                                 </div>
                             </div>
+
                         </div>
                     }
                 </div>
@@ -160,20 +167,25 @@
                         @foreach (var movie in Model.PopularMovies)
                         {
                             <div class="card">
-                                <div class="card-image">
-                                    <div class="overlay">
-                                        <!-- Overlay content -->
-                                        <div class="image-container">
-                                            <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
+                                    <div class="card-image">
+                                        <div class="overlay">
+                                            <!-- Overlay content -->
+                                            <div class="image-container">
+                                                <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                            </div>
+                                            <h2>@Math.Round(movie.vote_average, 1)</h2>
                                         </div>
-                                        <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                        <img src="@movie.poster_path_url" alt="Movie Poster" />
                                     </div>
-                                    <img src="@movie.poster_path_url" alt="Movie Poster" />
-                                </div>
+                                </a>
                                 <div class="card-content">
-                                    <div class="titleHolder">
-                                        <h2>@movie.title</h2>
-                                    </div>
+                                    <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
+
+                                        <div class="titleHolder">
+                                            <h2>@movie.title</h2>
+                                        </div>
+                                    </a>
                                     <div class="button-container">
                                         @if (User.Identity.IsAuthenticated)
                                         {
@@ -220,20 +232,26 @@
                         @foreach (var movie in Model.TopRatedMovies)
                         {
                             <div class="card">
-                                <div class="card-image">
-                                    <div class="overlay">
-                                        <!-- Overlay content -->
-                                        <div class="image-container">
-                                            <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
+
+                                    <div class="card-image">
+                                        <div class="overlay">
+                                            <!-- Overlay content -->
+                                            <div class="image-container">
+                                                <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                            </div>
+                                            <h2>@Math.Round(movie.vote_average, 1)</h2>
                                         </div>
-                                        <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                        <img src="@movie.poster_path_url" alt="Movie Poster" />
                                     </div>
-                                    <img src="@movie.poster_path_url" alt="Movie Poster" />
-                                </div>
+                                </a>
                                 <div class="card-content">
-                                    <div class="titleHolder">
-                                        <h2>@movie.title</h2>
-                                    </div>
+                                    <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
+
+                                        <div class="titleHolder">
+                                            <h2>@movie.title</h2>
+                                        </div>
+                                    </a>
                                     <div class="button-container">
                                         @if (User.Identity.IsAuthenticated)
                                         {
