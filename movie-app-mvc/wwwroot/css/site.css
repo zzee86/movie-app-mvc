@@ -390,14 +390,26 @@ h2 {
 /* Styles for the close button */
 #close-button {
     position: fixed;
-    top: 20px;
-    right: 20px;
     display: none;
     z-index: 9999;
+    top: 62px;
+    right: 218px;
 }
 
 
 .moviesDetailsContainer {
     padding: 2em;
     color: white;
+}
+
+.close-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    z-index: -1;
+    background-color: rgba(0, 0, 0, 0.7);
 }
