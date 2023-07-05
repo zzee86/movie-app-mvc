@@ -1,19 +1,9 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 html {
-    font-size: 14px;
+    font-size: 16px;
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-/*.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-*/
 html {
     position: relative;
     min-height: 100%;
@@ -49,6 +39,7 @@ h4 {
 span {
     color: white;
 }
+
 /* Navbar */
 header {
     background-color: #2C2C2C;
@@ -57,11 +48,12 @@ header {
 nav {
     overflow: hidden;
     margin-right: 5em;
-    text-align: right; /* Aligns the navbar content to the right */
+    text-align: right;
 }
 
     nav a {
-        display: inline-block; /* Displays the navbar links horizontally */
+        /* Displays the navbar links horizontally */
+        display: inline-block;
         color: white;
         text-align: center;
         padding: 14px 16px;
@@ -111,7 +103,7 @@ nav {
 
 
     .search-bar input[type="text"] {
-        width: 300px; /* Adjust the width as desired */
+        width: 300px;
         margin-right: 10px;
     }
 
@@ -152,8 +144,10 @@ nav {
         color: white;
         border: 2px solid white;
         border-radius: 4px;
-        opacity: 0.3; /* To visually indicate disabled state */
-        cursor: not-allowed; /* To prevent clicking on disabled state */
+        /* Darken to show its disabled */
+        opacity: 0.3;
+        /* Prevent clicking on disabled state */
+        cursor: not-allowed;
         margin-right: 1em;
         margin-left: 1em;
     }
@@ -162,55 +156,20 @@ nav {
 /* Layout */
 .movies-container {
     overflow-x: auto;
-    /*    white-space: nowrap;*/
     margin: 1.5em 2em 2.5em 2em;
-    /*    width: 95%;*/
 }
 
 .card-container {
-    display: inline-flex; /* Change to inline-flex to ensure all cards stay in a single row */
+    /* Keep cards on single row */
+    display: inline-flex;
 }
 
-.card {
-    width: 185px;
-    height: 359px;
-    border-radius: 3px;
-    margin-right: 1em; /* Add margin-right to create spacing between cards */
-    display: flex;
-    flex-direction: column;
-    background-color: #1A1A1A;
-}
 
-/* Previous Css*/
 .card-container-full {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
     grid-gap: 20px;
     margin: 2em 2em;
-}
-
-/*.card {
-    width: 185px;
-    height: 359px;
-    border-radius: 3px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    background-color: #1A1A1A;
-}
-
-*/
-
-.card:last-child {
-    margin-right: 0;
-}
-
-.card-image img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
 }
 
 .card-image {
@@ -219,7 +178,8 @@ nav {
 
 .overlay {
     position: absolute;
-    background-color: rgba(44, 44, 44, 0.8); /* Translucent dark gray background */
+    /* Darken background */
+    background-color: rgba(44, 44, 44, 0.8);
     color: white;
     font-weight: bold;
     padding: 1px 1px 1px 5px;
@@ -252,230 +212,7 @@ nav {
         object-fit: contain;
     }
 
-.card-content {
-    padding: 10px;
-    flex-grow: 1;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
 
-    .card-content h2 {
-        font-size: 1rem;
-        margin: 0;
-        overflow: hidden;
-        color: white;
-    }
-
-.titleHolder {
-    height: 44px;
-    line-height: 22px;
-    width: 100%;
-}
-
-    .titleHolder h2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 1rem;
-        margin: 0;
-        color: white;
-    }
-
-.card-content .button-container {
-    margin-top: 0 !important;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 0; /* Remove the margin-bottom */
-}
-
-.card-content form .button-container {
-    margin-top: 0;
-    margin-bottom: 0; /* Remove the margin-bottom */
-}
-
-.card-content form {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 0; /* Remove the margin-bottom */
-}
-
-.card-content button {
-    width: 169px;
-    height: 30px;
-    font-size: 1rem;
-    background-color: #2C2C2C;
-    color: #5899EF;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 15px;
-    margin-bottom: 0; /* Remove the margin-bottom */
-}
-
-    .card-content button.saved {
-        color: #FFE5E5;
-    }
-
-
-/* Login Page */
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roboto', sans-serif;
-}
-
-p, span {
-    font-family: 'Roboto', sans-serif;
-}
-
-body {
-    margin: 0;
-    background-color: #191919;
-    text-decoration: none;
-}
-
-main {
-    padding: 8px;
-}
-
-a {
-    color: white;
-    text-decoration: none;
-}
-
-h4 {
-    color: white;
-}
-
-span {
-    color: white;
-}
-
-/* Navbar */
-header {
-    background-color: #2C2C2C;
-}
-
-nav {
-    overflow: hidden;
-    margin-right: 5em;
-    text-align: right; /* Aligns the navbar content to the right */
-}
-
-    nav a {
-        display: inline-block; /* Displays the navbar links horizontally */
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        font-size: 17px;
-    }
-
-        nav a:hover {
-            font-weight: bold;
-        }
-
-    nav .active {
-        font-weight: bold;
-    }
-
-.trending-movies {
-    margin-left: 2.5em;
-}
-
-.trending-text {
-    color: white;
-    font-size: 1.5em;
-    margin-bottom: 0;
-}
-
-.filters {
-    padding: 2.3em;
-}
-
-.search-right-container {
-    display: flex;
-    justify-content: flex-end;
-    padding-right: 3em;
-}
-
-.search-content {
-    display: flex;
-    align-items: center;
-}
-
-.search-bar {
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-}
-
-    .search-bar input[type="text"] {
-        width: 300px; /* Adjust the width as desired */
-        margin-right: 10px;
-    }
-
-.page-info {
-    margin-top: 10px;
-}
-
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
-    .pagination-container a {
-        display: inline-block;
-        text-align: center;
-        padding: 8px 12px;
-        font-size: 18px;
-        color: white;
-        text-decoration: none;
-        border: 2px solid white;
-        border-radius: 4px;
-        margin-right: 1em;
-        margin-left: 1em;
-    }
-
-    .pagination-container span {
-        display: inline-block;
-        text-align: center;
-        padding: 8px 12px;
-        font-size: 18px;
-        color: white;
-        border: 2px solid white;
-        border-radius: 4px;
-        opacity: 0.3; /* To visually indicate disabled state */
-        cursor: not-allowed; /* To prevent clicking on disabled state */
-        margin-right: 1em;
-        margin-left: 1em;
-    }
-
-/* Layout */
-.movies-container {
-    overflow-x: auto;
-    margin: 1.5em 2em 2.5em 2em;
-}
-
-.card-container {
-    display: inline-flex;
-}
 
 .card {
     width: 185px;
@@ -568,7 +305,6 @@ nav {
     }
 
 /* Login Page */
-
 .container {
     display: flex;
     flex-direction: column;
@@ -661,7 +397,7 @@ h2 {
 }
 
 
-.moviesDetailsContainer{
+.moviesDetailsContainer {
     padding: 2em;
-    color:white;
+    color: white;
 }
