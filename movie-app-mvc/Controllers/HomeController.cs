@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using movie_app_mvc.Models;
 using System.Web;
 using Microsoft.EntityFrameworkCore;
+using static movie_app_mvc.Models.TvShowDetails;
 
 namespace movie_app_mvc.Controllers
 {
@@ -523,17 +524,37 @@ namespace movie_app_mvc.Controllers
 
             if (media_type == "tv")
             {
-                string tvShowDetailsUrl = $"https://api.themoviedb.org/3/tv/94664?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+                string tvShowDetailsUrl = $"https://api.themoviedb.org/3/tv/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
                 TvShowDetails.Root tvShowDetails = await FetchTvShows(tvShowDetailsUrl);
 
                 //TvShowDetails.Season season = tvShowDetails.seasons.FirstOrDefault();
 
+                if (tvShowDetails != null)
+                {
+                    TvShowDetails.LastEpisodeToAir season = tvShowDetails.last_episode_to_air;
 
-                TvShowDetails.LastEpisodeToAir season = tvShowDetails.last_episode_to_air;
+                    ViewBag.EpisodeRuntime = (season != null) ? season.runtime.Value : 24;
 
-                ViewBag.SeasonNumber = (season.season_number != null) ? season.season_number : 55;
-                ViewBag.SeasonRuntime = (season.runtime != null) ? season.runtime : 24;
+                    var seasonInfo = tvShowDetails.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
+                    int episodeCount = seasonInfo?.episode_count ?? 0;
+                    int seasonCount = seasonInfo?.season_number ?? 0;
 
+
+                    int episodeTotalCount = tvShowDetails.seasons.Sum(s => s.episode_count);
+                    ViewBag.episodeTotalCount = episodeTotalCount;
+
+
+
+                    ViewBag.SeasonNumber = seasonCount;
+
+                    ViewBag.SeasonEpisodeCount = episodeCount;
+                }
+                else
+                {
+                    ViewBag.SeasonNumber = 0;
+                    ViewBag.SeasonRuntime = 0;
+                    ViewBag.SeasonEpisodeCount = 0;
+                }
             }
 
 
@@ -543,10 +564,6 @@ namespace movie_app_mvc.Controllers
 
             return View("~/Views/Home/MovieDetails.cshtml", movie);
         }
-
-
-
-
 
         private async Task<VideoInfo.Root> FetchVideos(string url)
         {

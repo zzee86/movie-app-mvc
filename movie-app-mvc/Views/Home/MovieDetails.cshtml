@@ -20,8 +20,13 @@
 
     @if (@ViewBag.Media_Key == "tv")
     {
-        <h1>Season: @ViewBag.SeasonNumber</h1>
-        <h1>Runtime: @ViewBag.SeasonRuntime</h1>
+        <h1>Seasons: @ViewBag.SeasonNumber</h1>
+
+        <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
+
+        <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
+
+        <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
     }
 
 

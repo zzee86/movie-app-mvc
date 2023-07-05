@@ -93,33 +93,33 @@
             {
                 <div class="card">
                     <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
-                        <div class="card-image">
-                            <div class="overlay">
-                                <!-- Overlay content -->
-                                <div class="image-container">
-                                    <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                            <div class="card-image">
+                                <div class="overlay">
+                                    <!-- Overlay content -->
+                                    <div class="image-container">
+                                        <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                    </div>
+                                    <h2>@movie.Rating</h2>
                                 </div>
-                                <h2>@movie.Rating</h2>
-                            </div>
-                            <img src="@movie.Poster" alt="Movie Poster" />
-                        </div>
-                    </a>
-                    <div class="card-content">
-                        <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
-                            <div class="titleHolder">
-                                <h2>@movie.Title</h2>
+                                <img src="@movie.Poster" alt="Movie Poster" />
                             </div>
                         </a>
-                        <div class="button-container">
-                            <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                <input type="hidden" name="title" value="@movie.Title" />
-                                <input type="hidden" name="overview" value="@movie.Overview" />
-                                <input type="hidden" name="poster" value="@movie.Poster" />
-                                <button type="submit" class="saved">Remove</button>
-                            </form>
+                        <div class="card-content">
+                            <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
+                                <div class="titleHolder">
+                                    <h2>@movie.Title</h2>
+                                </div>
+                            </a>
+                            <div class="button-container">
+                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                    <input type="hidden" name="title" value="@movie.Title" />
+                                    <input type="hidden" name="overview" value="@movie.Overview" />
+                                    <input type="hidden" name="poster" value="@movie.Poster" />
+                                    <button type="submit" class="saved">Remove</button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-                </div>
+</div>
             }
         </div>
 

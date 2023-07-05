@@ -19,7 +19,7 @@ namespace movie_app_mvc.Models
             public string air_date { get; set; }
             public int episode_number { get; set; }
             public string production_code { get; set; }
-            public int runtime { get; set; }
+            public int? runtime { get; set; }
             public int season_number { get; set; }
             public int show_id { get; set; }
             public string still_path { get; set; }
@@ -43,7 +43,7 @@ namespace movie_app_mvc.Models
             public string air_date { get; set; }
             public int episode_number { get; set; }
             public string production_code { get; set; }
-            public int runtime { get; set; }
+            public int? runtime { get; set; }
             public int season_number { get; set; }
             public int show_id { get; set; }
             public string still_path { get; set; }
