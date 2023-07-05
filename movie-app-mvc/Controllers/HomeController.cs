@@ -499,25 +499,51 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-
             string media_type = (movie.media_type == "movie") ? "movie" : "tv";
-
-
-            //string apiUrl2 = (media_type == "movie") ? $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/{seasonNumber}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-
-            string apiUrl2 = (media_type == "movie") ? $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-
+            string apiUrl2 = $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
             VideoInfo.Root videoDetails = await FetchVideos(apiUrl2);
             VideoInfo.Result video = videoDetails.results.FirstOrDefault(v => v.type.Equals("Trailer", StringComparison.OrdinalIgnoreCase));
 
+            //if (media_type == "tv")
+            //{
+            //    string tvShowDetailsUrl = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            //    TvShowDetails.Root tvShowDetails = await FetchTvShows(tvShowDetailsUrl);
 
-            ViewBag.testingID = id;
+            //    if (tvShowDetails != null)
+            //    {
+            //        TvShowDetails.Season season = tvShowDetails.seasons.FirstOrDefault();
+            //        ViewBag.SeasonNumberValue = season?.season_number;
+            //    }
+            //    else
+            //    {
+            //        ViewBag.SeasonNumberValue = 50; // Set a default value if no seasons are found
+            //    }
+            //}
 
+
+            if (media_type == "tv")
+            {
+                string tvShowDetailsUrl = $"https://api.themoviedb.org/3/tv/94664?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+                TvShowDetails.Root tvShowDetails = await FetchTvShows(tvShowDetailsUrl);
+
+                //TvShowDetails.Season season = tvShowDetails.seasons.FirstOrDefault();
+
+
+                TvShowDetails.LastEpisodeToAir season = tvShowDetails.last_episode_to_air;
+
+                ViewBag.SeasonNumber = (season.season_number != null) ? season.season_number : 55;
+                ViewBag.SeasonRuntime = (season.runtime != null) ? season.runtime : 24;
+
+            }
+
+
+            ViewBag.Media_Key = media_type;
+            ViewBag.movieID = id;
             ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
-
 
             return View("~/Views/Home/MovieDetails.cshtml", movie);
         }
+
 
 
 
@@ -536,19 +562,20 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        //private async Task<TvShowDetails.Root> FetchTvShows(string url)
-        //{
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        var response = await client.GetAsync(url);
-        //        response.EnsureSuccessStatusCode();
+        private async Task<TvShowDetails.Root> FetchTvShows(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-        //        var json = await response.Content.ReadAsStringAsync();
-        //        var info = JsonConvert.DeserializeObject<TvShowDetails.Root>(json);
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(json); // Print the JSON response to the console
+                var info = JsonConvert.DeserializeObject<TvShowDetails.Root>(json);
 
-        //        return info;
-        //    }
-        //}
+                return info;
+            }
+        }
 
 
 

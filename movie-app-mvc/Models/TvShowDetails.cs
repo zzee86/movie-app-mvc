@@ -14,7 +14,7 @@ namespace movie_app_mvc.Models
             public int id { get; set; }
             public string name { get; set; }
             public string overview { get; set; }
-            public int vote_average { get; set; }
+            public double vote_average { get; set; }
             public int vote_count { get; set; }
             public string air_date { get; set; }
             public int episode_number { get; set; }
@@ -38,7 +38,7 @@ namespace movie_app_mvc.Models
             public int id { get; set; }
             public string name { get; set; }
             public string overview { get; set; }
-            public int vote_average { get; set; }
+            public double vote_average { get; set; }
             public int vote_count { get; set; }
             public string air_date { get; set; }
             public int episode_number { get; set; }
@@ -117,8 +117,5 @@ namespace movie_app_mvc.Models
             public string iso_639_1 { get; set; }
             public string name { get; set; }
         }
-
-
     }
 }
-
