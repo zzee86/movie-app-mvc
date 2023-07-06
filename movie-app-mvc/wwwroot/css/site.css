@@ -413,3 +413,41 @@ h2 {
     z-index: -1;
     background-color: rgba(0, 0, 0, 0.7);
 }
+
+
+
+/* Details Page Design */
+.hero-section {
+    position: relative;
+    width: 100%;
+    height: 50%;
+}
+
+.detail-card {
+    position: absolute;
+    top: 50%;
+    left: 10%; 
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 250px;  
+    height: auto;  
+}
+
+.detail-card-image img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+    border-radius:10px;
+}
+
+
+.media_background_image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+

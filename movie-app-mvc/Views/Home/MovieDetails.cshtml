@@ -9,7 +9,26 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
+@Html.Partial("_NavBar")
+
+
+<div class="hero-section">
+
+    <div class="detail-card">
+            <div class="detail-card-image">
+                <img src="@Model.poster_path_url" alt="Movie Poster" />
+            </div>
+    </div>
+
+
+    <div class="background-image-holder">
+        <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+    </div>
+
+</div>
+
 <div class="moviesDetailsContainer">
+
 
     <h1>@Model.title</h1>
     <h1>@Model.overview</h1>
