@@ -9,23 +9,26 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
+
 @Html.Partial("_NavBar")
+
 
 
 <div class="hero-section">
 
     <div class="detail-card">
-            <div class="detail-card-image">
-                <img src="@Model.poster_path_url" alt="Movie Poster" />
-            </div>
+        <div class="detail-card-image">
+            <img src="@Model.poster_path_url" alt="Movie Poster" />
+        </div>
     </div>
+    <div class="banner-dark-overlay">
 
-
-    <div class="background-image-holder">
-        <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+        <div class="background-image-holder">
+            <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+        </div>
     </div>
-
 </div>
+
 
 <div class="moviesDetailsContainer">
 
@@ -74,6 +77,10 @@
 
 </div>
 
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
 
 <script>
