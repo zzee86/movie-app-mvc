@@ -502,24 +502,31 @@ h2 {
         text-align: left;
     }
 
-    /* Genre List */
+/* Genre List */
 .genre-list {
     display: flex;
-    align-items: center; /* Align items vertically */
+    /* Align items vertically */
+    align-items: center;
 }
 
 .genre-item {
     margin-right: 2px;
+    margin-top: 10px;
 }
 
 .genre-list .genre-item:first-child {
-    margin-left: 0; /* Remove the left margin for the first genre */
+    margin-left: 0;
 }
 
 .genre-list .comma {
     margin-right: 5px;
+    margin-bottom: 10px;
 }
 
     .genre-list .comma::before {
         content: ", ";
     }
+
+.genre-title {
+    margin-bottom: 0;
+}

@@ -99,14 +99,10 @@ namespace movie_app_mvc.Models
             public int vote_count { get; set; }
 
 
-            //public Root()
-            //{
+            // From movie version
+            public string release_date { get; set; }
+            public int runtime { get; set; }
 
-            //    foreach(Genre genre in genres)
-            //    {
-                    
-            //    }
-            //}
         }
 
         public class Season

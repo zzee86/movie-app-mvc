@@ -19,26 +19,6 @@ namespace movie_app_mvc.Controllers
         private const int PageSize = 20;
 
 
-
-        //public async Task<IActionResult> Index(string searchQuery, int page = 1)
-        //{
-        //    // Get the user ID of the logged-in user
-        //    string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
-
-        //    // Retrieve the user ID from the loginDetails table
-        //    string testing = GetUserIdByEmail(email);
-
-        //    if (string.IsNullOrEmpty(searchQuery))
-        //    {
-        //        return await LoadMovies(page, testing);
-        //        return await LoadPopularMovies(page, testing);
-        //    }
-        //    else
-        //    {
-        //        return await SearchMovies(searchQuery, testing,  page);
-        //    }
-        //}
-
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
             // Get the user ID of the logged-in user
@@ -74,9 +54,6 @@ namespace movie_app_mvc.Controllers
 
             return View(viewModel);
         }
-
-
-
 
 
         public async Task<List<MovieInfo.Result>> LoadMovies(int page, string userID)
@@ -136,27 +113,6 @@ namespace movie_app_mvc.Controllers
             return null;
         }
 
-
-        //public async Task<IActionResult> LoadPopularMovies(int page, string userID)
-        //{
-        //    string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
-        //    MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
-
-        //    if (movieInfo != null)
-        //    {
-        //        List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
-
-        //        ViewBag.CurrentPage = page;
-        //        ViewBag.TotalPages = movieInfo.total_pages;
-        //        //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
-
-
-        //        return View(movieResults);
-        //    }
-
-        //    return View("Index");
-        //}
-
         private async Task<MovieInfo.Root> FetchMovies(string url)
         {
             using (HttpClient client = new HttpClient())
@@ -171,36 +127,6 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        //private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
-        //{
-        //    List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
-
-        //    foreach (var movie in results)
-        //    {
-        //        if (string.IsNullOrEmpty(movie.title))
-        //        {
-        //            // Use the name property if title is empty
-        //            movie.title = movie.name;
-        //        }
-
-        //        if (movie.known_for != null && movie.known_for.Count > 0)
-        //        {
-        //            movie.title = movie.known_for[0].title;
-        //            movie.poster_path = movie.known_for[0].poster_path;
-        //        }
-
-        //        //if (string.IsNullOrEmpty(movie.poster_path) && movie.known_for != null && movie.known_for.Count > 0)
-        //        //{
-        //        //    movie.poster_path = movie.known_for[0].poster_path;
-        //        //}
-
-        //        movie.IsSaved = MovieIsSaved(movie.title);
-
-        //        movieResults.Add(movie);
-        //    }
-
-        //    return movieResults;
-        //}
         private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
@@ -237,11 +163,6 @@ namespace movie_app_mvc.Controllers
 
             return movieResults;
         }
-
-
-
-
-
 
 
         private async Task<List<MovieInfo.Result>> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
@@ -490,6 +411,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
+            // Get details on the movie
             string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
             MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
             MovieInfo.Result movie = movieDetails.results.FirstOrDefault();
@@ -500,72 +422,53 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-
+            // Get trailer
             string media_type = (movie.media_type == "movie") ? "movie" : "tv";
             string apiUrl2 = $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
             VideoInfo.Root videoDetails = await FetchVideos(apiUrl2);
             VideoInfo.Result video = videoDetails.results.FirstOrDefault(v => v.type.Equals("Trailer", StringComparison.OrdinalIgnoreCase));
 
-            //if (media_type == "tv")
-            //{
-            //    string tvShowDetailsUrl = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-            //    TvShowDetails.Root tvShowDetails = await FetchTvShows(tvShowDetailsUrl);
 
-            //    if (tvShowDetails != null)
-            //    {
-            //        TvShowDetails.Season season = tvShowDetails.seasons.FirstOrDefault();
-            //        ViewBag.SeasonNumberValue = season?.season_number;
-            //    }
-            //    else
-            //    {
-            //        ViewBag.SeasonNumberValue = 50; // Set a default value if no seasons are found
-            //    }
-            //}
+            // Main content on details page
+            string movie_tv_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4"; ;
 
+            TvShowDetails.Root movie_tv_details = await FetchTvShows(movie_tv_url);
 
-            if (media_type == "tv")
+            if (movie_tv_details != null)
             {
-                string tvShowDetailsUrl = $"https://api.themoviedb.org/3/tv/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-                TvShowDetails.Root tvShowDetails = await FetchTvShows(tvShowDetailsUrl);
-
-                //TvShowDetails.Season season = tvShowDetails.seasons.FirstOrDefault();
-
-                if (tvShowDetails != null)
+                if (media_type == "tv")
                 {
-                    TvShowDetails.LastEpisodeToAir season = tvShowDetails.last_episode_to_air;
-                    List<string> genres = tvShowDetails.genres.Select(g => g.name).ToList();
-
+                    TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
                     ViewBag.EpisodeRuntime = (season != null) ? season.runtime.Value : 24;
 
-                    var seasonInfo = tvShowDetails.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
+                    var seasonInfo = movie_tv_details.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
                     int episodeCount = seasonInfo?.episode_count ?? 0;
                     int seasonCount = seasonInfo?.season_number ?? 0;
 
 
-                    int episodeTotalCount = tvShowDetails.seasons.Sum(s => s.episode_count);
-                    ViewBag.episodeTotalCount = episodeTotalCount;
-
-
-
-                    ViewBag.SeasonNumber = seasonCount;
-
-                    ViewBag.SeasonEpisodeCount = episodeCount;
-                    ViewBag.SeasonAirDate = seasonInfo?.air_date;
-                    ViewBag.SeasonRuntime = season?.runtime;
-                    ViewBag.Genres = genres;
-
+                    int episodeTotalCount = movie_tv_details.seasons.Sum(s => s.episode_count);
+                    ViewBag.episodeTotalCount = (episodeTotalCount != null) ? episodeTotalCount : 0;
+                    ViewBag.SeasonNumber = (seasonCount != null) ? seasonCount : 1;
+                    ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
+                    ViewBag.SeasonAirDate = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
+                    ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
                 }
                 else
                 {
-                    ViewBag.SeasonNumber = 0;
-                    ViewBag.SeasonRuntime = 0;
-                    ViewBag.SeasonEpisodeCount = 0;
-                    ViewBag.SeasonAirDate = 0;
-                    ViewBag.Genres = new List<string> { "Unknown" };
+
+                    ViewBag.ReleaseDate = movie_tv_details.release_date;
+                    ViewBag.Runtime = movie_tv_details.runtime;
 
                 }
+
+                // Common between the media types
+                List<string> genres = movie_tv_details.genres.Select(genre => genre.name).ToList();
+
+                ViewBag.Genres = genres;
+
             }
 
+            // Developer use
             ViewBag.ReleaseDate = movie.release_date;
             ViewBag.Genre = movie.genre_ids;
 
