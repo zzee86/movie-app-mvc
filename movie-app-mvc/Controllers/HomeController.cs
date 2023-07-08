@@ -532,6 +532,7 @@ namespace movie_app_mvc.Controllers
                 if (tvShowDetails != null)
                 {
                     TvShowDetails.LastEpisodeToAir season = tvShowDetails.last_episode_to_air;
+                    //TvShowDetails.Genre seasonGenre = tvShowDetails.genres;
 
                     ViewBag.EpisodeRuntime = (season != null) ? season.runtime.Value : 24;
 
@@ -548,16 +549,26 @@ namespace movie_app_mvc.Controllers
                     ViewBag.SeasonNumber = seasonCount;
 
                     ViewBag.SeasonEpisodeCount = episodeCount;
+                    ViewBag.SeasonAirDate = seasonInfo?.air_date;
+                    ViewBag.SeasonRuntime = season?.runtime;
+                    ViewBag.Genre = tvShowDetails.genres;
+
                 }
                 else
                 {
                     ViewBag.SeasonNumber = 0;
                     ViewBag.SeasonRuntime = 0;
                     ViewBag.SeasonEpisodeCount = 0;
+                    ViewBag.SeasonAirDate = 0;
+                    ViewBag.Genre = "unknown";
+
                 }
             }
 
+            ViewBag.ReleaseDate = movie.release_date;
+            ViewBag.Genre = movie.genre_ids;
 
+            ViewBag.Backup_Title = title;
             ViewBag.Media_Key = media_type;
             ViewBag.movieID = id;
             ViewBag.MovieKey = (video != null) ? video.key : "unavailable";

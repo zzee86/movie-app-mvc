@@ -21,6 +21,31 @@
             <img src="@Model.poster_path_url" alt="Movie Poster" />
         </div>
     </div>
+    <div class="detail-information">
+
+        @if (string.IsNullOrEmpty(@Model.title))
+        {
+            <h3>@ViewBag.Backup_Title</h3>
+        }
+        else
+        {
+            <h3>@Model.title</h3>
+        }
+
+        @if (@ViewBag.Media_Key == "tv")
+        {
+            <h3>@ViewBag.SeasonNumber</h3>
+            <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
+            <h3>@ViewBag.EpisodeRuntime Minute Runtime</h3>
+        }
+
+
+        <h3>@ViewBag.SeasonAirDate</h3>
+        <h3>@ViewBag.SeasonRuntime</h3>
+
+        <h3>@ViewBag.Genre</h3>
+    </div>
+
     <div class="banner-dark-overlay">
 
         <div class="background-image-holder">

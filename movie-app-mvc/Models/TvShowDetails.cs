@@ -97,6 +97,16 @@ namespace movie_app_mvc.Models
             public string type { get; set; }
             public double vote_average { get; set; }
             public int vote_count { get; set; }
+
+
+            //public Root()
+            //{
+
+            //    foreach(Genre genre in genres)
+            //    {
+                    
+            //    }
+            //}
         }
 
         public class Season
