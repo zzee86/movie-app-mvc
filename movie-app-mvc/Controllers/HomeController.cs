@@ -500,6 +500,7 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+
             string media_type = (movie.media_type == "movie") ? "movie" : "tv";
             string apiUrl2 = $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
             VideoInfo.Root videoDetails = await FetchVideos(apiUrl2);
@@ -532,7 +533,7 @@ namespace movie_app_mvc.Controllers
                 if (tvShowDetails != null)
                 {
                     TvShowDetails.LastEpisodeToAir season = tvShowDetails.last_episode_to_air;
-                    //TvShowDetails.Genre seasonGenre = tvShowDetails.genres;
+                    List<string> genres = tvShowDetails.genres.Select(g => g.name).ToList();
 
                     ViewBag.EpisodeRuntime = (season != null) ? season.runtime.Value : 24;
 
@@ -551,7 +552,7 @@ namespace movie_app_mvc.Controllers
                     ViewBag.SeasonEpisodeCount = episodeCount;
                     ViewBag.SeasonAirDate = seasonInfo?.air_date;
                     ViewBag.SeasonRuntime = season?.runtime;
-                    ViewBag.Genre = tvShowDetails.genres;
+                    ViewBag.Genres = genres;
 
                 }
                 else
@@ -560,7 +561,7 @@ namespace movie_app_mvc.Controllers
                     ViewBag.SeasonRuntime = 0;
                     ViewBag.SeasonEpisodeCount = 0;
                     ViewBag.SeasonAirDate = 0;
-                    ViewBag.Genre = "unknown";
+                    ViewBag.Genres = new List<string> { "Unknown" };
 
                 }
             }
