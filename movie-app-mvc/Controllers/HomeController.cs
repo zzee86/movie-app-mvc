@@ -11,9 +11,9 @@ using System.Web;
 using Microsoft.EntityFrameworkCore;
 using static movie_app_mvc.Models.TvShowDetails;
 using System.Net;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using ColorThiefDotNet;
+using System.Drawing;
+
 
 namespace movie_app_mvc.Controllers
 {
@@ -456,10 +456,6 @@ namespace movie_app_mvc.Controllers
                     ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
                     ViewBag.SeasonAirDate = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
                     ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
-
-
-                    string posterUrl = movie.poster_path_url; // Replace this with the actual property containing the poster URL
-                    SaveMoviePosterToDatabase(posterUrl);
                 }
                 else
                 {
@@ -474,6 +470,10 @@ namespace movie_app_mvc.Controllers
 
                 ViewBag.Genres = genres;
 
+
+                ViewBag.CallMethod = "SaveMoviePosterToDatabase method called";
+                string posterUrl = movie.poster_path_url; // Replace this with the actual property containing the poster URL
+                SaveMoviePosterToDatabase(posterUrl);
             }
 
             // Developer use
@@ -489,43 +489,87 @@ namespace movie_app_mvc.Controllers
         }
 
 
+
         private void SaveMoviePosterToDatabase(string posterUrl)
         {
-
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
+
+                // Insert the poster URL into the database
+                string query = "INSERT INTO tmpMoviePoster (poster) VALUES (@Poster)";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Poster", posterUrl);
+                command.ExecuteNonQuery();
+
+                // Get the inserted row's ID
+                long insertedId = command.LastInsertedId;
 
                 // Download the poster image from the URL
                 using (var webClient = new WebClient())
                 {
                     byte[] imageData = webClient.DownloadData(posterUrl);
-                    using (var image = Image.Load<Rgba32>(imageData))
+                    using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
                     {
-                        // Resize the image
-                        const int MaxImageWidth = 800;
-                        if (image.Width > MaxImageWidth)
-                        {
-                            image.Mutate(x => x.Resize(MaxImageWidth, 0));
-                        }
-
                         // Extract the dominant color from the poster image
                         var pixel = image[0, 0];
-                        string dominantColorCode = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
+                        string dominantColor = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
 
-                        ViewBag.DominantColor = (string.IsNullOrEmpty(dominantColorCode)) ? "empty" : dominantColorCode;
+                        // Update the dominant color in the database
+                        string updateQuery = "UPDATE tmpMoviePoster SET dominantColor = @DominantColor WHERE id = @Id";
+                        MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection);
+                        updateCommand.Parameters.AddWithValue("@DominantColor", dominantColor);
+                        updateCommand.Parameters.AddWithValue("@Id", insertedId);
+                        updateCommand.ExecuteNonQuery();
 
-                        string dominantColor = $"#{dominantColorCode}";
-
-                        string query = "INSERT INTO tmpMoviePoster (poster, dominantColor) VALUES (@Poster, @DominantColor)";
-                        MySqlCommand command = new MySqlCommand(query, connection);
-                        command.Parameters.AddWithValue("@Poster", posterUrl);
-                        command.Parameters.AddWithValue("@DominantColor", dominantColor);
-                        command.ExecuteNonQuery();
+                        // Store the dominant color in the ViewBag
+                        ViewBag.DominantColor = dominantColor;
                     }
                 }
             }
         }
+
+
+
+
+        //private void SaveMoviePosterToDatabase(string posterUrl)
+        //{
+        //    using (MySqlConnection connection = new MySqlConnection(connectionString))
+        //    {
+        //        connection.Open();
+
+        //        ViewBag.BaseUrl1 = posterUrl;
+
+        //        // Download the poster image from the URL
+        //        using (var webClient = new WebClient())
+        //        {
+        //            byte[] imageData = webClient.DownloadData(posterUrl);
+        //            using (var memoryStream = new MemoryStream(imageData))
+        //            {
+        //                using (var image = System.Drawing.Image.FromStream(memoryStream))
+        //                {
+        //                    // Extract the dominant color from the poster image
+        //                    var bitmap = new Bitmap(image);
+        //                    var pixel = bitmap.GetPixel(0, 0);
+        //                    string dominantColor = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
+
+        //                    // Save the poster URL and dominant color to the tmpMoviePoster table
+        //                    string query = "INSERT INTO tmpMoviePoster (poster, dominantColor) VALUES (@Poster, @DominantColor)";
+        //                    MySqlCommand command = new MySqlCommand(query, connection);
+        //                    command.Parameters.AddWithValue("@Poster", posterUrl);
+        //                    command.Parameters.AddWithValue("@DominantColor", dominantColor);
+        //                    command.ExecuteNonQuery();
+
+
+        //                    ViewBag.BaseUrl = posterUrl;
+        //                    ViewBag.DominantColor = dominantColor;
+
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
 
 
         private async Task<VideoInfo.Root> FetchVideos(string url)

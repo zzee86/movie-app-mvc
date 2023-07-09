@@ -25,9 +25,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.8" />
     <PackageReference Include="MySql.Data" Version="8.0.33" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+    <PackageReference Include="ksemenenko.ColorThief" Version="1.1.1.4" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\js\" />
