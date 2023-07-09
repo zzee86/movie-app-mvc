@@ -21,6 +21,9 @@
 <h4>Poster Url: @ViewBag.PosterURL</h4>
 
 
+<h4>DominantColorTransparency: @ViewBag.DominantColorTransparency</h4>
+
+
 
 
 
@@ -78,8 +81,16 @@
 
     </div>
 
-    <div class="background-image-holder" style="background-color: @ViewBag.DominantColor;">
+    @*<div class="background-image-holder dominant" style="background-color: @ViewBag.DominantColor;">*@
+    <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
+        <p>1</p>
+    </div>
+
+    <div class="background-image-holder">
+
         <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+
+
     </div>
 </div>
 

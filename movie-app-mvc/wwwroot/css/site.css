@@ -427,22 +427,30 @@ h2 {
     height: 50%;
 }
 
-.banner-dark-overlay {
+/*.banner-dark-overlay {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1;
-    /*    background-color: black;
-*/
+        background-color: black;
+
     width: 100%;
     height: 100%;
-    /*    opacity: 0.15;
-*/
-}
+        opacity: 0.15;
 
-.dominant-color {
-    background-color:black;
-    opacity: 0.8;
+}*/
+
+.dominant {
+    /*    background-color: pink;
+    opacity: 0.2;*/
+    position:absolute;
+    right:0;
+    left:0;
+    top:0;
+    bottom:0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
 }
 
 .detail-card {
@@ -478,6 +486,7 @@ h2 {
     height: 100%;
     object-fit: cover;
     position: relative;
+    z-index: -999;
 }
 
     .media_background_image:before {
@@ -487,7 +496,6 @@ h2 {
         left: 0;
         width: 100%;
         height: 100%;
-        background: red;
         z-index: 1;
     }
 

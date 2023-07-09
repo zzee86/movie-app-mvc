@@ -524,53 +524,27 @@ namespace movie_app_mvc.Controllers
 
                         // Store the dominant color in the ViewBag
                         ViewBag.DominantColor = dominantColor;
+
+                        AddTransparency(dominantColor);
                     }
                 }
             }
         }
 
+        private void AddTransparency(string dominantColor)
+        {
 
+            double transparency = 0.5;
 
+            int red = int.Parse(dominantColor.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
+            int green = int.Parse(dominantColor.Substring(3, 2), System.Globalization.NumberStyles.HexNumber);
+            int blue = int.Parse(dominantColor.Substring(5, 2), System.Globalization.NumberStyles.HexNumber);
 
-        //private void SaveMoviePosterToDatabase(string posterUrl)
-        //{
-        //    using (MySqlConnection connection = new MySqlConnection(connectionString))
-        //    {
-        //        connection.Open();
+            // Combine the color components and transparency value
+            string backgroundColor = $"rgba({red}, {green}, {blue}, {transparency})";
 
-        //        ViewBag.BaseUrl1 = posterUrl;
-
-        //        // Download the poster image from the URL
-        //        using (var webClient = new WebClient())
-        //        {
-        //            byte[] imageData = webClient.DownloadData(posterUrl);
-        //            using (var memoryStream = new MemoryStream(imageData))
-        //            {
-        //                using (var image = System.Drawing.Image.FromStream(memoryStream))
-        //                {
-        //                    // Extract the dominant color from the poster image
-        //                    var bitmap = new Bitmap(image);
-        //                    var pixel = bitmap.GetPixel(0, 0);
-        //                    string dominantColor = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
-
-        //                    // Save the poster URL and dominant color to the tmpMoviePoster table
-        //                    string query = "INSERT INTO tmpMoviePoster (poster, dominantColor) VALUES (@Poster, @DominantColor)";
-        //                    MySqlCommand command = new MySqlCommand(query, connection);
-        //                    command.Parameters.AddWithValue("@Poster", posterUrl);
-        //                    command.Parameters.AddWithValue("@DominantColor", dominantColor);
-        //                    command.ExecuteNonQuery();
-
-
-        //                    ViewBag.BaseUrl = posterUrl;
-        //                    ViewBag.DominantColor = dominantColor;
-
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-
+            ViewBag.DominantColorTransparency = backgroundColor;
+        }
 
         private async Task<VideoInfo.Root> FetchVideos(string url)
         {
