@@ -534,7 +534,7 @@ namespace movie_app_mvc.Controllers
         private void AddTransparency(string dominantColor)
         {
 
-            double transparency = 0.5;
+            double transparency = 0.7;
 
             int red = int.Parse(dominantColor.Substring(1, 2), System.Globalization.NumberStyles.HexNumber);
             int green = int.Parse(dominantColor.Substring(3, 2), System.Globalization.NumberStyles.HexNumber);
