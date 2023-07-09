@@ -7,14 +7,18 @@
 
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 
 
 @Html.Partial("_NavBar")
 
+<button id="showColorButton">Show Color Code</button>
 
 
 <div class="hero-section">
+
 
     <div class="detail-card">
         <div class="detail-card-image">
@@ -67,11 +71,8 @@
 
     </div>
 
-    <div class="banner-dark-overlay">
-
-        <div class="background-image-holder">
-            <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
-        </div>
+    <div class="background-image-holder" style="background-color: @ViewBag.DominantColor;">
+        <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
     </div>
 </div>
 
@@ -150,4 +151,17 @@
         videoIframe.src = '';
         closeVideoButton.style.display = 'none';
     });
+
+
+
+
+
+            window.addEventListener('DOMContentLoaded', (event) => {
+            var colorCode = "@ViewBag.DominantColor";
+
+            // Show color code on button click
+            document.getElementById('showColorButton').addEventListener('click', function() {
+                alert("Color code: " + colorCode);
+            });
+        });
 </script>

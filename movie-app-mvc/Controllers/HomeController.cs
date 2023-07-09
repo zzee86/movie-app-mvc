@@ -10,6 +10,10 @@ using movie_app_mvc.Models;
 using System.Web;
 using Microsoft.EntityFrameworkCore;
 using static movie_app_mvc.Models.TvShowDetails;
+using System.Net;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace movie_app_mvc.Controllers
 {
@@ -452,6 +456,10 @@ namespace movie_app_mvc.Controllers
                     ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
                     ViewBag.SeasonAirDate = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
                     ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
+
+
+                    string posterUrl = movie.poster_path_url; // Replace this with the actual property containing the poster URL
+                    SaveMoviePosterToDatabase(posterUrl);
                 }
                 else
                 {
@@ -479,6 +487,46 @@ namespace movie_app_mvc.Controllers
 
             return View("~/Views/Home/MovieDetails.cshtml", movie);
         }
+
+
+        private void SaveMoviePosterToDatabase(string posterUrl)
+        {
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Download the poster image from the URL
+                using (var webClient = new WebClient())
+                {
+                    byte[] imageData = webClient.DownloadData(posterUrl);
+                    using (var image = Image.Load<Rgba32>(imageData))
+                    {
+                        // Resize the image
+                        const int MaxImageWidth = 800;
+                        if (image.Width > MaxImageWidth)
+                        {
+                            image.Mutate(x => x.Resize(MaxImageWidth, 0));
+                        }
+
+                        // Extract the dominant color from the poster image
+                        var pixel = image[0, 0];
+                        string dominantColorCode = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
+
+                        ViewBag.DominantColor = (string.IsNullOrEmpty(dominantColorCode)) ? "empty" : dominantColorCode;
+
+                        string dominantColor = $"#{dominantColorCode}";
+
+                        string query = "INSERT INTO tmpMoviePoster (poster, dominantColor) VALUES (@Poster, @DominantColor)";
+                        MySqlCommand command = new MySqlCommand(query, connection);
+                        command.Parameters.AddWithValue("@Poster", posterUrl);
+                        command.Parameters.AddWithValue("@DominantColor", dominantColor);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
 
         private async Task<VideoInfo.Root> FetchVideos(string url)
         {
