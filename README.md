@@ -12,9 +12,10 @@ Explore and discover a vast collection of movies, effortlessly search through th
 
 - Enabled users to save movies to their individual accounts
 
-# Setup
+
+## Setup
 - Download or clone the project
 - Install XAMPP and start the Apache Web Server and MySQL Database
 - Visit http://localhost/phpmyadmin/ and import saved_movies.sql (database found in project root directory)
-- Open the project in Visual Studio to run
+- Open the project in Visual Studio to run application
 
