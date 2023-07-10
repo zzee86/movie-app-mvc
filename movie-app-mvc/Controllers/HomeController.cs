@@ -56,6 +56,8 @@ namespace movie_app_mvc.Controllers
                 TopRatedMovies = topRatedMovies
             };
 
+            ClearTmpMoviePosterTable();
+
             return View(viewModel);
         }
 
@@ -544,6 +546,18 @@ namespace movie_app_mvc.Controllers
             string backgroundColor = $"rgba({red}, {green}, {blue}, {transparency})";
 
             ViewBag.DominantColorTransparency = backgroundColor;
+        }
+
+        private void ClearTmpMoviePosterTable()
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "DELETE FROM tmpMoviePoster";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.ExecuteNonQuery();
+            }
         }
 
         private async Task<VideoInfo.Root> FetchVideos(string url)
