@@ -13,6 +13,9 @@ using static movie_app_mvc.Models.TvShowDetails;
 using System.Net;
 using ColorThiefDotNet;
 using System.Drawing;
+using static System.Net.WebRequestMethods;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 
 namespace movie_app_mvc.Controllers
@@ -412,9 +415,6 @@ namespace movie_app_mvc.Controllers
         }
 
 
-
-
-
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
             // Get details on the movie
@@ -428,11 +428,9 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Get trailer
             string media_type = (movie.media_type == "movie") ? "movie" : "tv";
-            string apiUrl2 = $"https://api.themoviedb.org/3/{media_type}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-            VideoInfo.Root videoDetails = await FetchVideos(apiUrl2);
-            VideoInfo.Result video = videoDetails.results.FirstOrDefault(v => v.type.Equals("Trailer", StringComparison.OrdinalIgnoreCase));
+            // Get trailer
+            VideoInfo.Result video = await GetTrailer(media_type, id);
 
 
             // Main content on details page
@@ -478,6 +476,12 @@ namespace movie_app_mvc.Controllers
                 SaveMoviePosterToDatabase(posterUrl);
             }
 
+
+            // Get details on the cast
+            List<Actors.Cast> castInfo = await GetCastInfo(media_type, id);
+            ViewBag.CastList = castInfo;
+
+
             // Developer use
             ViewBag.ReleaseDate = movie.release_date;
             ViewBag.Genre = movie.genre_ids;
@@ -488,6 +492,24 @@ namespace movie_app_mvc.Controllers
             ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
 
             return View("~/Views/Home/MovieDetails.cshtml", movie);
+        }
+
+        private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)
+        {
+            string apiUrl = $"https://api.themoviedb.org/3/{mediaType}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            VideoInfo.Root videoDetails = await FetchVideos(apiUrl);
+            VideoInfo.Result video = videoDetails.results.FirstOrDefault(v => v.type.Equals("Trailer", StringComparison.OrdinalIgnoreCase));
+
+            return video;
+        }
+
+        private async Task<List<Actors.Cast>> GetCastInfo(string mediaType, int id)
+        {
+            string castApi = $"https://api.themoviedb.org/3/{mediaType}/{id}/credits?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            Actors.Root castDetails = await FetchActors(castApi);
+            List<Actors.Cast> castInfo = castDetails.cast.Take(10).ToList();
+
+            return castInfo;
         }
 
 
@@ -589,6 +611,20 @@ namespace movie_app_mvc.Controllers
             }
         }
 
+        private async Task<Actors.Root> FetchActors(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(json); // Print the JSON response to the console
+                var info = JsonConvert.DeserializeObject<Actors.Root>(json);
+
+                return info;
+            }
+        }
 
 
         public ActionResult SavedMovieDetails(string title)
