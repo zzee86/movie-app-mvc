@@ -197,7 +197,7 @@ namespace movie_app_mvc.Controllers
         public async Task<IActionResult> SaveMovie(string title, string overview, string poster, double rating, string searchQuery, string name, int page = 1)
         {
             // Get the user ID of the logged-in user
-            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+            string email = User.Identity.Name;
 
             // Retrieve the user ID from the loginDetails table
             string userId = GetUserIdByEmail(email);
@@ -319,9 +319,6 @@ namespace movie_app_mvc.Controllers
                 return Convert.ToInt32(command.ExecuteScalar());
             }
         }
-
-
-
 
 
         public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
@@ -511,8 +508,6 @@ namespace movie_app_mvc.Controllers
 
             return castInfo;
         }
-
-
 
         private void SaveMoviePosterToDatabase(string posterUrl)
         {
