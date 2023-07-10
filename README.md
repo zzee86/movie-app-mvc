@@ -1,6 +1,4 @@
-# movie-app-mvc
-
-Movie App created using C# Dotnet Model View Controller
+# Movie App
 
 Explore and discover a vast collection of movies, effortlessly search through them, and conveniently save your favorites to your account 
 
@@ -14,7 +12,7 @@ Explore and discover a vast collection of movies, effortlessly search through th
 
 - Enabled users to save movies to their individual accounts
 
-Setup
+# Setup
 - Download or clone the project
 - Install XAMPP and start the Apache Web Server and MySQL Database
 - Visit http://localhost/phpmyadmin/ and import saved_movies.sql (database found in project root directory)
