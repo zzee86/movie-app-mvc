@@ -481,6 +481,9 @@ namespace movie_app_mvc.Controllers
             ViewBag.CastList = castInfo;
 
 
+            ViewBag.MovieDetailsTitle = title;
+            ViewBag.MovieDetailsID = id;
+
             // Developer use
             ViewBag.ReleaseDate = movie.release_date;
             ViewBag.Genre = movie.genre_ids;
@@ -654,7 +657,11 @@ namespace movie_app_mvc.Controllers
                     }
                 }
             }
-            ViewBag.TestingMovieID = (movieid !=null) ? movieid : 9999;
+            ViewBag.SavedMovieTitle = (title != null) ? title : "not shown";
+            ViewBag.SavedMovieID = (movieid != null) ? movieid : 9999;
+
+            await MovieDetails(title, movieid);
+
 
             SavedMovie selectedMovie = movies.FirstOrDefault();
 
@@ -663,6 +670,7 @@ namespace movie_app_mvc.Controllers
                 // Handle the case when no movie is found with the given title
                 return RedirectToAction("Index", "Home");
             }
+
 
             return View(selectedMovie);
         }

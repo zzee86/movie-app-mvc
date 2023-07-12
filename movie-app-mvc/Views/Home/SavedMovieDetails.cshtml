@@ -160,15 +160,25 @@
 
 
 
+        <h1>SavedMovieDetails : @ViewBag.SavedMovieTitle </h1>
+        <h1>SavedMovieDetails : @ViewBag.SavedMovieID </h1>
+        <p>/////////////////////////////////////////////</p>
+
+        <h1>MovieDetails : @ViewBag.MovieDetailsTitle </h1>
+        <h1>MovieDetails : @ViewBag.MovieDetailsID </h1>
+
+
+        <p>/////////////////////////////////////////////</p>
+        <h1>Show ID: @ViewBag.movieID</h1>
+        <h1>Show Key: @ViewBag.MovieKey</h1>
+
+
         <h1>@Model.Title</h1>
         <h1>@Model.Overview</h1>
 
 
-        <h1>Show ID: @ViewBag.movieID</h1>
-        <h1>Show Key: @ViewBag.MovieKey</h1>
-        <h1>TestingMovieID Key: @ViewBag.TestingMovieID</h1>
 
-        
+
         @if (@ViewBag.Media_Key == "tv")
         {
             <h1>Seasons: @ViewBag.SeasonNumber</h1>
