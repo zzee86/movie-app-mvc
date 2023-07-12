@@ -624,7 +624,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        public ActionResult SavedMovieDetails(string title, int id)
+        public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
 
@@ -654,8 +654,7 @@ namespace movie_app_mvc.Controllers
                     }
                 }
             }
-
-            Task<ActionResult> details = MovieDetails(title, id);
+            ViewBag.TestingMovieID = (movieid !=null) ? movieid : 9999;
 
             SavedMovie selectedMovie = movies.FirstOrDefault();
 

@@ -13,7 +13,6 @@
 
     @Html.Partial("_NavBar")
 
-
     <main>
 
         <div class="filters">
@@ -95,7 +94,7 @@
                 @foreach (var movie in Model)
                 {
                     <div class="card">
-                        <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title,id = movie.MovieID })">
+                        <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title, movieid = movie.MovieID })">
                             <div class="card-image">
                                 <div class="overlay">
                                     <!-- Overlay content -->
@@ -108,7 +107,7 @@
                             </div>
                         </a>
                         <div class="card-content">
-                            <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title, id = movie.MovieID })">
+                            <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title, movieid = movie.MovieID })">
                                 <div class="titleHolder">
                                     <h2>@movie.Title</h2>
                                 </div>
@@ -128,6 +127,6 @@
 
         </div>
     </main>
-    </body>
+</body>
 
     <script src="~/js/site.js"></script>

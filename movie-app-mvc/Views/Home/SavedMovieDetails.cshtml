@@ -17,6 +17,26 @@
 
     @Html.Partial("_NavBar")
 
+
+
+
+    @*<p> below </p>
+
+        <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
+            <div class="dark-tint"></div>
+        </div>
+
+        <div class="background-image-holder">
+
+            <img src="@Model.Poster" class="media_background_image" alt="background-image" />
+
+
+        </div>
+
+        <p> above </p>*@
+
+
+
     <button id="showColorButton">Show Color Code</button>
 
 
@@ -70,13 +90,13 @@
                 <h3 class="genre-title">Genres:</h3>
                 <div class="genre-list">
                     @*@for (int i = 0; i < ViewBag.Genres.Count; i++)
-                    {
-                        <h3 class="genre-item">@ViewBag.Genres[i]</h3>
-                        @if (i != ViewBag.Genres.Count - 1)
                         {
-                            <span class="comma"></span>
-                        }
-                    }*@
+                            <h3 class="genre-item">@ViewBag.Genres[i]</h3>
+                            @if (i != ViewBag.Genres.Count - 1)
+                            {
+                                <span class="comma"></span>
+                            }
+                        }*@
                 </div>
             </div>
 
@@ -90,7 +110,7 @@
 
         <div class="background-image-holder">
 
-            <img src="@Model.Title" class="media_background_image" alt="background-image" />
+            <img src="@Model.Poster" class="media_background_image" alt="background-image" />
 
 
         </div>
@@ -101,26 +121,26 @@
     <div class="movies-container">
         <div class="card-container">
             @*@foreach (var cast in ViewBag.CastList)
-            {
-                if (!string.IsNullOrEmpty(@cast.profile_path))
                 {
-                    <div class="card">
-                        <div class="card-image">
-                            <img src="@cast.profile_path_url" alt="Movie Poster" />
-                        </div>
-                        <div class="card-content">
-                            <div class="titleHolder">
-                                <h2>@cast.name</h2>
+                    if (!string.IsNullOrEmpty(@cast.profile_path))
+                    {
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="@cast.profile_path_url" alt="Movie Poster" />
+                            </div>
+                            <div class="card-content">
+                                <div class="titleHolder">
+                                    <h2>@cast.name</h2>
+                                </div>
+
+                                <div class="CharacterHolder">
+                                    <h2>@cast.character</h2>
+                                </div>
                             </div>
 
-                            <div class="CharacterHolder">
-                                <h2>@cast.character</h2>
-                            </div>
                         </div>
-
-                    </div>
-                }
-            }*@
+                    }
+                }*@
         </div>
     </div>
 
@@ -128,15 +148,15 @@
 
 
         @*@foreach (var cast in ViewBag.CastList)
-        {
-            <h1>Cast Name: @cast.name</h1>
-            <h1>Show Character: @cast.character</h1>
+            {
+                <h1>Cast Name: @cast.name</h1>
+                <h1>Show Character: @cast.character</h1>
 
-            <div class="castImageHolder">
-                <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
+                <div class="castImageHolder">
+                    <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
 
-            </div>
-        }*@
+                </div>
+            }*@
 
 
 
@@ -146,7 +166,9 @@
 
         <h1>Show ID: @ViewBag.movieID</h1>
         <h1>Show Key: @ViewBag.MovieKey</h1>
+        <h1>TestingMovieID Key: @ViewBag.TestingMovieID</h1>
 
+        
         @if (@ViewBag.Media_Key == "tv")
         {
             <h1>Seasons: @ViewBag.SeasonNumber</h1>
@@ -188,6 +210,10 @@
 
 </body>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+
+
 <script>
     // Get the elements
     const showVideoButton = document.getElementById('show-video-button');
@@ -209,4 +235,17 @@
         videoIframe.src = '';
         closeVideoButton.style.display = 'none';
     });
+
+
+
+
+
+            window.addEventListener('DOMContentLoaded', (event) => {
+            var colorCode = "@ViewBag.DominantColor";
+
+            // Show color code on button click
+            document.getElementById('showColorButton').addEventListener('click', function() {
+                alert("Color code: " + colorCode);
+            });
+        });
 </script>
