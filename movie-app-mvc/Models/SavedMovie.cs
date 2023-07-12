@@ -16,6 +16,8 @@ namespace movie_app_mvc.Models
 
         public double Rating { get; set; }
 
+        public int MovieID { get; set; }
+
         public bool IsSaved { get; set; }
 
     }

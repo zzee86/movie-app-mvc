@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+  <metadata minClientVersion="2.8.3">
+    <id>ksemenenko.ColorThief</id>
+    <version>1.1.1.4</version>
+    <title>ColorThief for .NET</title>
+    <authors>ksemenenko</authors>
+    <owners>ksemenenko</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/KSemenenko/ColorThief/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/KSemenenko/ColorThief</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/KSemenenko/ColorThief/master/icon.png</iconUrl>
+    <description>A code for grabbing the color palette from an image. Uses C# and .NET to make it happen.</description>
+    <summary>A code for grabbing the color palette from an image. Uses C# and .NET to make it happen.</summary>
+    <tags>ColorThief, Color, Thief, .net, netstandard, xamarin, pcl, plugin, windows phone, uwp, winphone, wp8, winrt, android, xamarin.forms, ios, mac, version</tags>
+  </metadata>
+</package>

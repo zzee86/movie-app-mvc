@@ -194,7 +194,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        public async Task<IActionResult> SaveMovie(string title, string overview, string poster, double rating, string searchQuery, string name, int page = 1)
+        public async Task<IActionResult> SaveMovie(string title, string overview, string poster, double rating, string movieid, string searchQuery, string name, int page = 1)
         {
             // Get the user ID of the logged-in user
             string email = User.Identity.Name;
@@ -214,7 +214,7 @@ namespace movie_app_mvc.Controllers
                 {
                     connection.Open();
 
-                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion, userId, rating) VALUES (@Title, @Overview, @Poster, NOW(), @UserId, @Rating)";
+                    string query = "INSERT INTO savedMovies (title, overview, poster, dateTimeInsertion, userId, rating, movieid) VALUES (@Title, @Overview, @Poster, NOW(), @UserId, @Rating, @MovieID)";
 
                     MySqlCommand command = new MySqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Title", title);
@@ -222,6 +222,7 @@ namespace movie_app_mvc.Controllers
                     command.Parameters.AddWithValue("@Poster", poster);
                     command.Parameters.AddWithValue("@UserId", userId);
                     command.Parameters.AddWithValue("@Rating", rating);
+                    command.Parameters.AddWithValue("@movieid", movieid);
                     command.ExecuteNonQuery();
                 }
             }
@@ -381,7 +382,8 @@ namespace movie_app_mvc.Controllers
                             Title = reader.GetString("title"),
                             Overview = reader.GetString("overview"),
                             Poster = reader.GetString("poster"),
-                            Rating = reader.GetDouble("rating")
+                            Rating = reader.GetDouble("rating"),
+                            MovieID = reader.GetInt32("movieid")
                         };
 
                         movies.Add(movie);
@@ -622,7 +624,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        public ActionResult SavedMovieDetails(string title)
+        public ActionResult SavedMovieDetails(string title, int id)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
 
@@ -644,13 +646,16 @@ namespace movie_app_mvc.Controllers
                             Title = reader.GetString("title"),
                             Overview = reader.GetString("overview"),
                             Poster = reader.GetString("poster"),
-                            Rating = reader.GetDouble("rating")
+                            Rating = reader.GetDouble("rating"),
+                            MovieID = reader.GetInt32("movieid")
                         };
 
                         movies.Add(movie);
                     }
                 }
             }
+
+            Task<ActionResult> details = MovieDetails(title, id);
 
             SavedMovie selectedMovie = movies.FirstOrDefault();
 

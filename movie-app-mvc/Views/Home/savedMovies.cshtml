@@ -7,92 +7,95 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
+<body>
 
-@Html.Partial("_NavBar")
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
+
+    @Html.Partial("_NavBar")
 
 
-<main>
+    <main>
 
-    <div class="filters">
-        <div class="search-right-container">
-            <div class="search-content">
-                <form method="get" action="@Url.Action("SavedMovies")">
-                    <div class="search-bar">
-                        <input type="text" name="title" placeholder="Search for movies" />
-                    </div>
-                    <div class="page-info">
-                        <h4>Page @(ViewBag.SavedPage) of @(ViewBag.TotalPages)</h4>
-                        @*@if (@User.Identity.IsAuthenticated)
-                            {
-                                <h4>@User.FindFirst("Username")?.Value</h4>
-                            }*@
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="pagination">
-            @if (Model.Count > 0)
-            {
-                int currentPage = ViewBag.SavedPage ?? 1;
-                int totalPages = ViewBag.TotalPages ?? 1;
-                string searchQuery = ViewBag.SearchQuery;
-
-                @*<span>Page @currentPage / @totalPages </span>*@
-
-                <div class="pagination-container">
-                    @if (currentPage > 1)
-                    {
-                        <a href="@Url.Action("SavedMovies", new { title = searchQuery, page = ViewBag.PreviousPage })" class="back-button">Back</a>
-                    }
-                    else
-                    {
-                        <span>Back</span>
-
-                    }
-
-                    @if (ViewBag.HasNextPage)
-                    {
-                        <a href="@Url.Action("SavedMovies", new { title = searchQuery, page = ViewBag.NextPage })" class="next-button">Next</a>
-                    }
-                    else
-                    {
-                        <span>Next</span>
-                    }
+        <div class="filters">
+            <div class="search-right-container">
+                <div class="search-content">
+                    <form method="get" action="@Url.Action("SavedMovies")">
+                        <div class="search-bar">
+                            <input type="text" name="title" placeholder="Search for movies" />
+                        </div>
+                        <div class="page-info">
+                            <h4>Page @(ViewBag.SavedPage) of @(ViewBag.TotalPages)</h4>
+                            @*@if (@User.Identity.IsAuthenticated)
+                                {
+                                    <h4>@User.FindFirst("Username")?.Value</h4>
+                                }*@
+                        </div>
+                    </form>
                 </div>
-            }
-        </div>
+            </div>
+
+            <div class="pagination">
+                @if (Model.Count > 0)
+                {
+                    int currentPage = ViewBag.SavedPage ?? 1;
+                    int totalPages = ViewBag.TotalPages ?? 1;
+                    string searchQuery = ViewBag.SearchQuery;
+
+                    @*<span>Page @currentPage / @totalPages </span>*@
+
+                    <div class="pagination-container">
+                        @if (currentPage > 1)
+                        {
+                            <a href="@Url.Action("SavedMovies", new { title = searchQuery, page = ViewBag.PreviousPage })" class="back-button">Back</a>
+                        }
+                        else
+                        {
+                            <span>Back</span>
+
+                        }
+
+                        @if (ViewBag.HasNextPage)
+                        {
+                            <a href="@Url.Action("SavedMovies", new { title = searchQuery, page = ViewBag.NextPage })" class="next-button">Next</a>
+                        }
+                        else
+                        {
+                            <span>Next</span>
+                        }
+                    </div>
+                }
+            </div>
 
 
-        @*<div class="card-container">
+            @*<div class="card-container">
+                    @foreach (var movie in Model)
+                    {
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="@movie.Poster" alt="Movie Poster" />
+                            </div>
+                            <div class="card-content">
+                                <h2>@movie.Title</h2>
+                                <div class="button-container">
+                                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                        <input type="hidden" name="title" value="@movie.Title" />
+                                        <input type="hidden" name="overview" value="@movie.Overview" />
+                                        <input type="hidden" name="poster" value="@movie.Poster" />
+                                        <button type="submit" class="saved">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>*@
+
+
+
+            <div class="card-container-full">
                 @foreach (var movie in Model)
                 {
                     <div class="card">
-                        <div class="card-image">
-                            <img src="@movie.Poster" alt="Movie Poster" />
-                        </div>
-                        <div class="card-content">
-                            <h2>@movie.Title</h2>
-                            <div class="button-container">
-                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@movie.Title" />
-                                    <input type="hidden" name="overview" value="@movie.Overview" />
-                                    <input type="hidden" name="poster" value="@movie.Poster" />
-                                    <button type="submit" class="saved">Remove</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>*@
-
-
-
-        <div class="card-container-full">
-            @foreach (var movie in Model)
-            {
-                <div class="card">
-                    <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
+                        <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title,id = movie.MovieID })">
                             <div class="card-image">
                                 <div class="overlay">
                                     <!-- Overlay content -->
@@ -105,7 +108,7 @@
                             </div>
                         </a>
                         <div class="card-content">
-                            <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title })">
+                            <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title, id = movie.MovieID })">
                                 <div class="titleHolder">
                                     <h2>@movie.Title</h2>
                                 </div>
@@ -119,12 +122,12 @@
                                 </form>
                             </div>
                         </div>
-</div>
-            }
+                    </div>
+                }
+            </div>
+
         </div>
+    </main>
+    </body>
 
-    </div>
-</main>
-
-
-<script src="~/js/site.js"></script>
+    <script src="~/js/site.js"></script>

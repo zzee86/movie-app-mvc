@@ -11,178 +11,182 @@
 
 </head>
 
+<body>
 
-@Html.Partial("_NavBar")
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
-<button id="showColorButton">Show Color Code</button>
+    @Html.Partial("_NavBar")
 
-
-<h4>Method called: @ViewBag.CallMethod</h4>
-<h4>Poster Url: @ViewBag.PosterURL</h4>
-
-
-<h4>DominantColorTransparency: @ViewBag.DominantColorTransparency</h4>
+    <button id="showColorButton">Show Color Code</button>
 
 
+    <h4>Method called: @ViewBag.CallMethod</h4>
+    <h4>Poster Url: @ViewBag.PosterURL</h4>
+
+
+    <h4>DominantColorTransparency: @ViewBag.DominantColorTransparency</h4>
 
 
 
-<div class="hero-section">
 
 
-    <div class="detail-card">
-        <div class="detail-card-image">
-            <img src="@Model.poster_path_url" alt="Movie Poster" />
+    <div class="hero-section">
+
+
+        <div class="detail-card">
+            <div class="detail-card-image">
+                <img src="@Model.poster_path_url" alt="Movie Poster" />
+            </div>
+        </div>
+        <div class="detail-information">
+
+            @if (string.IsNullOrEmpty(@Model.title))
+            {
+                <h3>@ViewBag.Backup_Title</h3>
+            }
+            else
+            {
+                <h3>@Model.title</h3>
+            }
+
+            @if (@ViewBag.Media_Key == "tv")
+            {
+                <h3>@ViewBag.SeasonNumber</h3>
+                <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
+                <h3>@ViewBag.EpisodeRuntime Minute</h3>
+
+
+
+                <h3>@ViewBag.SeasonAirDate</h3>
+                <h3>@ViewBag.SeasonRuntime</h3>
+            }
+            else
+            {
+                <h3>@ViewBag.ReleaseDate</h3>
+                <h3>@ViewBag.Runtime Minutes</h3>
+            }
+
+            <div>
+                <h3 class="genre-title">Genres:</h3>
+                <div class="genre-list">
+                    @for (int i = 0; i < ViewBag.Genres.Count; i++)
+                    {
+                        <h3 class="genre-item">@ViewBag.Genres[i]</h3>
+                        @if (i != ViewBag.Genres.Count - 1)
+                        {
+                            <span class="comma"></span>
+                        }
+                    }
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
+            <div class="dark-tint"></div>
+        </div>
+
+        <div class="background-image-holder">
+
+            <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+
+
         </div>
     </div>
-    <div class="detail-information">
 
-        @if (string.IsNullOrEmpty(@Model.title))
+
+
+    <div class="movies-container">
+        <div class="card-container">
+            @foreach (var cast in ViewBag.CastList)
+            {
+                if (!string.IsNullOrEmpty(@cast.profile_path))
+                {
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="@cast.profile_path_url" alt="Movie Poster" />
+                        </div>
+                        <div class="card-content">
+                            <div class="titleHolder">
+                                <h2>@cast.name</h2>
+                            </div>
+
+                            <div class="CharacterHolder">
+                                <h2>@cast.character</h2>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="moviesDetailsContainer">
+
+
+        @foreach (var cast in ViewBag.CastList)
         {
-            <h3>@ViewBag.Backup_Title</h3>
+            <h1>Cast Name: @cast.name</h1>
+            <h1>Show Character: @cast.character</h1>
+
+            <div class="castImageHolder">
+                <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
+
+            </div>
         }
-        else
-        {
-            <h3>@Model.title</h3>
-        }
+
+
+
+        <h1>@Model.title</h1>
+        <h1>@Model.overview</h1>
+
+
+        <h1>Show ID: @ViewBag.movieID</h1>
+        <h1>Show Key: @ViewBag.MovieKey</h1>
 
         @if (@ViewBag.Media_Key == "tv")
         {
-            <h3>@ViewBag.SeasonNumber</h3>
-            <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
-            <h3>@ViewBag.EpisodeRuntime Minute</h3>
+            <h1>Seasons: @ViewBag.SeasonNumber</h1>
 
+            <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
 
+            <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
 
-            <h3>@ViewBag.SeasonAirDate</h3>
-            <h3>@ViewBag.SeasonRuntime</h3>
-        }
-        else
-        {
-            <h3>@ViewBag.ReleaseDate</h3>
-            <h3>@ViewBag.Runtime Minutes</h3>
+            <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
         }
 
-        <div>
-            <h3 class="genre-title">Genres:</h3>
-            <div class="genre-list">
-                @for (int i = 0; i < ViewBag.Genres.Count; i++)
-                {
-                    <h3 class="genre-item">@ViewBag.Genres[i]</h3>
-                    @if (i != ViewBag.Genres.Count - 1)
-                    {
-                        <span class="comma"></span>
-                    }
-                }
+
+
+        @*<form method="post" action="@Url.Action("movieTrailer", "Home", new { id = Model.id })">
+                <button id="show-video-button" type="submit">Show Video</button>
+            </form>*@
+
+
+
+
+
+
+        <button id="show-video-button">Show Video</button>
+
+        <!-- Overlay video element -->
+        <div id="overlay-video">
+            <div class="close-header">
+                <button id="close-button">Close</button>
+            </div>
+            <div id="video-container">
+                <iframe id="video-iframe" width="100%" height="100%" frameborder="0" allowfullscreen autoplay></iframe>
             </div>
         </div>
 
 
-
-    </div>
-
-    <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
-        <div class="dark-tint"></div>
-    </div>
-
-    <div class="background-image-holder">
-
-        <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
-
-
-    </div>
-</div>
-
-
-
-<div class="movies-container">
-    <div class="card-container">
-        @foreach (var cast in ViewBag.CastList)
-        {
-            if (!string.IsNullOrEmpty(@cast.profile_path))
-            {
-                <div class="card">
-                    <div class="card-image">
-                        <img src="@cast.profile_path_url" alt="Movie Poster" />
-                    </div>
-                    <div class="card-content">
-                        <div class="titleHolder">
-                            <h2>@cast.name</h2>
-                        </div>
-
-                        <div class="CharacterHolder">
-                            <h2>@cast.character</h2>
-                        </div>
-                    </div>
-
-                </div>
-            }
-        }
-    </div>
-</div>
-
-<div class="moviesDetailsContainer">
-
-
-    @foreach (var cast in ViewBag.CastList)
-    {
-        <h1>Cast Name: @cast.name</h1>
-        <h1>Show Character: @cast.character</h1>
-
-        <div class="castImageHolder">
-            <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
-
-        </div>
-    }
-
-
-
-    <h1>@Model.title</h1>
-    <h1>@Model.overview</h1>
-
-
-    <h1>Show ID: @ViewBag.movieID</h1>
-    <h1>Show Key: @ViewBag.MovieKey</h1>
-
-    @if (@ViewBag.Media_Key == "tv")
-    {
-        <h1>Seasons: @ViewBag.SeasonNumber</h1>
-
-        <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
-
-        <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
-
-        <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
-    }
-
-
-
-    @*<form method="post" action="@Url.Action("movieTrailer", "Home", new { id = Model.id })">
-            <button id="show-video-button" type="submit">Show Video</button>
-        </form>*@
-
-
-
-
-
-
-    <button id="show-video-button">Show Video</button>
-
-    <!-- Overlay video element -->
-    <div id="overlay-video">
-        <div class="close-header">
-            <button id="close-button">Close</button>
-        </div>
-        <div id="video-container">
-            <iframe id="video-iframe" width="100%" height="100%" frameborder="0" allowfullscreen autoplay></iframe>
-        </div>
     </div>
 
 
-</div>
 
-
-
+</body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 

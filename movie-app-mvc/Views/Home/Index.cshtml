@@ -7,166 +7,98 @@
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
+<body>
 
-<!-- Navigation Bar-->
-<!--<div class="navbar fixed-top" id="navbar">
-    <div class="container">
-        <a class="logo" href="index.html">KKS<span>Housing</span></a>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
-        <img id="mobile-cta" class="mobile-menu" src="images/menu.svg"
-             alt="Open Navigation">
+    <!-- Navigation Bar-->
+    <!--<div class="navbar fixed-top" id="navbar">
+        <div class="container">
+            <a class="logo" href="index.html">KKS<span>Housing</span></a>
 
-        <nav>
-            <img id="mobile-exit" class="mobile-menu-exit" src="images/exit.svg"
-                 alt="Close Navigation">
+            <img id="mobile-cta" class="mobile-menu" src="images/menu.svg"
+                 alt="Open Navigation">
 
-            <ul>
-            </ul>
+            <nav>
+                <img id="mobile-exit" class="mobile-menu-exit" src="images/exit.svg"
+                     alt="Close Navigation">
 
-            <ul class="primary-nav">
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>-->
+                <ul>
+                </ul>
 
-@Html.Partial("_NavBar")
-
-
-<main>
-
-    <div class="filters">
-        <div class="search-right-container">
-            <div class="search-content">
-                <form method="get" action="@Url.Action("Index")">
-                    <div class="search-bar">
-                        <input type="text" name="searchQuery" placeholder="Search for movies" />
-                    </div>
-                    <div class="page-info">
-                        <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
-                        @*@if (@User.Identity.IsAuthenticated)
-                            {
-                                <h4>@User.FindFirst("Username")?.Value</h4>
-                            }*@
-                    </div>
-                </form>
-            </div>
+                <ul class="primary-nav">
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
         </div>
+    </div>-->
+
+    @Html.Partial("_NavBar")
 
 
+    <main>
 
-
-        <!-- Next and Back buttons -->
-        <div class="pagination-container">
-            @if (ViewBag.CurrentPage > 1)
-            {
-                <a href="/Home/Index?page=@(ViewBag.CurrentPage - 1)&searchQuery=@ViewBag.SearchQuery" class="back-button">Back</a>
-            }
-            else
-            {
-                <span>Back</span>
-            }
-
-            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-            {
-                <a href="/Home/Index?page=@(ViewBag.CurrentPage + 1)&searchQuery=@ViewBag.SearchQuery" class="next-button">Next</a>
-            }
-            else
-            {
-                <span>Next</span>
-            }
-        </div>
-
-
-        <div class="section-container trending-section">
-
-            <div class="trending-movies">
-                <h3 class="trending-text">
-                    @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
-                    {<text>Trending</text>}
-                else
-                {<text>Similar Results</text>}
-                </h3>
-            </div>
-            <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
-                <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>card-container</text>} else {<text>card-container-full</text>} ">
-                    @foreach (var movie in Model.TrendingMovies)
-                    {
-                        <div class="card">
-
-                            <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
-                                <div class="card-image">
-                                    <div class="overlay">
-                                        <!-- Overlay content -->
-                                        <div class="image-container">
-                                            <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
-                                        </div>
-                                        @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
-                                        <h2>@Math.Round(movie.vote_average, 1)</h2>
-                                    </div>
-                                    <img src="@movie.poster_path_url" alt="Movie Poster" />
-                                </div>
-                            </a>
-                            <div class="card-content">
-                                <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
-
-                                    <div class="titleHolder">
-                                        <h2>@movie.title</h2>
-                                    </div>
-                                </a>
-                                <div class="button-container">
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        @if (movie.IsSaved)
-                                        {
-                                            <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                <input type="hidden" name="title" value="@movie.title" />
-                                                <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                <input type="hidden" name="title" value="@movie.title" />
-                                                <input type="hidden" name="overview" value="@movie.overview" />
-                                                <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                                <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
-                                                <button type="submit">Save</button>
-                                            </form>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
-                                        <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
-
-                                    }
-                                </div>
-                            </div>
-
+        <div class="filters">
+            <div class="search-right-container">
+                <div class="search-content">
+                    <form method="get" action="@Url.Action("Index")">
+                        <div class="search-bar">
+                            <input type="text" name="searchQuery" placeholder="Search for movies" />
                         </div>
-                    }
+                        <div class="page-info">
+                            <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
+                            @*@if (@User.Identity.IsAuthenticated)
+                                {
+                                    <h4>@User.FindFirst("Username")?.Value</h4>
+                                }*@
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
 
 
 
-        @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
-        {
 
-            <div class="section-container popular-section">
+            <!-- Next and Back buttons -->
+            <div class="pagination-container">
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <a href="/Home/Index?page=@(ViewBag.CurrentPage - 1)&searchQuery=@ViewBag.SearchQuery" class="back-button">Back</a>
+                }
+                else
+                {
+                    <span>Back</span>
+                }
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <a href="/Home/Index?page=@(ViewBag.CurrentPage + 1)&searchQuery=@ViewBag.SearchQuery" class="next-button">Next</a>
+                }
+                else
+                {
+                    <span>Next</span>
+                }
+            </div>
+
+
+            <div class="section-container trending-section">
 
                 <div class="trending-movies">
-                    <h3 class="trending-text">Popular</h3>
+                    <h3 class="trending-text">
+                        @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
+                        {<text>Trending</text>}
+                    else
+                    {<text>Similar Results</text>}
+                    </h3>
                 </div>
                 <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
                     <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>card-container</text>} else {<text>card-container-full</text>} ">
-                        @foreach (var movie in Model.PopularMovies)
+                        @foreach (var movie in Model.TrendingMovies)
                         {
                             <div class="card">
+
                                 <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
                                     <div class="card-image">
                                         <div class="overlay">
@@ -174,13 +106,14 @@
                                             <div class="image-container">
                                                 <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
                                             </div>
+                                            @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
                                             <h2>@Math.Round(movie.vote_average, 1)</h2>
                                         </div>
                                         <img src="@movie.poster_path_url" alt="Movie Poster" />
                                     </div>
                                 </a>
                                 <div class="card-content">
-                                    <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
+                                    <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title })">
 
                                         <div class="titleHolder">
                                             <h2>@movie.title</h2>
@@ -203,6 +136,7 @@
                                                     <input type="hidden" name="overview" value="@movie.overview" />
                                                     <input type="hidden" name="poster" value="@movie.poster_path_url" />
                                                     <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
+                                                    <input type="hidden" name="movieid" value="@movie.id" />
                                                     <button type="submit">Save</button>
                                                 </form>
                                             }
@@ -215,6 +149,7 @@
                                         }
                                     </div>
                                 </div>
+
                             </div>
                         }
                     </div>
@@ -222,72 +157,143 @@
             </div>
 
 
-            <div class="section-container top-rated-section">
 
-                <div class="trending-movies">
-                    <h3 class="trending-text">Top Rated</h3>
-                </div>
-                <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
-                    <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>card-container</text>} else {<text>card-container-full</text>} ">
-                        @foreach (var movie in Model.TopRatedMovies)
-                        {
-                            <div class="card">
-                                <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
-                                    <div class="card-image">
-                                        <div class="overlay">
-                                            <!-- Overlay content -->
-                                            <div class="image-container">
-                                                <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
-                                            </div>
-                                            <h2>@Math.Round(movie.vote_average, 1)</h2>
-                                        </div>
-                                        <img src="@movie.poster_path_url" alt="Movie Poster" />
-                                    </div>
-                                </a>
-                                <div class="card-content">
+            @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
+            {
+
+                <div class="section-container popular-section">
+
+                    <div class="trending-movies">
+                        <h3 class="trending-text">Popular</h3>
+                    </div>
+                    <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
+                        <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>card-container</text>} else {<text>card-container-full</text>} ">
+                            @foreach (var movie in Model.PopularMovies)
+                            {
+                                <div class="card">
                                     <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
-                                        <div class="titleHolder">
-                                            <h2>@movie.title</h2>
+                                        <div class="card-image">
+                                            <div class="overlay">
+                                                <!-- Overlay content -->
+                                                <div class="image-container">
+                                                    <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                                </div>
+                                                <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                            </div>
+                                            <img src="@movie.poster_path_url" alt="Movie Poster" />
                                         </div>
                                     </a>
-                                    <div class="button-container">
-                                        @if (User.Identity.IsAuthenticated)
-                                        {
-                                            @if (movie.IsSaved)
+                                    <div class="card-content">
+                                        <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
+
+                                            <div class="titleHolder">
+                                                <h2>@movie.title</h2>
+                                            </div>
+                                        </a>
+                                        <div class="button-container">
+                                            @if (User.Identity.IsAuthenticated)
                                             {
-                                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                    <input type="hidden" name="title" value="@movie.title" />
-                                                    <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
-                                                </form>
+                                                @if (movie.IsSaved)
+                                                {
+                                                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                                        <input type="hidden" name="title" value="@movie.title" />
+                                                        <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                                        <input type="hidden" name="title" value="@movie.title" />
+                                                        <input type="hidden" name="overview" value="@movie.overview" />
+                                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                                        <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
+                                                        <input type="hidden" name="movieid" value="@movie.id" />
+                                                        <button type="submit">Save</button>
+                                                    </form>
+                                                }
                                             }
                                             else
                                             {
-                                                <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                    <input type="hidden" name="title" value="@movie.title" />
-                                                    <input type="hidden" name="overview" value="@movie.overview" />
-                                                    <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                                    <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
-                                                    <button type="submit">Save</button>
-                                                </form>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
-                                            <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
+                                                @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
+                                                <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
 
-                                        }
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-</main>
 
 
+                <div class="section-container top-rated-section">
+
+                    <div class="trending-movies">
+                        <h3 class="trending-text">Top Rated</h3>
+                    </div>
+                    <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
+                        <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>card-container</text>} else {<text>card-container-full</text>} ">
+                            @foreach (var movie in Model.TopRatedMovies)
+                            {
+                                <div class="card">
+                                    <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
+                                        <div class="card-image">
+                                            <div class="overlay">
+                                                <!-- Overlay content -->
+                                                <div class="image-container">
+                                                    <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                                </div>
+                                                <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                            </div>
+                                            <img src="@movie.poster_path_url" alt="Movie Poster" />
+                                        </div>
+                                    </a>
+                                    <div class="card-content">
+                                        <a href="@Url.Action("MovieDetails", "Home", new { title = movie.title, id = movie.id })">
+                                            <div class="titleHolder">
+                                                <h2>@movie.title</h2>
+                                            </div>
+                                        </a>
+                                        <div class="button-container">
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                @if (movie.IsSaved)
+                                                {
+                                                    <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                                        <input type="hidden" name="title" value="@movie.title" />
+                                                        <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                                        <input type="hidden" name="title" value="@movie.title" />
+                                                        <input type="hidden" name="overview" value="@movie.overview" />
+                                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
+                                                        <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
+                                                        <input type="hidden" name="movieid" value="@movie.id" />
+                                                        <button type="submit">Save</button>
+                                                    </form>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
+                                                <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+    </main>
+
+</body>
 <script src="~/js/site.js"></script>
 
 
