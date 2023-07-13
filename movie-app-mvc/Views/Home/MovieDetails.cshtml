@@ -85,7 +85,6 @@
     </div>
 
 
-    <button id="showColorButton">Show Color Code</button>
 
 
     <h4>Method called: @ViewBag.CallMethod</h4>
@@ -127,18 +126,6 @@
     </div>
 
     <div class="moviesDetailsContainer">
-
-
-        @foreach (var cast in ViewBag.CastList)
-        {
-            <h1>Cast Name: @cast.name</h1>
-            <h1>Show Character: @cast.character</h1>
-
-            <div class="castImageHolder">
-                <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
-
-            </div>
-        }
 
 
 
@@ -193,8 +180,8 @@
 
 <script src="~/js/site.js"></script>
 
-<script>
-    @* Previous js for trailer
+@*<script>
+     Previous js for trailer
         // Get the elements
         const showVideoButton = document.getElementById('show-video-button');
         const overlayVideo = document.getElementById('overlay-video');
@@ -215,14 +202,5 @@
             videoIframe.src = '';
             closeVideoButton.style.display = 'none';
         });
-    }*@
-
-            window.addEventListener('DOMContentLoaded', (event) => {
-            var colorCode = "@ViewBag.DominantColor";
-
-            // Show color code on button click
-            document.getElementById('showColorButton').addEventListener('click', function() {
-                alert("Color code: " + colorCode);
-            });
-        });
-</script>
+    }
+</script>*@
