@@ -99,22 +99,22 @@
 
 
 
-    <div class="movies-container">
-        <div class="card-container">
+    <div class="cast-container">
+        <div class="card-cast-container">
             @foreach (var cast in ViewBag.CastList)
             {
                 if (!string.IsNullOrEmpty(@cast.profile_path))
                 {
-                    <div class="card">
-                        <div class="card-image">
+                    <div class="card card-cast">
+                        <div class="card-image card-cast-image">
                             <img src="@cast.profile_path_url" alt="Movie Poster" />
                         </div>
-                        <div class="card-content">
-                            <div class="titleHolder">
-                                <h2>@cast.name</h2>
+                        <div class="card-cast-content">
+                            <div class="cast-titleHolder">
+                                <h2 class="cast-info">@cast.name</h2>
                             </div>
 
-                            <div class="CharacterHolder">
+                            <div class="cast-character">
                                 <h2>@cast.character</h2>
                             </div>
                         </div>
