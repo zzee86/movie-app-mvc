@@ -578,3 +578,147 @@ h2 {
 .CharacterHolder{
     margin-bottom: 20px;
 }
+.cast-info{
+    font-weight: bolder !important;
+    font-size: 1.2rem !important;
+}
+
+
+
+/* Cast Container */
+.cast-container {
+    overflow-x: auto;
+    margin: 1.5em 2em 2.5em 2em;
+}
+
+.card-cast-container {
+    display: inline-flex;
+}
+
+.card-cast {
+    width: 170px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .card-cast:last-child {
+        margin-right: 0;
+    }
+
+.card-cast-image img {
+    width: 170px;
+    height: 225px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    object-fit: cover;
+}
+
+.card-cast-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.cast-titleHolder {
+    height: 3.5em; /* Set a fixed height */
+    line-height: 20px; /* Set a line-height */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to two lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 0 .8em;
+}
+
+.cast-character {
+    padding: 0.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex-grow: 1;
+}
+
+    .cast-character h2 {
+        font-size: 1rem;
+        margin: 0;
+        color: white;
+        text-align: center;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+
+
+/*
+.card-cast-content {
+    padding: 10px;
+    flex-grow: 1;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+    .card-cast-content h2 {
+        font-size: 1rem;
+        margin: 0;
+        overflow: hidden;
+        color: white;
+    }
+
+.titleHolder {
+    height: 44px;
+    line-height: 22px;
+    width: 100%;
+}
+
+    .titleHolder h2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1rem;
+        margin: 0;
+        color: white;
+    }
+
+.card-cast-content .button-container {
+    margin-top: 0 !important;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.card-cast-content form .button-container {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.card-cast-content form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.card-cast-content button {
+    width: 169px;
+    height: 30px;
+    font-size: 1rem;
+    background-color: #2C2C2C;
+    color: #5899EF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+    .card-cast-content button.saved {
+        color: #FFE5E5;
+    }
+*/
