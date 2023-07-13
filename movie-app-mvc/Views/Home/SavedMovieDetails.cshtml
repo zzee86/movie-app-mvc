@@ -201,12 +201,12 @@
 
 
 
-        <button id="show-video-button">Show Video</button>
+        <button id="show-video-button" onclick="showVideo('@ViewBag.MovieKey')">Trailer</button>
 
         <!-- Overlay video element -->
         <div id="overlay-video">
             <div class="close-header">
-                <button id="close-button">Close</button>
+                <button id="close-button" onclick="closeVideo()">Close</button>
             </div>
             <div id="video-container">
                 <iframe id="video-iframe" width="100%" height="100%" frameborder="0" allowfullscreen autoplay></iframe>
@@ -222,34 +222,10 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script src="~/js/site.js"></script>
 
 
 <script>
-    // Get the elements
-    const showVideoButton = document.getElementById('show-video-button');
-    const overlayVideo = document.getElementById('overlay-video');
-    const closeVideoButton = document.getElementById('close-button');
-    const videoIframe = document.getElementById('video-iframe');
-    const movieKey = "@ViewBag.MovieKey";
-
-    // Add click event listener to the show video button
-    showVideoButton.addEventListener('click', function () {
-        overlayVideo.style.display = 'flex';
-        videoIframe.src = `https://www.youtube.com/embed/${movieKey}?autoplay=1`;
-        closeVideoButton.style.display = 'block';
-    });
-
-    // Add click event listener to the close video button
-    closeVideoButton.addEventListener('click', function () {
-        overlayVideo.style.display = 'none';
-        videoIframe.src = '';
-        closeVideoButton.style.display = 'none';
-    });
-
-
-
-
-
             window.addEventListener('DOMContentLoaded', (event) => {
             var colorCode = "@ViewBag.DominantColor";
 

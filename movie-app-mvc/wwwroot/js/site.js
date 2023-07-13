@@ -2,29 +2,22 @@
     alert("You must be signed in to perform this action.");
 }
 
-function playVideo() {
-    // Get the elements
-    const showVideoButton = document.getElementById('show-video-button');
+function showVideo(movieKey) {
     const overlayVideo = document.getElementById('overlay-video');
     const closeVideoButton = document.getElementById('close-button');
     const videoIframe = document.getElementById('video-iframe');
-    const movieKey = "@ViewBag.MovieKey";
 
-
-    // Add click event listener to the show video button
-    showVideoButton.addEventListener('click', function () {
-        overlayVideo.style.display = 'flex';
-        videoIframe.src = `https://www.youtube.com/embed/${movieKey}?autoplay=1`;
-        closeVideoButton.style.display = 'block';
-    });
-
-    // Add click event listener to the close video button
-    closeVideoButton.addEventListener('click', function () {
-        overlayVideo.style.display = 'none';
-        videoIframe.src = '';
-        closeVideoButton.style.display = 'none';
-    });
+    overlayVideo.style.display = 'flex';
+    videoIframe.src = `https://www.youtube.com/embed/${movieKey}?autoplay=1`;
+    closeVideoButton.style.display = 'block';
 }
 
-// Call the method to handle the overlay video functionality
-playVideo();
+function closeVideo() {
+    const overlayVideo = document.getElementById('overlay-video');
+    const videoIframe = document.getElementById('video-iframe');
+    const closeVideoButton = document.getElementById('close-button');
+
+    overlayVideo.style.display = 'none';
+    videoIframe.src = '';
+    closeVideoButton.style.display = 'none';
+}
