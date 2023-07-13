@@ -5,8 +5,7 @@
 
 
 
-function handleOverlayVideo() {
-    // Get the elements
+function handleOverlayVideo(string movieKey) {
     const showVideoButton = document.getElementById('show-video-button');
     const overlayVideo = document.getElementById('overlay-video');
     const closeVideoButton = document.getElementById('close-button');
@@ -15,7 +14,7 @@ function handleOverlayVideo() {
     // Add click event listener to the show video button
     showVideoButton.addEventListener('click', function () {
         overlayVideo.style.display = 'flex';
-        videoIframe.src = 'https://www.youtube.com/embed/6JnN1DmbqoU?autoplay=1';
+        videoIframe.src = `https://www.youtube.com/embed/${movieKey}?autoplay=1`;
         closeVideoButton.style.display = 'block';
     });
 

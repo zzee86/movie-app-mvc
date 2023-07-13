@@ -17,18 +17,6 @@
 
     @Html.Partial("_NavBar")
 
-    <button id="showColorButton">Show Color Code</button>
-
-
-    <h4>Method called: @ViewBag.CallMethod</h4>
-    <h4>Poster Url: @ViewBag.PosterURL</h4>
-
-
-    <h4>DominantColorTransparency: @ViewBag.DominantColorTransparency</h4>
-
-
-
-
 
     <div class="hero-section">
 
@@ -95,6 +83,20 @@
 
         </div>
     </div>
+
+
+    <button id="showColorButton">Show Color Code</button>
+
+
+    <h4>Method called: @ViewBag.CallMethod</h4>
+    <h4>Poster Url: @ViewBag.PosterURL</h4>
+
+
+    <h4>DominantColorTransparency: @ViewBag.DominantColorTransparency</h4>
+
+
+
+
 
 
 
@@ -190,6 +192,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
+@*<script src="~/js/site.js"></script>*@
 
 <script>
     // Get the elements
@@ -212,9 +215,6 @@
         videoIframe.src = '';
         closeVideoButton.style.display = 'none';
     });
-
-
-
 
 
             window.addEventListener('DOMContentLoaded', (event) => {
