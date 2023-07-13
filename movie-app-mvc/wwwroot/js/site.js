@@ -2,14 +2,14 @@
     alert("You must be signed in to perform this action.");
 }
 
-
-
-
-function handleOverlayVideo(string movieKey) {
+function playVideo() {
+    // Get the elements
     const showVideoButton = document.getElementById('show-video-button');
     const overlayVideo = document.getElementById('overlay-video');
     const closeVideoButton = document.getElementById('close-button');
     const videoIframe = document.getElementById('video-iframe');
+    const movieKey = "@ViewBag.MovieKey";
+
 
     // Add click event listener to the show video button
     showVideoButton.addEventListener('click', function () {
@@ -27,4 +27,4 @@ function handleOverlayVideo(string movieKey) {
 }
 
 // Call the method to handle the overlay video functionality
-handleOverlayVideo();
+playVideo();
