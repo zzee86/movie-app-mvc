@@ -433,9 +433,36 @@ namespace movie_app_mvc.Controllers
 
 
             // Main content on details page
-            string movie_tv_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4"; ;
+            string movie_tv_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
 
             TvShowDetails.Root movie_tv_details = await FetchTvShows(movie_tv_url);
+
+            string media_pg_rating_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}/content_ratings?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/release_dates?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+
+            if (media_type == "tv")
+            {
+                TvPGRating.Root media_pg_rating = await FetchTvShowPGRating(media_pg_rating_url);
+
+                if (media_pg_rating != null)
+                {
+                    var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
+
+                    ViewBag.TvPGRating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
+                }
+            }
+            else
+            {
+                MoviePGRating.Root media_pg_rating = await FetchMoviePGRating(media_pg_rating_url);
+                if (media_pg_rating != null)
+                {
+                    var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
+
+                    if (result != null)
+                    {
+                        ViewBag.MoviePGRating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
+                    }
+                }
+            }
 
             if (movie_tv_details != null)
             {
@@ -626,6 +653,35 @@ namespace movie_app_mvc.Controllers
             }
         }
 
+        private async Task<TvPGRating.Root> FetchTvShowPGRating(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(json); // Print the JSON response to the console
+                var info = JsonConvert.DeserializeObject<TvPGRating.Root>(json);
+
+                return info;
+            }
+        }
+
+        private async Task<MoviePGRating.Root> FetchMoviePGRating(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(json); // Print the JSON response to the console
+                var info = JsonConvert.DeserializeObject<MoviePGRating.Root>(json);
+
+                return info;
+            }
+        }
 
         public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {

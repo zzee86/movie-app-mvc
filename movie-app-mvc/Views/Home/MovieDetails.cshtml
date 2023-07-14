@@ -39,6 +39,7 @@
 
             @if (@ViewBag.Media_Key == "tv")
             {
+                <h3>@ViewBag.TvPGRating</h3>
                 <h3>@ViewBag.SeasonNumber</h3>
                 <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
                 <h3>@ViewBag.EpisodeRuntime Minute</h3>
@@ -50,6 +51,7 @@
             }
             else
             {
+                <h3>@ViewBag.MoviePGRating</h3>
                 <h3>@ViewBag.ReleaseDate</h3>
                 <h3>@ViewBag.Runtime Minutes</h3>
             }
@@ -181,26 +183,26 @@
 <script src="~/js/site.js"></script>
 
 @*<script>
-     Previous js for trailer
-        // Get the elements
-        const showVideoButton = document.getElementById('show-video-button');
-        const overlayVideo = document.getElementById('overlay-video');
-        const closeVideoButton = document.getElementById('close-button');
-        const videoIframe = document.getElementById('video-iframe');
-        const movieKey = "@ViewBag.MovieKey";
+         Previous js for trailer
+            // Get the elements
+            const showVideoButton = document.getElementById('show-video-button');
+            const overlayVideo = document.getElementById('overlay-video');
+            const closeVideoButton = document.getElementById('close-button');
+            const videoIframe = document.getElementById('video-iframe');
+            const movieKey = "@ViewBag.MovieKey";
 
-        // Add click event listener to the show video button
-        showVideoButton.addEventListener('click', function () {
-            overlayVideo.style.display = 'flex';
-            videoIframe.src = `https://www.youtube.com/embed/${movieKey}?autoplay=1`;
-            closeVideoButton.style.display = 'block';
-        });
+            // Add click event listener to the show video button
+            showVideoButton.addEventListener('click', function () {
+                overlayVideo.style.display = 'flex';
+                videoIframe.src = `https://www.youtube.com/embed/${movieKey}?autoplay=1`;
+                closeVideoButton.style.display = 'block';
+            });
 
-        // Add click event listener to the close video button
-        closeVideoButton.addEventListener('click', function () {
-            overlayVideo.style.display = 'none';
-            videoIframe.src = '';
-            closeVideoButton.style.display = 'none';
-        });
-    }
-</script>*@
+            // Add click event listener to the close video button
+            closeVideoButton.addEventListener('click', function () {
+                overlayVideo.style.display = 'none';
+                videoIframe.src = '';
+                closeVideoButton.style.display = 'none';
+            });
+        }
+    </script>*@
