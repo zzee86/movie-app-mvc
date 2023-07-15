@@ -30,11 +30,11 @@
 
             @if (string.IsNullOrEmpty(@Model.title))
             {
-                <h3>@ViewBag.Backup_Title</h3>
+                <h3 class="detail-text">@ViewBag.Backup_Title</h3>
             }
             else
             {
-                <h3>@Model.title</h3>
+                <h3 class="detail-text">@Model.title</h3>
             }
 
             @if (@ViewBag.Media_Key == "tv")
