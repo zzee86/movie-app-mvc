@@ -19,8 +19,6 @@
 
 
     <div class="hero-section">
-
-
         <div class="detail-card">
             <div class="detail-card-image">
                 <img src="@Model.poster_path_url" alt="Movie Poster" />
@@ -152,8 +150,8 @@
 
 
         @*<form method="post" action="@Url.Action("movieTrailer", "Home", new { id = Model.id })">
-                <button id="show-video-button" type="submit">Show Video</button>
-            </form>*@
+            <button id="show-video-button" type="submit">Show Video</button>
+        </form>*@
 
 
 
@@ -171,6 +169,11 @@
             </div>
         </div>
 
+
+
+        <div>
+            <iframe src="https://www.youtube.com/embed/@ViewBag.MovieKey?autoplay=1" width="50%" height="50%" frameborder="0"></iframe>
+        </div>
 
     </div>
 

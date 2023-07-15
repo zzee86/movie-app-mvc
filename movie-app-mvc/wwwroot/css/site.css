@@ -1,4 +1,6 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+﻿/*@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,700;1,900&display=swap');
 
 html {
     font-size: 16px;
@@ -652,3 +654,8 @@ h2 {
         text-overflow: ellipsis;
     }
 
+.testing-tmp {
+    font-weight:bolder;
+    font-size:1.2em;
+
+}
