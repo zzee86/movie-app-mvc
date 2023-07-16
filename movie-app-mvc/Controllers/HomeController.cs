@@ -463,13 +463,20 @@ namespace movie_app_mvc.Controllers
                     }
                 }
             }
+            if (movie == null || movie.poster_path == null)
+            {
+                // Redirect the user to another action or view
+                return RedirectToAction("Index", "Home");
+            }
 
-            if (movie_tv_details != null)
+
+
+                if (movie_tv_details != null)
             {
                 if (media_type == "tv")
                 {
                     TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
-                    ViewBag.EpisodeRuntime = (season != null) ? season.runtime.Value : 24;
+                    ViewBag.EpisodeRuntime = season?.runtime ?? 24;
 
                     var seasonInfo = movie_tv_details.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
                     int episodeCount = seasonInfo?.episode_count ?? 0;
@@ -480,14 +487,41 @@ namespace movie_app_mvc.Controllers
                     ViewBag.episodeTotalCount = (episodeTotalCount != null) ? episodeTotalCount : 0;
                     ViewBag.SeasonNumber = (seasonCount != null) ? seasonCount : 1;
                     ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
-                    ViewBag.SeasonAirDate = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
+                    var seasonrelease = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
                     ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
+
+
+
+                    DateTime releaseDate = DateTime.Parse(seasonInfo?.air_date);
+                    ViewBag.ReleaseDate = releaseDate.Year.ToString();
+
+
+
+                    DateTime initialRelease = DateTime.Parse(movie_tv_details.first_air_date);
+                    ViewBag.InitialReleaseDate = initialRelease.Year.ToString();
+
+
+
+                    DateTime finalRelease = DateTime.Parse(movie_tv_details.last_air_date);
+                    ViewBag.FinalReleaseDate = finalRelease.Year.ToString();
+
+                    if (movie_tv_details.status == "Ended" && movie_tv_details.seasons.Sum(s => s.season_number) >= 2)
+                    {
+                        ViewBag.SeriesEnded = "yes";
+                    }
+                    else
+                    {
+                        ViewBag.SeriesEnded = "no";
+
+                    }
                 }
                 else
                 {
-
-                    ViewBag.ReleaseDate = movie_tv_details.release_date;
+                    // Variables connected in tv show details model
+                    DateTime releaseDate = DateTime.Parse(movie_tv_details.release_date);
+                    ViewBag.ReleaseDate = releaseDate.Year.ToString();
                     ViewBag.Runtime = movie_tv_details.runtime;
+
 
                 }
 
@@ -512,7 +546,7 @@ namespace movie_app_mvc.Controllers
             ViewBag.MovieDetailsID = id;
 
             // Developer use
-            ViewBag.ReleaseDate = movie.release_date;
+            //ViewBag.ReleaseDate = movie.release_date;
             ViewBag.Genre = movie.genre_ids;
 
             ViewBag.Backup_Title = title;
@@ -575,6 +609,13 @@ namespace movie_app_mvc.Controllers
 
                         // Store the dominant color in the ViewBag
                         ViewBag.DominantColor = dominantColor;
+
+
+
+                        // Set the dominant color in the ViewBag
+                        ViewBag.DominantColorRed = pixel.R;
+                        ViewBag.DominantColorGreen = pixel.G;
+                        ViewBag.DominantColorBlue = pixel.B;
 
                         AddTransparency(dominantColor);
                     }

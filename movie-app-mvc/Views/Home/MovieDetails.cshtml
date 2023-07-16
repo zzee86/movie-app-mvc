@@ -18,6 +18,7 @@
     @Html.Partial("_NavBar")
 
 
+
     <div class="hero-section">
         <div class="detail-card">
             <div class="detail-card-image">
@@ -26,13 +27,34 @@
         </div>
         <div class="detail-information">
 
-            @if (string.IsNullOrEmpty(@Model.title))
+            @if (string.IsNullOrEmpty(Model.title))
             {
-                <h3 class="detail-text">@ViewBag.Backup_Title</h3>
+                <h3 class="detail-text">
+                    @ViewBag.Backup_Title
+                    @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                    {
+                        //if (ViewBag.SeriesEnded == "yes")
+                        //{
+                        @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")
+                        @*}
+                            else
+                            {
+                                @($"({ViewBag.InitialReleaseDate})")
+
+                            }*@
+
+                    }
+
+                    else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                    {
+                        @($"({ViewBag.ReleaseDate})")
+                    }
+                </h3>
             }
+
             else
             {
-                <h3 class="detail-text">@Model.title</h3>
+                <h3 class="detail-text">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h3>
             }
 
             @if (@ViewBag.Media_Key == "tv")
@@ -72,16 +94,17 @@
 
         </div>
 
-        <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
-            <div class="dark-tint"></div>
+        <div class="tmp-container">
+            <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
+                <div class="dark-tint"></div>
+            </div>
+
+            <div class="background-image-holder">
+                <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+            </div>
         </div>
 
-        <div class="background-image-holder">
 
-            <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
-
-
-        </div>
     </div>
 
 
@@ -150,8 +173,8 @@
 
 
         @*<form method="post" action="@Url.Action("movieTrailer", "Home", new { id = Model.id })">
-            <button id="show-video-button" type="submit">Show Video</button>
-        </form>*@
+                <button id="show-video-button" type="submit">Show Video</button>
+            </form>*@
 
 
 
