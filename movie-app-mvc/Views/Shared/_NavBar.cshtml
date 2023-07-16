@@ -1,21 +1,23 @@
-﻿
-<header>
-    <!-- Navbar -->
+﻿<header>
     <nav>
-        <a href="@Url.Action("Index", "Home")">Home</a>
-
+        <div class="title">
+            <a href="@Url.Action("Index", "Home")">
+                Movie<span class="app">App</span>
+            </a>
+        </div>
 
         @if (User.Identity.IsAuthenticated)
         {
-            <a href="@Url.Action("savedMovies", "Home")">Saved</a>
-            <a href="@Url.Action("Logout", "Login")">Logout</a>
-
+            <div class="links">
+                <a href="@Url.Action("savedMovies", "Home")">Saved</a>
+                <a href="@Url.Action("Logout", "Login")">Logout</a>
+            </div>
         }
         else
         {
-            <a href="@Url.Action("Index", "Login")">Login</a>
+            <div class="links">
+                <a href="@Url.Action("Index", "Login")">Login</a>
+            </div>
         }
     </nav>
 </header>
-
-

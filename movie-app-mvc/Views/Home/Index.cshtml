@@ -11,32 +11,7 @@
 
     <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
-    <!-- Navigation Bar-->
-    <!--<div class="navbar fixed-top" id="navbar">
-        <div class="container">
-            <a class="logo" href="index.html">KKS<span>Housing</span></a>
-
-            <img id="mobile-cta" class="mobile-menu" src="images/menu.svg"
-                 alt="Open Navigation">
-
-            <nav>
-                <img id="mobile-exit" class="mobile-menu-exit" src="images/exit.svg"
-                     alt="Close Navigation">
-
-                <ul>
-                </ul>
-
-                <ul class="primary-nav">
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="products.html">Products</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>-->
-
     @Html.Partial("_NavBar")
-
 
     <main>
 
@@ -45,15 +20,15 @@
                 <div class="search-content">
                     <form method="get" action="@Url.Action("Index")">
                         <div class="search-bar">
-                            <input type="text" name="searchQuery" placeholder="Search for movies" />
+                            <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" />
                         </div>
-                        <div class="page-info">
-                            <h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>
-                            @*@if (@User.Identity.IsAuthenticated)
+                        <!--<div class="page-info">-->
+                            <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
+                            <!--@if (@User.Identity.IsAuthenticated)
                                 {
                                     <h4>@User.FindFirst("Username")?.Value</h4>
-                                }*@
-                        </div>
+                                }
+                        </div>-->
                     </form>
                 </div>
             </div>
