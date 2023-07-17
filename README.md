@@ -6,7 +6,7 @@ Explore and discover a vast collection of movies, effortlessly search through th
 ![SCR-20230717-ramh](https://github.com/zzee86/movie-app-mvc/assets/94978880/2015a12d-81f0-49cc-883b-217d2227e0b4)
 
 ### Search Movies
-![SCR-20230717-rcio](https://github.com/zzee86/movie-app-mvc/assets/94978880/b6e7006d-b376-48b3-8bff-b11724ef4c51)
+![SCR-20230717-rkie](https://github.com/zzee86/movie-app-mvc/assets/94978880/421e7068-641f-43a3-8364-fd4c7abec1e7)
 
 ### Saved Movies
 ![SCR-20230717-rbkx](https://github.com/zzee86/movie-app-mvc/assets/94978880/64a42c07-dfd4-4fb0-92e3-01ba4618819c)
