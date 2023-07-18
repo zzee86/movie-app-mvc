@@ -1,5 +1,9 @@
 ﻿@model MovieInfo.Result
 
+@{
+    ViewData["Title"] = "Details Page";
+}
+
 
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
@@ -13,21 +17,181 @@
 
     @Html.Partial("_NavBar")
 
+    <div class="hero-section">
+        <div class="detail-card">
+            <div class="detail-card-image">
+                <img src="@Model.poster_path_url" alt="Movie Poster" />
+            </div>
+        </div>
+        <div class="detail-information">
 
-    <h1>testing @ViewBag.TestingTitle</h1>
-    <h1>testing @ViewBag.TestingID</h1>
-    @if (Model != null && !string.IsNullOrEmpty(Model.title))
+            @if (string.IsNullOrEmpty(Model.title))
+            {
+                <h3 class="detail-text">
+                    @ViewBag.Backup_Title
+                </h3>
+
+                @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                {
+                    //if (ViewBag.SeriesEnded == "yes")
+                    //{
+                    <h3 class="detail-text"> @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h3>
+                    @*}
+                        else
+                        {
+                            @($"({ViewBag.InitialReleaseDate})")
+
+                        }*@
+
+                }
+
+                else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                {
+                    <h3 class="detail-text"> @($"({ViewBag.ReleaseDate})")</h3>
+                }
+            }
+
+            else
+            {
+                <h2 class="detail-text">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h2>
+            }
+
+            @if (@ViewBag.Media_Key == "tv")
+            {
+                <h3>@ViewBag.TvPGRating</h3>
+                <h3>@ViewBag.SeasonNumber</h3>
+                <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
+                <h3>@ViewBag.EpisodeRuntime</h3>
+
+
+
+                <h3>@ViewBag.SeasonAirDate</h3>
+                <h3>@ViewBag.SeasonRuntime</h3>
+            }
+            else
+            {
+                <h3>@ViewBag.MoviePGRating</h3>
+                <h3 class="detail-text"> Release date: @ViewBag.FullReleaseDate </h3>
+                <h3>@ViewBag.Runtime</h3>
+            }
+
+            <h3>@ViewBag.Media_Overview</h3>
+            <div>
+                <h3 class="genre-title">Genres:</h3>
+                <div class="genre-list">
+                    @for (int i = 0; i < ViewBag.Genres.Count; i++)
+                    {
+                        <h3 class="genre-item">@ViewBag.Genres[i]</h3>
+                        @if (i != ViewBag.Genres.Count - 1)
+                        {
+                            <span class="comma"></span>
+                        }
+                    }
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div class="tmp-container">
+            <div class="dominant" style="background-color: @ViewBag.DominantColorTransparency;">
+                <div class="dark-tint"></div>
+            </div>
+
+            <div class="background-image-holder">
+                <img src="@Model.backdrop_path_url" class="media_background_image" alt="background-image" />
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+    <h4>Method called: @ViewBag.CallMethod</h4>
+    <h4>Poster Url: @ViewBag.PosterURL</h4>
+
+
+    <h4>DominantColorTransparency: @ViewBag.DominantColorTransparency</h4>
+
+
+
+
+
+
+
+    <div class="cast-container">
+        <div class="card-cast-container">
+            @foreach (var cast in ViewBag.CastList)
+            {
+                if (!string.IsNullOrEmpty(@cast.profile_path))
+                {
+                    <div class="card card-cast">
+                        <div class="card-image card-cast-image">
+                            <img src="@cast.profile_path_url" alt="Movie Poster" />
+                        </div>
+                        <div class="card-cast-content">
+                            <div class="cast-titleHolder">
+                                <h2 class="cast-info">@cast.name</h2>
+                            </div>
+
+                            <div class="cast-character">
+                                <h2>@cast.character</h2>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="moviesDetailsContainer">
+
+
+
+        <h1>@Model.title</h1>
+        <h1>@Model.overview</h1>
+
+
+        <h1>Show ID: @ViewBag.movieID</h1>
+        <h1>Show Key: @ViewBag.MovieKey</h1>
+
+        @if (@ViewBag.Media_Key == "tv")
         {
-            <h1>@Model.title</h1>
-            <h1>@Model.overview</h1>
+            <h1>Seasons: @ViewBag.SeasonNumber</h1>
+
+            <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
+
+            <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
+
+            <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
         }
-        @*else
-        {
-            <h1>Hello</h1>
 
-            <h1> over should be @Model.overview</h1>
+        <button id="show-video-button" onclick="showVideo('@ViewBag.MovieKey')">Trailer</button>
 
-        }*@
+        <!-- Overlay video element -->
+        <div id="overlay-video">
+            <div class="close-header">
+                <button id="close-button" onclick="closeVideo()">Close</button>
+            </div>
+            <div id="video-container">
+                <iframe id="video-iframe" width="100%" height="100%" frameborder="0" allowfullscreen autoplay></iframe>
+            </div>
+        </div>
+
+
+
+        <div>
+            <iframe src="https://www.youtube.com/embed/@ViewBag.MovieKey?autoplay=1" width="50%" height="50%" frameborder="0"></iframe>
+        </div>
+
+    </div>
+
+
+
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>

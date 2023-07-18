@@ -25,10 +25,10 @@
                         <!--<div class="page-info">-->
                         <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
                         <!--@if (@User.Identity.IsAuthenticated)
-                    {
-                        <h4>@User.FindFirst("Username")?.Value</h4>
-                    }
-            </div>-->
+                                {
+                                    <h4>@User.FindFirst("Username")?.Value</h4>
+                                }
+                        </div>-->
                     </form>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                         {
                             <div class="card">
 
-                                <a href="@Url.Action("Index", "Details", new { title = movie.title, id = movie.id})">
+                                <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id})">
                                     <div class="card-image">
                                         <div class="overlay">
                                             <!-- Overlay content -->
@@ -88,7 +88,7 @@
                                     </div>
                                 </a>
                                 <div class="card-content">
-                                    <a href="@Url.Action("Index", "Details", new { title = movie.title, id = movie.id })">
+                                    <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">
 
                                         <div class="titleHolder">
                                             <h2>@movie.title</h2>
@@ -146,7 +146,7 @@
                             @foreach (var movie in Model.PopularMovies)
                             {
                                 <div class="card">
-                                    <a href="@Url.Action("Index", "Details", new { title = movie.title, id = movie.id })">
+                                    <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">
                                         <div class="card-image">
                                             <div class="overlay">
                                                 <!-- Overlay content -->
@@ -159,7 +159,7 @@
                                         </div>
                                     </a>
                                     <div class="card-content">
-                                        <a href="@Url.Action("Index", "Details", new { title = movie.title, id = movie.id })">
+                                        <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">
 
                                             <div class="titleHolder">
                                                 <h2>@movie.title</h2>
@@ -212,7 +212,7 @@
                             @foreach (var movie in Model.TopRatedMovies)
                             {
                                 <div class="card">
-                                    <a href="@Url.Action("Index", "Details", new { title = movie.title, id = movie.id })">
+                                    <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">
                                         <div class="card-image">
                                             <div class="overlay">
                                                 <!-- Overlay content -->
@@ -225,7 +225,7 @@
                                         </div>
                                     </a>
                                     <div class="card-content">
-                                        <a href="@Url.Action("Index", "Details", new { title = movie.title, id = movie.id })">
+                                        <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">
                                             <div class="titleHolder">
                                                 <h2>@movie.title</h2>
                                             </div>

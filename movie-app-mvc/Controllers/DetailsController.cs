@@ -17,68 +17,8 @@ namespace movie_app_mvc.Controllers
     {
         private string connectionString = "server=localhost;database=saved_movies;user=root;";
 
-        public IActionResult Index(string title, int id)
-        {
-            return RedirectToAction("MovieDetails", new { title = title, id = id });
-
-        }
-
-        private async Task<MovieInfo.Root> FetchMovies(string url)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                var info = JsonConvert.DeserializeObject<MovieInfo.Root>(json);
-
-                return info;
-            }
-        }
-
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
-        {
-            List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
-
-            foreach (var movie in results)
-            {
-                if (string.IsNullOrEmpty(movie.title))
-                {
-                    // Use the name property if title is empty
-                    movie.title = movie.name;
-                }
-
-                if (string.IsNullOrEmpty(movie.poster_path) && (movie.known_for == null || movie.known_for.Count == 0))
-                {
-                    // Exclude the movie if it doesn't have a poster and no known_for data
-                    continue;
-                }
-
-                if (movie.known_for != null && movie.known_for.Count > 0)
-                {
-                    bool hasValidKnownFor = movie.known_for.Any(k => !string.IsNullOrEmpty(k.title) && !string.IsNullOrEmpty(k.poster_path));
-
-                    if (hasValidKnownFor)
-                    {
-                        // Filter out the movie if it has a valid known_for
-                        continue;
-                    }
-                }
-
-                //movie.IsSaved = MovieIsSaved(movie.title, userID);
-
-                movieResults.Add(movie);
-            }
-
-            return movieResults;
-        }
-
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
-            ViewBag.TestingTitle = title;
-            ViewBag.TestingID = id;
-
             // Get details on the movie
             string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
             MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
@@ -202,6 +142,59 @@ namespace movie_app_mvc.Controllers
 
             return View("MovieDetails", movie);
         }
+
+        private async Task<MovieInfo.Root> FetchMovies(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                var info = JsonConvert.DeserializeObject<MovieInfo.Root>(json);
+
+                return info;
+            }
+        }
+
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
+        {
+            List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
+
+            foreach (var movie in results)
+            {
+                if (string.IsNullOrEmpty(movie.title))
+                {
+                    // Use the name property if title is empty
+                    movie.title = movie.name;
+                }
+
+                if (string.IsNullOrEmpty(movie.poster_path) && (movie.known_for == null || movie.known_for.Count == 0))
+                {
+                    // Exclude the movie if it doesn't have a poster and no known_for data
+                    continue;
+                }
+
+                if (movie.known_for != null && movie.known_for.Count > 0)
+                {
+                    bool hasValidKnownFor = movie.known_for.Any(k => !string.IsNullOrEmpty(k.title) && !string.IsNullOrEmpty(k.poster_path));
+
+                    if (hasValidKnownFor)
+                    {
+                        // Filter out the movie if it has a valid known_for
+                        continue;
+                    }
+                }
+
+                //movie.IsSaved = MovieIsSaved(movie.title, userID);
+
+                movieResults.Add(movie);
+            }
+
+            return movieResults;
+        }
+
+
 
         private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)
         {
