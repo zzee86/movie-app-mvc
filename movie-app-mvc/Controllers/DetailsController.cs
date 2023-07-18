@@ -207,7 +207,6 @@ namespace movie_app_mvc.Controllers
         }
 
 
-
         private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)
         {
             string apiUrl = $"https://api.themoviedb.org/3/{mediaType}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
@@ -216,8 +215,6 @@ namespace movie_app_mvc.Controllers
 
             return video;
         }
-
-
 
 
         private async Task<List<Actors.Cast>> GetCastInfo(string mediaType, int id)
