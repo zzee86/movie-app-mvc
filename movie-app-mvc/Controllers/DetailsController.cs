@@ -19,8 +19,6 @@ namespace movie_app_mvc.Controllers
 
         public IActionResult Index(string title, int id)
         {
-            ViewBag.TestingTitle = title;
-            ViewBag.TestingID = id;
             return RedirectToAction("MovieDetails", new { title = title, id = id });
 
         }
@@ -78,6 +76,9 @@ namespace movie_app_mvc.Controllers
 
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
+            ViewBag.TestingTitle = title;
+            ViewBag.TestingID = id;
+
             // Get details on the movie
             string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
             MovieInfo.Root movieDetails = await FetchMovies(apiUrl);

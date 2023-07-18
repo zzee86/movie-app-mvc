@@ -14,14 +14,14 @@
     @Html.Partial("_NavBar")
 
 
-    <h1>testing @ViewBag.TestingTitle;</h1>
-    <h1>testing @ViewBag.TestingID;</h1>
-    @*@if (Model != null && !string.IsNullOrEmpty(Model.title))
+    <h1>testing @ViewBag.TestingTitle</h1>
+    <h1>testing @ViewBag.TestingID</h1>
+    @if (Model != null && !string.IsNullOrEmpty(Model.title))
         {
             <h1>@Model.title</h1>
             <h1>@Model.overview</h1>
         }
-        else
+        @*else
         {
             <h1>Hello</h1>
 
