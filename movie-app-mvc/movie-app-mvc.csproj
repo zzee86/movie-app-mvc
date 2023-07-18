@@ -13,6 +13,7 @@
     <None Remove="Models\" />
     <None Remove="Views\Shared\" />
     <None Remove="Views\Login\" />
+    <None Remove="Views\Details\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -20,6 +21,7 @@
     <Folder Include="wwwroot\js\" />
     <Folder Include="Views\Login\" />
     <Folder Include="wwwroot\Images\" />
+    <Folder Include="Views\Details\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
