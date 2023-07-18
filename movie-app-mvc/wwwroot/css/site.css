@@ -553,6 +553,12 @@ h2 {
     width: 50%;
 }
 
+    .detail-information h2 {
+        font-size: 1.5em;
+        font-weight: bolder;
+        text-align: left;
+    }
+
     .detail-information h3 {
         font-size: 1.3em;
         font-weight: bold;

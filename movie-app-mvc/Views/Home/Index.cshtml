@@ -20,15 +20,15 @@
                 <div class="search-content">
                     <form method="get" action="@Url.Action("Index")">
                         <div class="search-bar">
-                            <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" />
+                            <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" value="@ViewBag.SearchQuery" />
                         </div>
                         <!--<div class="page-info">-->
-                            <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
-                            <!--@if (@User.Identity.IsAuthenticated)
-                                {
-                                    <h4>@User.FindFirst("Username")?.Value</h4>
-                                }
-                        </div>-->
+                        <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
+                        <!--@if (@User.Identity.IsAuthenticated)
+                    {
+                        <h4>@User.FindFirst("Username")?.Value</h4>
+                    }
+            </div>-->
                     </form>
                 </div>
             </div>

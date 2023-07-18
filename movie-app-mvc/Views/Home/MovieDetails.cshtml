@@ -31,30 +31,31 @@
             {
                 <h3 class="detail-text">
                     @ViewBag.Backup_Title
-                    @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
-                    {
-                        //if (ViewBag.SeriesEnded == "yes")
-                        //{
-                        @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")
-                        @*}
-                            else
-                            {
-                                @($"({ViewBag.InitialReleaseDate})")
-
-                            }*@
-
-                    }
-
-                    else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
-                    {
-                        @($"({ViewBag.ReleaseDate})")
-                    }
                 </h3>
+
+                @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                {
+                    //if (ViewBag.SeriesEnded == "yes")
+                    //{
+                    <h3 class="detail-text"> @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h3>
+                    @*}
+                        else
+                        {
+                            @($"({ViewBag.InitialReleaseDate})")
+
+                        }*@
+
+                }
+
+                else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                {
+                    <h3 class="detail-text"> @($"({ViewBag.ReleaseDate})")</h3>
+                }
             }
 
             else
             {
-                <h3 class="detail-text">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h3>
+                <h2 class="detail-text">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h2>
             }
 
             @if (@ViewBag.Media_Key == "tv")
@@ -62,7 +63,7 @@
                 <h3>@ViewBag.TvPGRating</h3>
                 <h3>@ViewBag.SeasonNumber</h3>
                 <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
-                <h3>@ViewBag.EpisodeRuntime Minute</h3>
+                <h3>@ViewBag.EpisodeRuntime</h3>
 
 
 
@@ -72,10 +73,11 @@
             else
             {
                 <h3>@ViewBag.MoviePGRating</h3>
-                <h3>@ViewBag.ReleaseDate</h3>
-                <h3>@ViewBag.Runtime Minutes</h3>
+                <h3 class="detail-text"> Release date: @ViewBag.FullReleaseDate </h3>
+                <h3>@ViewBag.Runtime</h3>
             }
 
+            <h3>@ViewBag.Media_Overview</h3>
             <div>
                 <h3 class="genre-title">Genres:</h3>
                 <div class="genre-list">

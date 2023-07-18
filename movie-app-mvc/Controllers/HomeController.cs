@@ -448,6 +448,9 @@ namespace movie_app_mvc.Controllers
                     var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
 
                     ViewBag.TvPGRating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
+
+                    ViewBag.Media_Overview = movie_tv_details.overview;
+
                 }
             }
             else
@@ -455,13 +458,16 @@ namespace movie_app_mvc.Controllers
                 MoviePGRating.Root media_pg_rating = await FetchMoviePGRating(media_pg_rating_url);
                 if (media_pg_rating != null)
                 {
-                    var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
+                    // PG-age version var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
+                    var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "GB");
 
                     if (result != null)
                     {
                         ViewBag.MoviePGRating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
                     }
                 }
+                ViewBag.Media_Overview = movie.overview;
+
             }
             if (movie == null || movie.poster_path == null)
             {
@@ -471,7 +477,7 @@ namespace movie_app_mvc.Controllers
 
 
 
-                if (movie_tv_details != null)
+            if (movie_tv_details != null)
             {
                 if (media_type == "tv")
                 {
@@ -494,6 +500,7 @@ namespace movie_app_mvc.Controllers
 
                     DateTime releaseDate = DateTime.Parse(seasonInfo?.air_date);
                     ViewBag.ReleaseDate = releaseDate.Year.ToString();
+                    ViewBag.FullReleaseDate = releaseDate;
 
 
 
@@ -520,9 +527,10 @@ namespace movie_app_mvc.Controllers
                     // Variables connected in tv show details model
                     DateTime releaseDate = DateTime.Parse(movie_tv_details.release_date);
                     ViewBag.ReleaseDate = releaseDate.Year.ToString();
-                    ViewBag.Runtime = movie_tv_details.runtime;
+                    ViewBag.FullReleaseDate = releaseDate.ToString("dd/MM/yyyy");
 
 
+                    ConvertRuntime(movie_tv_details.runtime);
                 }
 
                 // Common between the media types
@@ -574,6 +582,15 @@ namespace movie_app_mvc.Controllers
 
             return castInfo;
         }
+
+        private void ConvertRuntime(int runtime)
+        {
+            int hours = runtime / 60;
+            int minutes = runtime % 60;
+            string formattedRuntime = $"{hours}h {minutes}m";
+            ViewBag.Runtime = formattedRuntime;
+        }
+
 
         private void SaveMoviePosterToDatabase(string posterUrl)
         {
