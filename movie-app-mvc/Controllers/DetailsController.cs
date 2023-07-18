@@ -33,9 +33,10 @@ namespace movie_app_mvc.Controllers
             string media_type = (movie.media_type == "movie") ? "movie" : "tv";
             // Get trailer
             VideoInfo.Result video = await GetTrailer(media_type, id);
+            ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
 
             // Main content on details page
-            string movie_tv_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            string movie_tv_url = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
             TvShowDetails.Root movie_tv_details = await FetchTvShows(movie_tv_url);
 
             string media_pg_rating_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}/content_ratings?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/release_dates?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
@@ -65,7 +66,6 @@ namespace movie_app_mvc.Controllers
                         ViewBag.MoviePGRating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
                     }
                 }
-                ViewBag.Media_Overview = movie.overview;
             }
 
             if (movie == null || movie.poster_path == null)
@@ -78,61 +78,29 @@ namespace movie_app_mvc.Controllers
             {
                 if (media_type == "tv")
                 {
-                    TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
-                    ViewBag.EpisodeRuntime = season?.runtime ?? 24;
-
-                    var seasonInfo = movie_tv_details.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
-                    int episodeCount = seasonInfo?.episode_count ?? 0;
-                    int seasonCount = seasonInfo?.season_number ?? 0;
-
-                    int episodeTotalCount = movie_tv_details.seasons.Sum(s => s.episode_count);
-                    ViewBag.episodeTotalCount = (episodeTotalCount != null) ? episodeTotalCount : 0;
-                    ViewBag.SeasonNumber = (seasonCount != null) ? seasonCount : 1;
-                    ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
-                    var seasonrelease = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
-                    ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
-
-                    DateTime releaseDate = DateTime.Parse(seasonInfo?.air_date);
-                    ViewBag.ReleaseDate = releaseDate.Year.ToString();
-                    ViewBag.FullReleaseDate = releaseDate;
-
-                    DateTime initialRelease = DateTime.Parse(movie_tv_details.first_air_date);
-                    ViewBag.InitialReleaseDate = initialRelease.Year.ToString();
-
-                    DateTime finalRelease = DateTime.Parse(movie_tv_details.last_air_date);
-                    ViewBag.FinalReleaseDate = finalRelease.Year.ToString();
-
-                    if (movie_tv_details.status == "Ended" && movie_tv_details.seasons.Sum(s => s.season_number) >= 2)
-                    {
-                        ViewBag.SeriesEnded = "yes";
-                    }
-                    else
-                    {
-                        ViewBag.SeriesEnded = "no";
-                    }
+                    TVShowViewBags(movie_tv_details);
                 }
                 else
                 {
-                    DateTime releaseDate = DateTime.Parse(movie_tv_details.release_date);
-                    ViewBag.ReleaseDate = releaseDate.Year.ToString();
-                    ViewBag.FullReleaseDate = releaseDate.ToString("dd/MM/yyyy");
-
-                    ConvertRuntime(movie_tv_details.runtime);
+                    MovieViewBags(movie_tv_details);
                 }
 
                 // Common between the media types
                 List<string> genres = movie_tv_details.genres.Select(genre => genre.name).ToList();
                 ViewBag.Genres = genres;
 
-                ViewBag.CallMethod = "SaveMoviePosterToDatabase method called";
-                string posterUrl = movie.poster_path_url; // Replace this with the actual property containing the poster URL
+                string posterUrl = movie.poster_path_url;
                 SaveMoviePosterToDatabase(posterUrl);
+                ViewBag.Media_Overview = movie_tv_details.overview;
+
             }
 
             // Get details on the cast
             List<Actors.Cast> castInfo = await GetCastInfo(media_type, id);
             ViewBag.CastList = castInfo;
 
+
+            // Custom Values
             ViewBag.MovieDetailsTitle = title;
             ViewBag.MovieDetailsID = id;
             ViewBag.Backup_Title = title;
@@ -141,6 +109,50 @@ namespace movie_app_mvc.Controllers
             ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
 
             return View("MovieDetails", movie);
+        }
+
+        private void TVShowViewBags(TvShowDetails.Root movie_tv_details)
+        {
+            TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
+            ViewBag.EpisodeRuntime = season?.runtime ?? 24;
+
+            var seasonInfo = movie_tv_details.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
+            int episodeCount = seasonInfo?.episode_count ?? 0;
+            int seasonCount = seasonInfo?.season_number ?? 0;
+
+            int episodeTotalCount = movie_tv_details.seasons.Sum(s => s.episode_count);
+            ViewBag.episodeTotalCount = (episodeTotalCount != null) ? episodeTotalCount : 0;
+            ViewBag.SeasonNumber = (seasonCount != null) ? seasonCount : 1;
+            ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
+            var seasonrelease = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
+            ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
+
+            DateTime releaseDate = DateTime.Parse(seasonInfo?.air_date);
+            ViewBag.ReleaseDate = releaseDate.Year.ToString();
+            ViewBag.FullReleaseDate = releaseDate;
+
+            DateTime initialRelease = DateTime.Parse(movie_tv_details.first_air_date);
+            ViewBag.InitialReleaseDate = initialRelease.Year.ToString();
+
+            DateTime finalRelease = DateTime.Parse(movie_tv_details.last_air_date);
+            ViewBag.FinalReleaseDate = finalRelease.Year.ToString();
+
+            if (movie_tv_details.status == "Ended" && movie_tv_details.seasons.Sum(s => s.season_number) >= 2)
+            {
+                ViewBag.SeriesEnded = "yes";
+            }
+            else
+            {
+                ViewBag.SeriesEnded = "no";
+            }
+        }
+        private void MovieViewBags(TvShowDetails.Root movie_tv_details)
+        {
+            DateTime releaseDate = DateTime.Parse(movie_tv_details.release_date);
+            ViewBag.ReleaseDate = releaseDate.Year.ToString();
+            ViewBag.FullReleaseDate = releaseDate.ToString("dd/MM/yyyy");
+
+            ConvertRuntime(movie_tv_details.runtime);
         }
 
         private async Task<MovieInfo.Root> FetchMovies(string url)
@@ -204,6 +216,9 @@ namespace movie_app_mvc.Controllers
 
             return video;
         }
+
+
+
 
         private async Task<List<Actors.Cast>> GetCastInfo(string mediaType, int id)
         {
