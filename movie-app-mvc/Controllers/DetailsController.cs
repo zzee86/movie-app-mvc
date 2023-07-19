@@ -44,6 +44,9 @@ namespace movie_app_mvc.Controllers
 
             if (media_type == "tv")
             {
+                // Important refactor this and else statement
+                // Use URL to get recommendations https://api.themoviedb.org/3/{media_type}/{id}/recommendations
+                // Use MovieInfo Model for both tv and movies
                 TvPGRating.Root media_pg_rating = await FetchTvShowPGRating(media_pg_rating_url);
 
                 if (media_pg_rating != null)

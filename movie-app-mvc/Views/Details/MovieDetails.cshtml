@@ -75,18 +75,7 @@
             </div>
 
 
-
-            @if (@ViewBag.Media_Key == "tv")
-            {
-                <h3>@ViewBag.SeasonNumber</h3>
-                <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
-                <h3>@ViewBag.SeasonAirDate</h3>
-                <h3>@ViewBag.SeasonRuntime</h3>
-            }
-
             <h3>@ViewBag.Media_Overview</h3>
-
-
 
         </div>
 
@@ -104,7 +93,13 @@
     </div>
 
 
-
+    @if (@ViewBag.Media_Key == "tv")
+    {
+        <h3>@ViewBag.SeasonNumber</h3>
+        <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
+        <h3>@ViewBag.SeasonAirDate</h3>
+        <h3>@ViewBag.SeasonRuntime</h3>
+    }
 
     <h4>Poster Url: @ViewBag.PosterURL</h4>
 
