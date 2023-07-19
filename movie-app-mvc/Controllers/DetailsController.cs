@@ -10,6 +10,8 @@ using movie_app_mvc.Models;
 using ColorThiefDotNet;
 using System.Drawing;
 using System.Net;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 
 namespace movie_app_mvc.Controllers
@@ -44,9 +46,6 @@ namespace movie_app_mvc.Controllers
 
             if (media_type == "tv")
             {
-                // Important refactor this and else statement
-                // Use URL to get recommendations https://api.themoviedb.org/3/{media_type}/{id}/recommendations
-                // Use MovieInfo Model for both tv and movies
                 TvPGRating.Root media_pg_rating = await FetchTvShowPGRating(media_pg_rating_url);
 
                 if (media_pg_rating != null)
@@ -77,6 +76,9 @@ namespace movie_app_mvc.Controllers
                 // Redirect the user to another action or view
                 return RedirectToAction("Index", "Home");
             }
+
+
+            GetMediaRecommendations(media_type, id);
 
             if (movie_tv_details != null)
             {
@@ -115,6 +117,22 @@ namespace movie_app_mvc.Controllers
             return View("MovieDetails", movie);
         }
 
+        private async void GetMediaRecommendations(string media_type, int id)
+        {
+            // Use URL to get recommendations https://api.themoviedb.org/3/{media_type}/{id}/recommendations
+            // Use MovieInfo Model for both tv and movies
+
+            string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{id}/recommendations?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+            }
+        }
+
+
+
         private void TVShowViewBags(TvShowDetails.Root movie_tv_details)
         {
             TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
@@ -142,6 +160,8 @@ namespace movie_app_mvc.Controllers
             DateTime finalRelease = DateTime.Parse(movie_tv_details.last_air_date);
             ViewBag.FinalReleaseDate = finalRelease.Year.ToString();
 
+            CalculateAverageRating(movie_tv_details.vote_average);
+
             if (movie_tv_details.status == "Ended" && movie_tv_details.seasons.Sum(s => s.season_number) >= 2)
             {
                 ViewBag.SeriesEnded = "yes";
@@ -156,8 +176,20 @@ namespace movie_app_mvc.Controllers
             DateTime releaseDate = DateTime.Parse(movie_tv_details.release_date);
             ViewBag.ReleaseDate = releaseDate.Year.ToString();
             ViewBag.FullReleaseDate = releaseDate.ToString("dd/MM/yyyy");
+            CalculateAverageRating(movie_tv_details.vote_average);
+
 
             ConvertRuntime(movie_tv_details.runtime);
+        }
+        private void CalculateAverageRating(double movie_tv_details)
+        {
+            ViewBag.AverageRating = MathF.Round((float)movie_tv_details, 1); ;
+            //double percentage = movie_tv_details * 10;
+            //ViewBag.AverageRating = $"{percentage}%";
+
+            //double rating = percentage / 100; 
+            //ViewBag.Rating = rating.ToString("P0"); 
+
         }
 
         private async Task<MovieInfo.Root> FetchMovies(string url)
@@ -174,7 +206,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
 
@@ -202,6 +234,8 @@ namespace movie_app_mvc.Controllers
                         continue;
                     }
                 }
+                ViewBag.ResultList = results;
+                ViewBag.MovieList = movieResults;
 
                 //movie.IsSaved = MovieIsSaved(movie.title, userID);
 
