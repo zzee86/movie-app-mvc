@@ -11,6 +11,7 @@ using ColorThiefDotNet;
 using System.Drawing;
 using System.Net;
 
+
 namespace movie_app_mvc.Controllers
 {
     public class DetailsController : Controller
@@ -114,7 +115,7 @@ namespace movie_app_mvc.Controllers
         private void TVShowViewBags(TvShowDetails.Root movie_tv_details)
         {
             TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
-            ViewBag.EpisodeRuntime = season?.runtime ?? 24;
+            ConvertRuntime(season.runtime);
 
             var seasonInfo = movie_tv_details.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
             int episodeCount = seasonInfo?.episode_count ?? 0;
@@ -129,10 +130,11 @@ namespace movie_app_mvc.Controllers
 
             DateTime releaseDate = DateTime.Parse(seasonInfo?.air_date);
             ViewBag.ReleaseDate = releaseDate.Year.ToString();
-            ViewBag.FullReleaseDate = releaseDate;
+
 
             DateTime initialRelease = DateTime.Parse(movie_tv_details.first_air_date);
             ViewBag.InitialReleaseDate = initialRelease.Year.ToString();
+            ViewBag.FullReleaseDate = initialRelease.ToString("dd/MM/yyyy");
 
             DateTime finalRelease = DateTime.Parse(movie_tv_details.last_air_date);
             ViewBag.FinalReleaseDate = finalRelease.Year.ToString();
@@ -230,7 +232,10 @@ namespace movie_app_mvc.Controllers
         {
             int hours = runtime / 60;
             int minutes = runtime % 60;
-            string formattedRuntime = $"{hours}h {minutes}m";
+            string formattedRuntime;
+
+            formattedRuntime = (hours > 0) ? $"{hours}h {minutes}m" : $"{minutes}m";
+
             ViewBag.Runtime = formattedRuntime;
         }
 

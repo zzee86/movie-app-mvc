@@ -549,21 +549,8 @@ h2 {
     top: 15%;
     left: 38%;
     width: 50%;
-    margin-left:2em;
+    margin-left: 2em;
 }
-
-/*    .detail-information h2 {
-        font-size: 1.5em;
-        font-weight: bolder;
-        text-align: left;
-    }
-*/
-/*    .detail-information h3 {
-        font-size: 1.3em;
-        font-weight: bold;
-        text-align: left;
-    }*/
-
 
 
 .detail-title-holder {
@@ -578,11 +565,55 @@ h2 {
         font-weight: bolder;
         text-align: left;
     }
+
 .detail-extra-information {
-    width:auto;
-    height:auto;
-    background-color:green;
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: auto;
 }
+
+.detail-info-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-right: 10px;
+}
+
+.pg-rating-container {
+    display: inline-flex;
+    justify-content: center;  
+    align-items: center;  
+    padding: 2px 4px;
+    outline: solid;
+    outline-width: thin;
+    outline-color: #A79E9E;
+    border-radius: 2px;
+}
+
+    .pg-rating-container h3 {
+        margin: 0 !important;
+        font-size: .7em;
+        color: #A79E9E;
+        white-space: nowrap;
+    }
+
+.detail-info-row h3 {
+    margin: 0;
+    font-size: .9em;
+    margin-left: 10px;
+}
+.circle-separator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #958D8D;
+    margin-left: 10px;  
+}
+
+
+
+
 /* Genre List */
 .genre-list {
     display: flex;
@@ -595,13 +626,16 @@ h2 {
     margin-top: 10px;
 }
 
+.genre-list h3 {
+    margin: 0 !important;
+}
+
 .genre-list .genre-item:first-child {
     margin-left: 0;
 }
 
 .genre-list .comma {
     margin-right: 5px;
-    margin-bottom: 10px;
 }
 
     .genre-list .comma::before {
@@ -709,22 +743,3 @@ h2 {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-.pg-rating-container {
-    display: inline-block;
-    padding: 2px 4px;
-    outline: solid;
-    outline-width: thin;
-    outline-color: #A79E9E;
-    border-radius: 2px;
-}
-
-    .pg-rating-container h3 {
-        margin: 0;
-        font-size: .7em;
-        color: #A79E9E;
-    }
-
-.detail-title-holder {
-    margin: 0;
-}

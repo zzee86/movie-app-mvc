@@ -12,7 +12,7 @@
 </head>
 
 <body>
-
+    <script src="~/browserLink" type="text/javascript"></script>
     <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
     @Html.Partial("_NavBar")
@@ -28,27 +28,14 @@
             <div class="detail-title-holder">
                 @if (string.IsNullOrEmpty(Model.title))
                 {
-                    <h2 class="detail-title">
-                        @ViewBag.Backup_Title
-                    </h2>
-
                     @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
                     {
-                        //if (ViewBag.SeriesEnded == "yes")
-                        //{
-                        <h2 class="detail-title"> @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h2>
-                        @*}
-                            else
-                            {
-                                @($"({ViewBag.InitialReleaseDate})")
-
-                            }*@
-
+                        <h2 class="detail-title">@ViewBag.Backup_Title @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h2>
                     }
 
                     else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
                     {
-                        <h2 class="detail-title"> @($"({ViewBag.ReleaseDate})")</h2>
+                        <h2 class="detail-title">@ViewBag.Backup_Title @($"({ViewBag.ReleaseDate})")</h2>
                     }
                 }
 
@@ -58,42 +45,46 @@
                 }
             </div>
 
-            <div class="pg-rating-container">
-                <h3>@ViewBag.Media_PG_Rating</h3>
+
+            <div class="detail-extra-information">
+                <div class="detail-info-row">
+                    @if (!string.IsNullOrEmpty(ViewBag.Media_PG_Rating))
+                    {
+                        <div class="pg-rating-container">
+                            <h3>@ViewBag.Media_PG_Rating</h3>
+                        </div>
+                    }
+                    <h3 class="detail-text">@ViewBag.FullReleaseDate</h3>
+                    <div class="circle-separator"></div>
+
+                    <h3 class="detail-text">@ViewBag.Runtime</h3>
+                    <div class="circle-separator"></div>
+                </div>
+                <div class="detail-info-row">
+                    <div class="genre-list">
+                        @for (int i = 0; i < ViewBag.Genres.Count; i++)
+                        {
+                            <h3 class="genre-item">@ViewBag.Genres[i]</h3>
+                            @if (i != ViewBag.Genres.Count - 1)
+                            {
+                                <span class="comma"></span>
+                            }
+                        }
+                    </div>
+                </div>
             </div>
-            <div class="detail-extra-information"></div>
+
+
 
             @if (@ViewBag.Media_Key == "tv")
             {
                 <h3>@ViewBag.SeasonNumber</h3>
                 <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
-                <h3>@ViewBag.EpisodeRuntime</h3>
-
-
-
                 <h3>@ViewBag.SeasonAirDate</h3>
                 <h3>@ViewBag.SeasonRuntime</h3>
             }
-            else
-            {
-                <h3 class="detail-text"> Release date: @ViewBag.FullReleaseDate </h3>
-                <h3>@ViewBag.Runtime</h3>
-            }
 
             <h3>@ViewBag.Media_Overview</h3>
-            <div>
-                <h3 class="genre-title">Genres:</h3>
-                <div class="genre-list">
-                    @for (int i = 0; i < ViewBag.Genres.Count; i++)
-                    {
-                        <h3 class="genre-item">@ViewBag.Genres[i]</h3>
-                        @if (i != ViewBag.Genres.Count - 1)
-                        {
-                            <span class="comma"></span>
-                        }
-                    }
-                </div>
-            </div>
 
 
 
