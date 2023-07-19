@@ -25,40 +25,46 @@
         </div>
         <div class="detail-information">
 
-            @if (string.IsNullOrEmpty(Model.title))
-            {
-                <h3 class="detail-text">
-                    @ViewBag.Backup_Title
-                </h3>
-
-                @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+            <div class="detail-title-holder">
+                @if (string.IsNullOrEmpty(Model.title))
                 {
-                    //if (ViewBag.SeriesEnded == "yes")
-                    //{
-                    <h3 class="detail-text"> @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h3>
-                    @*}
-                        else
-                        {
-                            @($"({ViewBag.InitialReleaseDate})")
+                    <h2 class="detail-title">
+                        @ViewBag.Backup_Title
+                    </h2>
 
-                        }*@
+                    @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                    {
+                        //if (ViewBag.SeriesEnded == "yes")
+                        //{
+                        <h2 class="detail-title"> @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h2>
+                        @*}
+                            else
+                            {
+                                @($"({ViewBag.InitialReleaseDate})")
 
+                            }*@
+
+                    }
+
+                    else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                    {
+                        <h2 class="detail-title"> @($"({ViewBag.ReleaseDate})")</h2>
+                    }
                 }
 
-                else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                else
                 {
-                    <h3 class="detail-text"> @($"({ViewBag.ReleaseDate})")</h3>
+                    <h2 class="detail-title ">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h2>
                 }
-            }
+            </div>
 
-            else
-            {
-                <h2 class="detail-text">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h2>
-            }
+            <div class="pg-rating-container">
+                <h3>@ViewBag.Media_PG_Rating</h3>
+            </div>
+            <div class="detail-extra-information"></div>
 
             @if (@ViewBag.Media_Key == "tv")
             {
-                <h3>@ViewBag.TvPGRating</h3>
                 <h3>@ViewBag.SeasonNumber</h3>
                 <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
                 <h3>@ViewBag.EpisodeRuntime</h3>
@@ -70,7 +76,6 @@
             }
             else
             {
-                <h3>@ViewBag.MoviePGRating</h3>
                 <h3 class="detail-text"> Release date: @ViewBag.FullReleaseDate </h3>
                 <h3>@ViewBag.Runtime</h3>
             }

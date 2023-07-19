@@ -49,7 +49,7 @@ namespace movie_app_mvc.Controllers
                 {
                     var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
 
-                    ViewBag.TvPGRating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
+                    ViewBag.Media_PG_Rating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
                     ViewBag.Media_Overview = movie_tv_details.overview;
                 }
             }
@@ -63,7 +63,7 @@ namespace movie_app_mvc.Controllers
 
                     if (result != null)
                     {
-                        ViewBag.MoviePGRating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
+                        ViewBag.Media_PG_Rating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
                     }
                 }
             }

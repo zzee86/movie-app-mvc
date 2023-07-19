@@ -548,23 +548,41 @@ h2 {
     position: absolute;
     top: 15%;
     left: 38%;
-    font-size: large;
-    font-weight: bolder;
     width: 50%;
+    margin-left:2em;
 }
 
-    .detail-information h2 {
+/*    .detail-information h2 {
         font-size: 1.5em;
         font-weight: bolder;
         text-align: left;
     }
-
-    .detail-information h3 {
+*/
+/*    .detail-information h3 {
         font-size: 1.3em;
         font-weight: bold;
         text-align: left;
-    }
+    }*/
 
+
+
+.detail-title-holder {
+    margin: 0 0 .5em 0 !important;
+    font-size: large;
+    font-weight: bolder;
+}
+
+    .detail-title-holder h2 {
+        margin: 0;
+        font-size: 1.5em;
+        font-weight: bolder;
+        text-align: left;
+    }
+.detail-extra-information {
+    width:auto;
+    height:auto;
+    background-color:green;
+}
 /* Genre List */
 .genre-list {
     display: flex;
@@ -691,3 +709,22 @@ h2 {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+.pg-rating-container {
+    display: inline-block;
+    padding: 2px 4px;
+    outline: solid;
+    outline-width: thin;
+    outline-color: #A79E9E;
+    border-radius: 2px;
+}
+
+    .pg-rating-container h3 {
+        margin: 0;
+        font-size: .7em;
+        color: #A79E9E;
+    }
+
+.detail-title-holder {
+    margin: 0;
+}
