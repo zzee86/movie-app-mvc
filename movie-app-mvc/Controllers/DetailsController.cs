@@ -22,6 +22,12 @@ namespace movie_app_mvc.Controllers
 
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
+
+            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+
+            // Retrieve the user ID from the loginDetails table
+            string userID = GetUserIdByEmail(email);
+
             // Get details on the movie
             string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
             MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
@@ -78,7 +84,7 @@ namespace movie_app_mvc.Controllers
             }
 
 
-            GetMediaRecommendations(media_type, id);
+            await GetMediaRecommendations(media_type, id, userID);
 
             if (movie_tv_details != null)
             {
@@ -117,7 +123,31 @@ namespace movie_app_mvc.Controllers
             return View("MovieDetails", movie);
         }
 
-        private async void GetMediaRecommendations(string media_type, int id)
+        private string GetUserIdByEmail(string email)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT userID FROM loginDetails WHERE email = @Email";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Email", email);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        // Return the user ID if found
+                        return reader.GetString("userID");
+                    }
+                }
+            }
+
+            // Return null if user ID not found
+            return null;
+        }
+
+        private async Task<List<MovieInfo.Result>> GetMediaRecommendations(string media_type, int id, string userID)
         {
             // Use URL to get recommendations https://api.themoviedb.org/3/{media_type}/{id}/recommendations
             // Use MovieInfo Model for both tv and movies
@@ -127,8 +157,11 @@ namespace movie_app_mvc.Controllers
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results);
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+                return movieResults;
             }
+
+            return null;
         }
 
 
@@ -206,7 +239,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results)
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
 
@@ -237,7 +270,7 @@ namespace movie_app_mvc.Controllers
                 ViewBag.ResultList = results;
                 ViewBag.MovieList = movieResults;
 
-                //movie.IsSaved = MovieIsSaved(movie.title, userID);
+                movie.IsSaved = MovieIsSaved(movie.title, userID);
 
                 movieResults.Add(movie);
             }
@@ -245,6 +278,21 @@ namespace movie_app_mvc.Controllers
             return movieResults;
         }
 
+        private bool MovieIsSaved(string title, string userID)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @title AND userID = @userID";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@title", title);
+                command.Parameters.AddWithValue("@userID", userID);
+
+                int count = Convert.ToInt32(command.ExecuteScalar());
+                return count > 0;
+            }
+        }
 
         private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)
         {
