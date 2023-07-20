@@ -22,11 +22,10 @@ namespace movie_app_mvc.Controllers
 
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
+            // Null-conditional operator to avoid crashing
+            string email = User.Identity?.Name;
 
-            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
-
-            // Retrieve the user ID from the loginDetails table
-            string userID = GetUserIdByEmail(email);
+            string userID = string.IsNullOrEmpty(email) ? null : GetUserIdByEmail(email);
 
             // Get details on the movie
             string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";

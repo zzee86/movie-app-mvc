@@ -414,7 +414,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-      
+
 
         private void ClearTmpMoviePosterTable()
         {
@@ -428,7 +428,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        
+
         public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
@@ -462,8 +462,6 @@ namespace movie_app_mvc.Controllers
             ViewBag.SavedMovieTitle = (title != null) ? title : "not shown";
             ViewBag.SavedMovieID = (movieid != null) ? movieid : 9999;
 
-            //await MovieDetails(title, movieid);
-
 
             SavedMovie selectedMovie = movies.FirstOrDefault();
 
@@ -474,7 +472,27 @@ namespace movie_app_mvc.Controllers
             }
 
 
+
+
+
+
+
+            // Get the current controller context
+            ControllerContext controllerContext = this.ControllerContext;
+
+            // Create an instance of DetailsController
+            DetailsController detailsController = new DetailsController();
+
+            // Assign the current controller context to the DetailsController
+            detailsController.ControllerContext = controllerContext;
+
+            // Call the MovieDetails method from DetailsController
+            ActionResult movieDetailsResult = await detailsController.MovieDetails(title, movieid);
+
+
+
             return View(selectedMovie);
         }
+
     }
 }

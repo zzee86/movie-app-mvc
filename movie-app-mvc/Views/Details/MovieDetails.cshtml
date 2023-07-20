@@ -17,6 +17,51 @@
 
     @Html.Partial("_NavBar")
 
+
+
+    <div class="movies-container">
+        <div class="card-container else">
+            <div class="card">
+
+                <div class="card-content">
+                    <div class="button-container">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (ViewBag.IsMovieSaved?.Value == true)@* Use the null-conditional operator and provide a default value *@
+                            {
+                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                    <input type="hidden" name="title" value="@ViewBag.MovieDetailsTitle" />
+                                    <button type="submit" class="saved">Remove</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                    <input type="hidden" name="title" value="@ViewBag.MovieDetailsTitle" />
+                                    <input type="hidden" name="overview" value="@ViewBag.Media_Overview" />
+                                    <input type="hidden" name="poster" value="@Model.poster_path_url" />
+                                    <input type="hidden" name="rating" value="@ViewBag.AverageRating" />
+                                    <input type="hidden" name="movieid" value="@ViewBag.movieID" />
+                                    <button type="submit">Save</button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            <button type="button" class="@(ViewBag.IsMovieSaved?.Value == true ? "saved" : "")" onclick="showSignInPopup()">Save</button>
+                        }
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
     <div class="hero-section">
         <div class="detail-card">
             <div class="detail-card-image">
