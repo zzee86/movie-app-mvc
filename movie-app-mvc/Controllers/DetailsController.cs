@@ -181,9 +181,14 @@ namespace movie_app_mvc.Controllers
             var seasonrelease = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
             ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
 
-            DateTime releaseDate = DateTime.Parse(seasonInfo?.air_date);
-            ViewBag.ReleaseDate = releaseDate.Year.ToString();
-
+            if (DateTime.TryParse(seasonrelease, out DateTime releaseDate))
+            {
+                ViewBag.ReleaseDate = releaseDate.Year.ToString();
+            }
+            else
+            {
+                ViewBag.ReleaseDate = "N/A";
+            }
 
             DateTime initialRelease = DateTime.Parse(movie_tv_details.first_air_date);
             ViewBag.InitialReleaseDate = initialRelease.Year.ToString();
@@ -488,7 +493,20 @@ namespace movie_app_mvc.Controllers
         {
             if (movieInfo.results.US != null && movieInfo.results.GB != null)
             {
-                if (movieInfo.results.US.buy != null && movieInfo.results.GB.buy != null)
+                if (movieInfo.results.US.flatrate != null || movieInfo.results.GB.flatrate != null)
+                {
+                    List<MediaWatchProviders.Flatrate> providers = movieInfo.results.US.flatrate
+                    .Concat(movieInfo.results.GB.flatrate)
+                    .GroupBy(p => p.provider_id) // Group providers by provider_id to remove duplicates
+                    .Select(group => group.OrderBy(p => p.display_priority).First()) // Select the providers with the lowest display_priority
+                    .OrderBy(p => p.display_priority)
+                    .Take(5) // Take up to 5 providers with the lowest display_priority (most important)
+                    .ToList();
+
+                    ViewBag.Providers = providers;
+
+                }
+                else if (movieInfo.results.US.buy != null && movieInfo.results.GB.buy != null)
                 {
                     List<MediaWatchProviders.Buy> providers = movieInfo.results.US.buy
                         .Concat(movieInfo.results.GB.buy)
@@ -501,6 +519,7 @@ namespace movie_app_mvc.Controllers
                     ViewBag.Providers = providers;
 
                     return providers;
+
                 }
             }
             return null;
