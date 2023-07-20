@@ -113,12 +113,11 @@ namespace movie_app_mvc.Controllers
 
 
             // Custom Values
-            ViewBag.MovieDetailsTitle = title;
-            ViewBag.MovieDetailsID = id;
-            ViewBag.Backup_Title = title;
-            ViewBag.Media_Key = media_type;
-            ViewBag.movieID = id;
-            ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
+            TempData["MovieDetailsTitle"] = title;
+            TempData["Backup_Title"] = title;
+            TempData["Media_Key"] = media_type;
+            TempData["movieID"] = id;
+            TempData["MovieKey"] = (video != null) ? video.key : "unavailable";
 
             return View("MovieDetails", movie);
         }
@@ -176,7 +175,7 @@ namespace movie_app_mvc.Controllers
             int seasonCount = seasonInfo?.season_number ?? 0;
 
             int episodeTotalCount = movie_tv_details.seasons.Sum(s => s.episode_count);
-            ViewBag.episodeTotalCount = (episodeTotalCount != null) ? episodeTotalCount : 0;
+            TempData["episodeTotalCount"] = (episodeTotalCount != null) ? episodeTotalCount : 0;
             ViewBag.SeasonNumber = (seasonCount != null) ? seasonCount : 1;
             ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
             var seasonrelease = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";

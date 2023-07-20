@@ -16,6 +16,7 @@
     <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
     @Html.Partial("_NavBar")
+    <h1>Title testing @TempData["MovieDetailsTitle"]</h1>
 
 
     <button id="showColorButton">Show Color Code</button>
@@ -100,101 +101,101 @@
 
 
     @*<div class="cast-container">
-        <div class="card-cast-container">
-            @foreach (var cast in ViewBag.CastList)
-                {
-                    if (!string.IsNullOrEmpty(@cast.profile_path))
+            <div class="card-cast-container">
+                @foreach (var cast in ViewBag.CastList)
                     {
-                        <div class="card card-cast">
-                            <div class="card-image card-cast-image">
-                                <img src="@cast.profile_path_url" alt="Movie Poster" />
-                            </div>
-                            <div class="card-cast-content">
-                                <div class="cast-titleHolder">
-                                    <h2 class="cast-info">@cast.name</h2>
+                        if (!string.IsNullOrEmpty(@cast.profile_path))
+                        {
+                            <div class="card card-cast">
+                                <div class="card-image card-cast-image">
+                                    <img src="@cast.profile_path_url" alt="Movie Poster" />
+                                </div>
+                                <div class="card-cast-content">
+                                    <div class="cast-titleHolder">
+                                        <h2 class="cast-info">@cast.name</h2>
+                                    </div>
+
+                                    <div class="cast-character">
+                                        <h2>@cast.character</h2>
+                                    </div>
                                 </div>
 
-                                <div class="cast-character">
-                                    <h2>@cast.character</h2>
-                                </div>
                             </div>
-
-                        </div>
+                        }
                     }
-                }
-        </div>
-    </div>*@
-
-<div class="moviesDetailsContainer">
-
-
-    @*@foreach (var cast in ViewBag.CastList)
-        {
-            <h1>Cast Name: @cast.name</h1>
-            <h1>Show Character: @cast.character</h1>
-
-            <div class="castImageHolder">
-                <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
-
             </div>
-        }*@
+        </div>*@
+
+    <div class="moviesDetailsContainer">
+
+
+        @*@foreach (var cast in ViewBag.CastList)
+            {
+                <h1>Cast Name: @cast.name</h1>
+                <h1>Show Character: @cast.character</h1>
+
+                <div class="castImageHolder">
+                    <img src="@cast.profile_path_url" class="castImage" alt="Cast Image" />
+
+                </div>
+            }*@
 
 
 
-    <h1>SavedMovieDetails : @ViewBag.SavedMovieTitle </h1>
-    <h1>SavedMovieDetails : @ViewBag.SavedMovieID </h1>
-    <p>/////////////////////////////////////////////</p>
+        <h1>SavedMovieDetails : @ViewBag.SavedMovieTitle </h1>
+        <h1>SavedMovieDetails : @ViewBag.SavedMovieID </h1>
+        <p>/////////////////////////////////////////////</p>
 
-    <h1>MovieDetails : @ViewBag.MovieDetailsTitle </h1>
-    <h1>MovieDetails : @ViewBag.MovieDetailsID </h1>
-
-
-    <p>/////////////////////////////////////////////</p>
-    <h1>Show ID: @ViewBag.movieID</h1>
-    <h1>Show Key: @ViewBag.MovieKey</h1>
+        <h1>MovieDetails : @ViewBag.MovieDetailsTitle </h1>
+        <h1>MovieDetails : @ViewBag.MovieDetailsID </h1>
 
 
-    <h1>@Model.Title</h1>
-    <h1>@Model.Overview</h1>
+        <p>/////////////////////////////////////////////</p>
+        <h1>Show ID: @ViewBag.movieID</h1>
+        <h1>Show Key: @ViewBag.MovieKey</h1>
 
 
-
-
-    @if (@ViewBag.Media_Key == "tv")
-    {
-        <h1>Seasons: @ViewBag.SeasonNumber</h1>
-
-        <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
-
-        <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
-
-        <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
-    }
+        <h1>@Model.Title</h1>
+        <h1>@Model.Overview</h1>
 
 
 
 
+        @if (@ViewBag.Media_Key == "tv")
+        {
+            <h1>Seasons: @ViewBag.SeasonNumber</h1>
 
-    <button id="show-video-button" onclick="showVideo('@ViewBag.MovieKey')">Trailer</button>
+            <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
 
-    <!-- Overlay video element -->
-    <div id="overlay-video">
-        <div class="close-header">
-            <button id="close-button" onclick="closeVideo()">Close</button>
+            <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
+
+            <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
+        }
+
+
+
+
+
+        <button id="show-video-button" onclick="showVideo('@TempData["MovieKey"]')">Trailer</button>
+
+        <!-- Overlay video element -->
+        <div id="overlay-video">
+            <div class="close-header">
+                <button id="close-button" onclick="closeVideo()">Close</button>
+            </div>
+            <div id="video-container">
+                <iframe id="video-iframe" width="100%" height="100%" frameborder="0" allowfullscreen autoplay></iframe>
+            </div>
         </div>
-        <div id="video-container">
-            <iframe id="video-iframe" width="100%" height="100%" frameborder="0" allowfullscreen autoplay></iframe>
+
+
+
+        <div>
+            <iframe src="https://www.youtube.com/embed/@TempData["MovieKey"]?autoplay=1" width="50%" height="50%" frameborder="0"></iframe>
         </div>
+
+
     </div>
-
-
-
-    <div>
-        <iframe src="https://www.youtube.com/embed/@ViewBag.MovieKey?autoplay=1" width="50%" height="50%" frameborder="0"></iframe>
-    </div>
-
-
-</div>
 
 
 

@@ -27,28 +27,28 @@
                     <div class="button-container">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @if (ViewBag.IsMovieSaved?.Value == true)@* Use the null-conditional operator and provide a default value *@
+                            @if (ViewBag.IsMovieSaved == true)@* Use the null-conditional operator and provide a default value *@
                             {
                                 <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@ViewBag.MovieDetailsTitle" />
+                                    <input type="hidden" name="title" value="@TempData["MovieDetailsTitle"]" />
                                     <button type="submit" class="saved">Remove</button>
                                 </form>
                             }
                             else
                             {
                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@ViewBag.MovieDetailsTitle" />
+                                    <input type="hidden" name="title" value="@TempData["MovieDetailsTitle"]" />
                                     <input type="hidden" name="overview" value="@ViewBag.Media_Overview" />
                                     <input type="hidden" name="poster" value="@Model.poster_path_url" />
                                     <input type="hidden" name="rating" value="@ViewBag.AverageRating" />
-                                    <input type="hidden" name="movieid" value="@ViewBag.movieID" />
+                                    <input type="hidden" name="movieid" value="@TempData["movieID"]" />
                                     <button type="submit">Save</button>
                                 </form>
                             }
                         }
                         else
                         {
-                            <button type="button" class="@(ViewBag.IsMovieSaved?.Value == true ? "saved" : "")" onclick="showSignInPopup()">Save</button>
+                            <button type="button" class="@(ViewBag.IsMovieSaved == true ? "saved" : "")" onclick="showSignInPopup()">Save</button>
                         }
 
 
@@ -76,20 +76,20 @@
             <div class="detail-title-holder">
                 @if (string.IsNullOrEmpty(Model.title))
                 {
-                    @if (ViewBag.Media_Key == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                    @if (TempData["Media_Key"] == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
                     {
-                        <h2 class="detail-title">@ViewBag.Backup_Title @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h2>
+                        <h2 class="detail-title">@TempData["Backup_Title"] @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h2>
                     }
 
-                    else if (ViewBag.Media_Key == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                    else if (TempData["Media_Key"] == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
                     {
-                        <h2 class="detail-title">@ViewBag.Backup_Title @($"({ViewBag.ReleaseDate})")</h2>
+                        <h2 class="detail-title">@TempData["Backup_Title"] @($"({ViewBag.ReleaseDate})")</h2>
                     }
                 }
 
                 else
                 {
-                    <h2 class="detail-title ">@ViewBag.Backup_Title (@ViewBag.ReleaseDate)</h2>
+                    <h2 class="detail-title ">@TempData["Backup_Title"] (@ViewBag.ReleaseDate)</h2>
                 }
             </div>
 
@@ -166,7 +166,7 @@
     </div>
 
 
-    @if (@ViewBag.Media_Key == "tv")
+    @if (@TempData["Media_Key"] == "tv")
     {
         <h3>Season Number: @ViewBag.SeasonNumber</h3>
         <h3>Episode Count: @ViewBag.SeasonEpisodeCount</h3>
@@ -277,21 +277,21 @@
 
     <div class="moviesDetailsContainer">
 
-        <h1>Show ID: @ViewBag.movieID</h1>
-        <h1>Show Key: @ViewBag.MovieKey</h1>
+        <h1>Show ID: @TempData["movieID"]</h1>
+        <h1>Show Key: @TempData["MovieKey"]</h1>
 
-        @if (@ViewBag.Media_Key == "tv")
+        @if (@TempData["Media_Key"] == "tv")
         {
             <h1>Seasons: @ViewBag.SeasonNumber</h1>
 
             <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
 
-            <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
+            <h1>Total Episode Count: @TempData["episodeTotalCount"]</h1>
 
             <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
         }
 
-        <button id="show-video-button" onclick="showVideo('@ViewBag.MovieKey')">Trailer</button>
+        <button id="show-video-button" onclick="showVideo('@TempData["MovieKey"]')">Trailer</button>
 
         <!-- Overlay video element -->
         <div id="overlay-video">
@@ -306,7 +306,7 @@
 
 
         <div>
-            <iframe src="https://www.youtube.com/embed/@ViewBag.MovieKey?autoplay=1" width="50%" height="50%" frameborder="0"></iframe>
+            <iframe src="https://www.youtube.com/embed/@TempData["MovieKey"]?autoplay=1" width="50%" height="50%" frameborder="0"></iframe>
         </div>
 
     </div>
@@ -326,7 +326,7 @@
             const overlayVideo = document.getElementById('overlay-video');
             const closeVideoButton = document.getElementById('close-button');
             const videoIframe = document.getElementById('video-iframe');
-            const movieKey = "@ViewBag.MovieKey";
+            const movieKey = "@TempData["MovieKey"]";
 
             // Add click event listener to the show video button
             showVideoButton.addEventListener('click', function () {
