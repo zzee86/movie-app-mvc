@@ -22,6 +22,9 @@
             <div class="detail-card-image">
                 <img src="@Model.poster_path_url" alt="Movie Poster" />
             </div>
+
+
+
         </div>
         <div class="detail-information">
 
@@ -120,10 +123,10 @@
 
     @if (@ViewBag.Media_Key == "tv")
     {
-        <h3>@ViewBag.SeasonNumber</h3>
-        <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
-        <h3>@ViewBag.SeasonAirDate</h3>
-        <h3>@ViewBag.SeasonRuntime</h3>
+        <h3>Season Number: @ViewBag.SeasonNumber</h3>
+        <h3>Episode Count: @ViewBag.SeasonEpisodeCount</h3>
+        <h3>Season Airdate: @ViewBag.SeasonAirDate</h3>
+        <h3>Season Runtime: @ViewBag.SeasonRuntime</h3>
     }
 
     <div class="cast-container">

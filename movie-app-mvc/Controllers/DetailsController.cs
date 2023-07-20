@@ -272,6 +272,7 @@ namespace movie_app_mvc.Controllers
                 ViewBag.MovieList = movieResults;
 
                 movie.IsSaved = MovieIsSaved(movie.title, userID);
+                ViewBag.IsMovieSaved = movie.IsSaved;
 
                 movieResults.Add(movie);
             }
@@ -489,17 +490,20 @@ namespace movie_app_mvc.Controllers
         {
             if (movieInfo.results.US != null && movieInfo.results.GB != null)
             {
-                List<MediaWatchProviders.Buy> providers = movieInfo.results.US.buy
-                    .Concat(movieInfo.results.GB.buy)
-                    .GroupBy(p => p.provider_id) // Group providers by provider_id to remove duplicates
-                    .Select(group => group.OrderBy(p => p.display_priority).First()) // Select the providers with the lowest display_priority
-                    .OrderBy(p => p.display_priority)
-                    .Take(5) // Take up to 5 providers with the lowest display_priority (most important)
-                    .ToList();
+                if (movieInfo.results.US.buy != null && movieInfo.results.GB.buy != null)
+                {
+                    List<MediaWatchProviders.Buy> providers = movieInfo.results.US.buy
+                        .Concat(movieInfo.results.GB.buy)
+                        .GroupBy(p => p.provider_id) // Group providers by provider_id to remove duplicates
+                        .Select(group => group.OrderBy(p => p.display_priority).First()) // Select the providers with the lowest display_priority
+                        .OrderBy(p => p.display_priority)
+                        .Take(5) // Take up to 5 providers with the lowest display_priority (most important)
+                        .ToList();
 
-                ViewBag.Providers = providers;
+                    ViewBag.Providers = providers;
 
-                return providers;
+                    return providers;
+                }
             }
             return null;
         }
