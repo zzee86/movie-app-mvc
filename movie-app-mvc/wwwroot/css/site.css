@@ -639,8 +639,8 @@ h2 {
 .detail-average-rating-container h3 {
     margin: 0;
     font-size: 1.17em;
-    display: flex;  
-    align-items: center;  
+    display: flex;
+    align-items: center;
 }
 
 
@@ -775,4 +775,28 @@ h2 {
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+.providers-section {
+    margin-top: 2em;
+}
+
+.providers-container {
+    display: flex;
+    align-items: center;
+}
+
+    .providers-container ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+
+
+    .providers-container img {
+        width: 45px;
+        height: 45px;
+        margin-right: .8em;
+        border-radius: 4px;
     }
