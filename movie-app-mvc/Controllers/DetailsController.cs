@@ -464,7 +464,12 @@ namespace movie_app_mvc.Controllers
             string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{id}/watch/providers?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
             MediaWatchProviders.Root movieInfo = await FetchMediaProviders(apiUrl);
 
-            return await GetFilteredProviders(movieInfo);
+            if (movieInfo != null)
+            {
+                return await GetFilteredProviders(movieInfo);
+            }
+            return null;
+
         }
 
         private async Task<MediaWatchProviders.Root> FetchMediaProviders(string url)
@@ -482,19 +487,21 @@ namespace movie_app_mvc.Controllers
         }
         private async Task<List<MediaWatchProviders.Buy>> GetFilteredProviders(MediaWatchProviders.Root movieInfo)
         {
-            List<MediaWatchProviders.Buy> providers = movieInfo.results.US.buy
-                .Concat(movieInfo.results.GB.buy)
-                .GroupBy(p => p.provider_id) // Group providers by provider_id to remove duplicates
-                .Select(group => group.OrderBy(p => p.display_priority).First()) // Select the providers with the lowest display_priority
-                .OrderBy(p => p.display_priority)
-                .Take(5) // Take up to 5 providers with the lowest display_priority (most important)
-                .ToList();
+            if (movieInfo.results.US != null && movieInfo.results.GB != null)
+            {
+                List<MediaWatchProviders.Buy> providers = movieInfo.results.US.buy
+                    .Concat(movieInfo.results.GB.buy)
+                    .GroupBy(p => p.provider_id) // Group providers by provider_id to remove duplicates
+                    .Select(group => group.OrderBy(p => p.display_priority).First()) // Select the providers with the lowest display_priority
+                    .OrderBy(p => p.display_priority)
+                    .Take(5) // Take up to 5 providers with the lowest display_priority (most important)
+                    .ToList();
 
-            ViewBag.Providers = providers;
+                ViewBag.Providers = providers;
 
-            return providers;
+                return providers;
+            }
+            return null;
         }
-
-
     }
 }
