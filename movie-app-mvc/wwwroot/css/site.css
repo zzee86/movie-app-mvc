@@ -379,7 +379,7 @@ nav {
     width: 100%;
     height: 36px;
     font-size: 1.1rem;
-    font-weight:600;
+    font-weight: 600;
     background-color: #2C2C2C;
     color: #5899EF;
     border: none;
@@ -469,6 +469,10 @@ h2 {
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    display: none;
+    /* Default its 0 to add a gradual increase transition effect */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, display 0.3s ease-in-out;
 }
 
 /* Styles for the video container */
@@ -700,8 +704,38 @@ h2 {
     align-items: center;
 }
 
+.trailer-btn-holder {
+    display: flex;
+    align-items: center;
+    margin-left: 1em;
+    padding: 2px 4px;
+    outline: solid;
+    outline-width: thin;
+    outline-color: #A79E9E;
+    border-radius: 2px;
+}
 
+    .trailer-btn-holder button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: #A79E9E;
+        font-size: 1em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
 
+.trailer-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 0.5em;
+}
+
+    .trailer-icon img {
+        width: 100%;
+        height: 100%;
+    }
 
 
 /* Genre List */

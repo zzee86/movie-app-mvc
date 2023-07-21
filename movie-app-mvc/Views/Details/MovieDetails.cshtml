@@ -115,6 +115,15 @@
                 <div class="detail-rating">
                     <h3>@ViewBag.AverageRating</h3>
                 </div>
+                <div class="trailer-btn-holder">
+                    <button id="show-video-button" onclick="showVideo('@TempData["MovieKey"]')">
+                        <span class="trailer-icon">
+                            <img src="@Url.Content("~/Images/play-icon.png")" alt="Trailer Icon" />
+                        </span>
+                        Trailer
+                    </button>
+                </div>
+
             </div>
 
             <h3 class="media-overview">@ViewBag.Media_Overview</h3>
@@ -277,7 +286,6 @@
             <h1>Average Runtime: @ViewBag.EpisodeRuntime minutes</h1>
         }
 
-        <button id="show-video-button" onclick="showVideo('@TempData["MovieKey"]')">Trailer</button>
 
         <!-- Overlay video element -->
         <div id="overlay-video">
