@@ -30,7 +30,7 @@ namespace movie_app_mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password)
         {
             // Validate login credentials
             if (ValidateLogin(email, password))
@@ -46,7 +46,7 @@ namespace movie_app_mvc.Controllers
         };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
-                HttpContext.SignInAsync(principal).Wait();
+                await HttpContext.SignInAsync(principal);
 
                 // Successful login
                 return RedirectToAction("Index", "Home");
@@ -58,16 +58,13 @@ namespace movie_app_mvc.Controllers
         }
 
 
-
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             // Perform the logout logic
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Index", "Home");
         }
-
-
 
         public IActionResult Register()
         {
