@@ -22,104 +22,118 @@ namespace movie_app_mvc.Controllers
 
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
-            // Null-conditional operator to avoid crashing
-            string email = User.Identity?.Name;
-
-            string userID = string.IsNullOrEmpty(email) ? null : GetUserIdByEmail(email);
-
-            // Get details on the movie
-            string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
-            MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
-            MovieInfo.Result movie = movieDetails.results.FirstOrDefault();
-
-            if (movie == null)
+            // Try Catch to avoid crashing the app
+            try
             {
-                // Handle the case when no movie is found with the given title
-                return RedirectToAction("Index", "Home");
-            }
+                // Null-conditional operator to avoid crashing
+                string email = User.Identity?.Name;
 
-            string media_type = (movie.media_type == "movie") ? "movie" : "tv";
-            // Get trailer
-            VideoInfo.Result video = await GetTrailer(media_type, id);
-            ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
+                string userID = string.IsNullOrEmpty(email) ? null : GetUserIdByEmail(email);
 
-            // Main content on details page
-            string movie_tv_url = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-            TvShowDetails.Root movie_tv_details = await FetchTvShows(movie_tv_url);
+                // Get details on the movie
+                string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
+                MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
+                MovieInfo.Result movie = movieDetails.results.FirstOrDefault();
 
-            string media_pg_rating_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}/content_ratings?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/release_dates?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
-
-            if (media_type == "tv")
-            {
-                TvPGRating.Root media_pg_rating = await FetchTvShowPGRating(media_pg_rating_url);
-
-                if (media_pg_rating != null)
+                if (movie == null)
                 {
-                    var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
-
-                    ViewBag.Media_PG_Rating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
-                    ViewBag.Media_Overview = movie_tv_details.overview;
+                    // Handle the case when no movie is found with the given title
+                    return RedirectToAction("Index", "Home");
                 }
-            }
-            else
-            {
-                MoviePGRating.Root media_pg_rating = await FetchMoviePGRating(media_pg_rating_url);
 
-                if (media_pg_rating != null)
-                {
-                    var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "GB");
+                string media_type = (movie.media_type == "movie") ? "movie" : "tv";
+                // Get trailer
+                VideoInfo.Result video = await GetTrailer(media_type, id);
+                ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
 
-                    if (result != null)
-                    {
-                        ViewBag.Media_PG_Rating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
-                    }
-                }
-            }
+                // Main content on details page
+                string movie_tv_url = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+                TvShowDetails.Root movie_tv_details = await FetchTvShows(movie_tv_url);
 
-            if (movie == null || movie.poster_path == null)
-            {
-                // Redirect the user to another action or view
-                return RedirectToAction("Index", "Home");
-            }
+                string media_pg_rating_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}/content_ratings?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/release_dates?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
 
-
-            await GetMediaRecommendations(media_type, id, userID);
-            await GetMediaProviders(media_type, id);
-
-            if (movie_tv_details != null)
-            {
                 if (media_type == "tv")
                 {
-                    TVShowViewBags(movie_tv_details);
+                    TvPGRating.Root media_pg_rating = await FetchTvShowPGRating(media_pg_rating_url);
+
+                    if (media_pg_rating != null)
+                    {
+                        var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
+
+                        ViewBag.Media_PG_Rating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
+                        ViewBag.Media_Overview = movie_tv_details.overview;
+                    }
                 }
                 else
                 {
-                    MovieViewBags(movie_tv_details);
+                    MoviePGRating.Root media_pg_rating = await FetchMoviePGRating(media_pg_rating_url);
+
+                    if (media_pg_rating != null)
+                    {
+                        var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "GB");
+
+                        if (result != null)
+                        {
+                            ViewBag.Media_PG_Rating = (result != null) ? result.release_dates.FirstOrDefault()?.certification : result.release_dates[0].certification;
+                        }
+                    }
                 }
 
-                // Common between the media types
-                List<string> genres = movie_tv_details.genres.Select(genre => genre.name).ToList();
-                ViewBag.Genres = genres;
+                if (movie == null || movie.poster_path == null)
+                {
+                    // Redirect the user to another action or view
+                    return RedirectToAction("Index", "Home");
+                }
 
-                string posterUrl = movie.poster_path_url;
-                SaveMoviePosterToDatabase(posterUrl);
-                ViewBag.Media_Overview = movie_tv_details.overview;
+                // For save button on details page overriden with GetMediaRecommendations method
+                ProcessMovieResults(movieDetails.results, userID);
+
+                await GetMediaRecommendations(media_type, id, userID);
+                await GetMediaProviders(media_type, id);
+
+                if (movie_tv_details != null)
+                {
+                    if (media_type == "tv")
+                    {
+                        TVShowViewBags(movie_tv_details);
+                    }
+                    else
+                    {
+                        MovieViewBags(movie_tv_details);
+                    }
+
+                    // Common between the media types
+                    List<string> genres = movie_tv_details.genres.Select(genre => genre.name).ToList();
+                    ViewBag.Genres = genres;
+
+                    string posterUrl = movie.poster_path_url;
+                    SaveMoviePosterToDatabase(posterUrl);
+                    ViewBag.Media_Overview = movie_tv_details.overview;
+
+                }
+
+                // Get details on the cast
+                List<Actors.Cast> castInfo = await GetCastInfo(media_type, id);
+                ViewBag.CastList = castInfo;
+
+
+                // Custom Values
+                TempData["MovieDetailsTitle"] = title;
+                TempData["Backup_Title"] = title;
+                TempData["Media_Key"] = media_type;
+                TempData["movieID"] = id;
+                TempData["MovieKey"] = (video != null) ? video.key : "unavailable";
+
+                return View("MovieDetails", movie);
 
             }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
 
-            // Get details on the cast
-            List<Actors.Cast> castInfo = await GetCastInfo(media_type, id);
-            ViewBag.CastList = castInfo;
-
-
-            // Custom Values
-            TempData["MovieDetailsTitle"] = title;
-            TempData["Backup_Title"] = title;
-            TempData["Media_Key"] = media_type;
-            TempData["movieID"] = id;
-            TempData["MovieKey"] = (video != null) ? video.key : "unavailable";
-
-            return View("MovieDetails", movie);
+                // Redirect to Home/Index on error
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         private string GetUserIdByEmail(string email)

@@ -280,12 +280,30 @@ nav {
     justify-content: space-between;
 }
 
-    .card-content h2 {
-        font-size: 1rem;
-        margin: 0;
-        overflow: hidden;
-        color: white;
-    }
+
+.details-save-button {
+    padding: 0;
+    flex-grow: 1;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.card-content h2 {
+    font-size: 1rem;
+    margin: 0;
+    overflow: hidden;
+    color: white;
+}
+
+.details-save-button h2 {
+    font-size: 1rem;
+    margin: 0;
+    overflow: hidden;
+    color: white;
+}
 
 .titleHolder {
     height: 44px;
@@ -311,12 +329,29 @@ nav {
     margin-bottom: 0;
 }
 
+.details-save-button .button-container {
+    margin-top: 0 !important;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
 .card-content form .button-container {
     margin-top: 0;
     margin-bottom: 0;
 }
 
+.details-save-button form .button-container {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 .card-content form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.details-save-button form {
     display: flex;
     justify-content: center;
     margin-bottom: 0;
@@ -339,6 +374,26 @@ nav {
         color: #FFE5E5;
     }
 
+
+.details-save-button button {
+    width: 100%;
+    height: 36px;
+    font-size: 1.1rem;
+    font-weight:600;
+    background-color: #2C2C2C;
+    color: #5899EF;
+    border: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+    .details-save-button button.saved {
+        color: #FFE5E5;
+    }
 /* Login Page */
 .container {
     display: flex;
@@ -510,6 +565,8 @@ h2 {
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .background-image-holder {

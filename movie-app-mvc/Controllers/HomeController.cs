@@ -471,25 +471,11 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-
-
-
-
-
-
             // Get the current controller context
             ControllerContext controllerContext = this.ControllerContext;
-
-            // Create an instance of DetailsController
             DetailsController detailsController = new DetailsController();
-
-            // Assign the current controller context to the DetailsController
             detailsController.ControllerContext = controllerContext;
-
-            // Call the MovieDetails method from DetailsController
-            ActionResult movieDetailsResult = await detailsController.MovieDetails(title, movieid);
-
-
+            await detailsController.MovieDetails(title, movieid);
 
             return View(selectedMovie);
         }
