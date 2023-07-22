@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 10, 2023 at 07:21 PM
+-- Generation Time: Jul 22, 2023 at 03:05 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -47,33 +47,17 @@ CREATE TABLE `loginDetails` (
 CREATE TABLE `savedMovies` (
   `id` int(11) NOT NULL,
   `title` varchar(300) NOT NULL,
-  `overview` varchar(1000) NOT NULL,
   `poster` varchar(900) NOT NULL DEFAULT '',
   `dateTimeInsertion` datetime DEFAULT NULL,
   `userID` int(11) DEFAULT NULL,
-  `Rating` double NOT NULL
+  `MovieID` int(11) NOT NULL DEFAULT 0,
+  `Rating` double DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- RELATIONSHIPS FOR TABLE `savedMovies`:
 --   `userID`
 --       `loginDetails` -> `userID`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tmpMoviePoster`
---
-
-CREATE TABLE `tmpMoviePoster` (
-  `id` int(11) NOT NULL,
-  `poster` varchar(255) NOT NULL,
-  `dominantColor` varchar(7) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- RELATIONSHIPS FOR TABLE `tmpMoviePoster`:
 --
 
 --
@@ -94,12 +78,6 @@ ALTER TABLE `savedMovies`
   ADD KEY `fk_savedMovies_loginDetails` (`userID`);
 
 --
--- Indexes for table `tmpMoviePoster`
---
-ALTER TABLE `tmpMoviePoster`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -113,12 +91,6 @@ ALTER TABLE `loginDetails`
 -- AUTO_INCREMENT for table `savedMovies`
 --
 ALTER TABLE `savedMovies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tmpMoviePoster`
---
-ALTER TABLE `tmpMoviePoster`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --

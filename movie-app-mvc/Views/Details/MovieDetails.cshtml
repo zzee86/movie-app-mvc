@@ -45,7 +45,6 @@
                             {
                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                     <input type="hidden" name="title" value="@TempData["MovieDetailsTitle"]" />
-                                    <input type="hidden" name="overview" value="@TempData["Media_Overview"]" />
                                     <input type="hidden" name="poster" value="@Model.poster_path_url" />
                                     <input type="hidden" name="rating" value="@ViewBag.AverageRating" />
                                     <input type="hidden" name="movieid" value="@TempData["movieID"]" />

@@ -30,12 +30,6 @@
                             <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" value="@ViewBag.SearchQuery" />
                         </div>
 
-
-
-
-
-
-
                         <!--<div class="page-info">-->
                         <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
                         <!--@if (@User.Identity.IsAuthenticated)
@@ -122,7 +116,6 @@
                                             {
                                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                                     <input type="hidden" name="title" value="@movie.title" />
-                                                    <input type="hidden" name="overview" value="@movie.overview" />
                                                     <input type="hidden" name="poster" value="@movie.poster_path_url" />
                                                     <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
                                                     <input type="hidden" name="movieid" value="@movie.id" />
@@ -193,7 +186,6 @@
                                                 {
                                                     <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                                         <input type="hidden" name="title" value="@movie.title" />
-                                                        <input type="hidden" name="overview" value="@movie.overview" />
                                                         <input type="hidden" name="poster" value="@movie.poster_path_url" />
                                                         <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
                                                         <input type="hidden" name="movieid" value="@movie.id" />
@@ -258,7 +250,6 @@
                                                 {
                                                     <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                                         <input type="hidden" name="title" value="@movie.title" />
-                                                        <input type="hidden" name="overview" value="@movie.overview" />
                                                         <input type="hidden" name="poster" value="@movie.poster_path_url" />
                                                         <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
                                                         <input type="hidden" name="movieid" value="@movie.id" />
