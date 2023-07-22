@@ -142,7 +142,7 @@ namespace movie_app_mvc.Controllers
 
 
                 TempData["MovieDetailsTitle"] = title;
-                TempData["Media_Key"] = media_type;
+                TempData["Media_Type"] = media_type;
                 TempData["movieID"] = id;
                 TempData["MovieKey"] = (video != null) ? video.key : "unavailable";
 
@@ -220,8 +220,8 @@ namespace movie_app_mvc.Controllers
 
             int episodeTotalCount = movie_tv_details.seasons.Sum(s => s.episode_count);
             TempData["episodeTotalCount"] = (episodeTotalCount != null) ? episodeTotalCount : 0;
-            ViewBag.SeasonNumber = (seasonCount != null) ? seasonCount : 1;
-            ViewBag.SeasonEpisodeCount = (episodeCount != null) ? episodeCount : 0;
+            TempData["SeasonNumber"] = (seasonCount != null) ? seasonCount : 1;
+            TempData["SeasonEpisodeCount"] = (episodeCount != null) ? episodeCount : 0;
             var seasonrelease = (seasonInfo != null) ? seasonInfo?.air_date : "00:00:0000";
             ViewBag.SeasonRuntime = (seasonInfo != null) ? season?.runtime : 0;
 

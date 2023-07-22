@@ -229,10 +229,35 @@ nav {
     border-radius: 0 0 3px 0; /* Border radius of 3px on bottom right */
 }
 
-    .overlay h2 {
-        margin-bottom: .8em;
-        margin-left: .5em;
+
+.overlay-details {
+    position: absolute;
+    background-color: rgba(44, 44, 44, 0.8);
+    color: white;
+    font-weight: bold;
+    padding: 0 1em;
+    height: 30px;
+    font-size: 0.6em;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    border-radius: 0 0 3px 0;
+    white-space: nowrap;
+}
+
+    .overlay-details h2 {
+        margin: 0;
     }
+
+        .overlay-details h2:first-child {
+            padding-right: 6px;
+        }
+
+.overlay h2 {
+    margin-bottom: .8em;
+    margin-left: .5em;
+}
 
 
 .image-container {
@@ -516,19 +541,6 @@ h2 {
     width: 100%;
     height: 55%;
 }
-
-/*.banner-dark-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-        background-color: black;
-
-    width: 100%;
-    height: 100%;
-        opacity: 0.15;
-
-}*/
 
 .dominant {
     /*    background-color: pink;

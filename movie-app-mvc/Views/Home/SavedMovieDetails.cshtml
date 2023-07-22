@@ -51,10 +51,10 @@
                 <h3>@Model.Title</h3>
             }
 
-            @if (@ViewBag.Media_Key == "tv")
+            @if (@TempData["Media_Type"] == "tv")
             {
-                <h3>@ViewBag.SeasonNumber</h3>
-                <h3>@ViewBag.SeasonEpisodeCount Episodes</h3>
+                <h3>@TempData["SeasonNumber"]</h3>
+                <h3>@TempData["SeasonEpisodeCount"] Episodes</h3>
                 <h3>@ViewBag.EpisodeRuntime Minute</h3>
 
 
@@ -161,11 +161,11 @@
 
 
 
-        @if (@ViewBag.Media_Key == "tv")
+        @if (@TempData["Media_Type"] == "tv")
         {
-            <h1>Seasons: @ViewBag.SeasonNumber</h1>
+            <h1>Seasons: @TempData["SeasonNumber"]</h1>
 
-            <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
+            <h1>Current Season Episode Count: @TempData["SeasonEpisodeCount"]</h1>
 
             <h1>Total Episode Count: @ViewBag.episodeTotalCount</h1>
 

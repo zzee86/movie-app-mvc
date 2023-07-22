@@ -29,6 +29,15 @@
     <div class="hero-section">
         <div class="detail-card">
             <div class="detail-card-image">
+                @if (@TempData["Media_Type"] == "tv")
+                {
+                    <div class="overlay-details">
+                        <!-- Overlay content -->
+                        <h2>S @TempData["SeasonNumber"], </h2>
+                        <h2>E @TempData["SeasonEpisodeCount"]</h2>
+                    </div>
+                }
+
                 <img src="@Model.poster_path_url" alt="Movie Poster" />
                 <div class="details-save-button">
                     <div class="button-container">
@@ -69,8 +78,6 @@
             <div class="detail-title-holder">
                 <h2 class="detail-title">@TempData["MovieDetailsTitle"] @TempData["ReleaseTitle"]</h2>
             </div>
-
-
             <div class="detail-extra-information">
                 <div class="detail-info-row">
                     @if (!string.IsNullOrEmpty(ViewBag.Media_PG_Rating))
@@ -152,10 +159,10 @@
     </div>
 
 
-    @if (@TempData["Media_Key"] == "tv")
+    @if (@TempData["Media_Type"] == "tv")
     {
-        <h3>Season Number: @ViewBag.SeasonNumber</h3>
-        <h3>Episode Count: @ViewBag.SeasonEpisodeCount</h3>
+        <h3>Season Number: @TempData["SeasonNumber"]</h3>
+        <h3>Episode Count: @TempData["SeasonEpisodeCount"]</h3>
         <h3>Season Airdate: @ViewBag.SeasonAirDate</h3>
         <h3>Season Runtime: @ViewBag.SeasonRuntime</h3>
     }
@@ -272,11 +279,11 @@
         <h1>Show ID: @TempData["movieID"]</h1>
         <h1>Show Key: @TempData["MovieKey"]</h1>
 
-        @if (@TempData["Media_Key"] == "tv")
+        @if (@TempData["Media_Type"] == "tv")
         {
             <h1>Seasons: @ViewBag.SeasonNumber</h1>
 
-            <h1>Current Season Episode Count: @ViewBag.SeasonEpisodeCount</h1>
+            <h1>Current Season Episode Count: @TempData["SeasonEpisodeCount"]</h1>
 
             <h1>Total Episode Count: @TempData["episodeTotalCount"]</h1>
 
