@@ -12,7 +12,7 @@ Explore and discover a vast collection of movies, effortlessly search through th
 ![SCR-20230717-rbkx](https://github.com/zzee86/movie-app-mvc/assets/94978880/64a42c07-dfd4-4fb0-92e3-01ba4618819c)
 
 ### Database
-<img width="1667" alt="SCR-20230717-rdyl" src="https://github.com/zzee86/movie-app-mvc/assets/94978880/27313ba3-c835-474a-bca6-b47d2df85761">
+<img width="1840" alt="SCR-20230722-mpvt" src="https://github.com/zzee86/movie-app-mvc/assets/94978880/b47aa182-70a7-43b1-935c-1b91e0bc7ebd">
 
 - Utilized a relational server database to store saved movies
 
