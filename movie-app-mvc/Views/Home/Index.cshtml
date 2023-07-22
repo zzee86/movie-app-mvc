@@ -13,6 +13,13 @@
 
     @Html.Partial("_NavBar")
 
+    @if (TempData["DetailsError"] != null)
+    {
+        <script>document.addEventListener('DOMContentLoaded', function () {
+                showErrorPopup();
+            });</script>
+    }
+
     <main>
 
         <div class="filters">
@@ -22,6 +29,13 @@
                         <div class="search-bar">
                             <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" value="@ViewBag.SearchQuery" />
                         </div>
+
+
+
+
+
+
+
                         <!--<div class="page-info">-->
                         <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
                         <!--@if (@User.Identity.IsAuthenticated)

@@ -88,6 +88,9 @@ namespace movie_app_mvc.Models
             public string overview { get; set; }
             public double popularity { get; set; }
             public string poster_path { get; set; }
+
+            public string poster_path_url => string.Format("https://image.tmdb.org/t/p/original{0}", poster_path);
+
             public List<ProductionCompany> production_companies { get; set; }
             public List<ProductionCountry> production_countries { get; set; }
             public List<Season> seasons { get; set; }
@@ -113,6 +116,9 @@ namespace movie_app_mvc.Models
             public string name { get; set; }
             public string overview { get; set; }
             public string poster_path { get; set; }
+
+            public string poster_path_url => string.Format("https://image.tmdb.org/t/p/original{0}", poster_path);
+
             public int season_number { get; set; }
             public double vote_average { get; set; }
         }

@@ -59,8 +59,6 @@ namespace movie_app_mvc.Controllers
                 TopRatedMovies = topRatedMovies
             };
 
-            ClearTmpMoviePosterTable();
-
             return View(viewModel);
         }
 
@@ -395,8 +393,6 @@ namespace movie_app_mvc.Controllers
         }
 
 
-
-
         private bool MovieIsSaved(string title, string userID)
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
@@ -412,22 +408,6 @@ namespace movie_app_mvc.Controllers
                 return count > 0;
             }
         }
-
-
-
-
-        private void ClearTmpMoviePosterTable()
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = "DELETE FROM tmpMoviePoster";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.ExecuteNonQuery();
-            }
-        }
-
 
         public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {

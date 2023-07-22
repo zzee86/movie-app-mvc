@@ -61,7 +61,7 @@ namespace movie_app_mvc.Controllers
                         var result = media_pg_rating.results.FirstOrDefault(r => r.iso_3166_1 == "US");
 
                         ViewBag.Media_PG_Rating = (result != null) ? result.rating : media_pg_rating.results[0].rating;
-                        ViewBag.Media_Overview = movie_tv_details.overview;
+                        TempData["Media_Overview"] = movie_tv_details.overview;
                     }
                 }
                 else
@@ -91,6 +91,7 @@ namespace movie_app_mvc.Controllers
                 await GetMediaRecommendations(media_type, id, userID);
                 await GetMediaProviders(media_type, id);
 
+
                 if (movie_tv_details != null)
                 {
                     if (media_type == "tv")
@@ -102,13 +103,15 @@ namespace movie_app_mvc.Controllers
                         MovieViewBags(movie_tv_details);
                     }
 
+                    ExtractPosterColour(movie_tv_details.poster_path_url);
+
                     // Common between the media types
                     List<string> genres = movie_tv_details.genres.Select(genre => genre.name).ToList();
                     ViewBag.Genres = genres;
 
                     string posterUrl = movie.poster_path_url;
-                    SaveMoviePosterToDatabase(posterUrl);
-                    ViewBag.Media_Overview = movie_tv_details.overview;
+                    // SaveMoviePosterToDatabase(posterUrl);
+                    TempData["Media_Overview"] = movie_tv_details.overview;
 
                 }
 
@@ -129,10 +132,18 @@ namespace movie_app_mvc.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it as needed
+                TempData["DetailsError"] = true;
 
-                // Redirect to Home/Index on error
-                return RedirectToAction("Index", "Home");
+                string referringUrl = Request.Headers["Referer"].ToString();
+                if (string.IsNullOrEmpty(referringUrl))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    // Redirect back to the current URL
+                    return Redirect(referringUrl);
+                }
             }
         }
 
@@ -242,6 +253,29 @@ namespace movie_app_mvc.Controllers
             //ViewBag.Rating = rating.ToString("P0"); 
 
         }
+        private async void ExtractPosterColour(string posterUrl)
+        {
+            using (var webClient = new WebClient())
+            {
+                byte[] imageData = webClient.DownloadData(posterUrl);
+                using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
+                {
+                    // Extract the dominant color from the poster image
+                    var pixel = image[0, 0];
+                    string dominantColor = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
+
+                    // Store the dominant color in the ViewBag
+                    ViewBag.DominantColor = dominantColor;
+
+                    // Set the dominant color in the ViewBag
+                    ViewBag.DominantColorRed = pixel.R;
+                    ViewBag.DominantColorGreen = pixel.G;
+                    ViewBag.DominantColorBlue = pixel.B;
+
+                    AddTransparency(dominantColor);
+                }
+            }
+        }
 
         private async Task<MovieInfo.Root> FetchMovies(string url)
         {
@@ -287,6 +321,7 @@ namespace movie_app_mvc.Controllers
                 }
                 ViewBag.ResultList = results;
                 ViewBag.MovieList = movieResults;
+
 
                 movie.IsSaved = MovieIsSaved(movie.title, userID);
                 ViewBag.IsMovieSaved = movie.IsSaved;
@@ -341,52 +376,6 @@ namespace movie_app_mvc.Controllers
             formattedRuntime = (hours > 0) ? $"{hours}h {minutes}m" : $"{minutes}m";
 
             ViewBag.Runtime = formattedRuntime;
-        }
-
-        private void SaveMoviePosterToDatabase(string posterUrl)
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                // Insert the poster URL into the database
-                string query = "INSERT INTO tmpMoviePoster (poster) VALUES (@Poster)";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Poster", posterUrl);
-                command.ExecuteNonQuery();
-
-                // Get the inserted row's ID
-                long insertedId = command.LastInsertedId;
-
-                // Download the poster image from the URL
-                using (var webClient = new WebClient())
-                {
-                    byte[] imageData = webClient.DownloadData(posterUrl);
-                    using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(imageData))
-                    {
-                        // Extract the dominant color from the poster image
-                        var pixel = image[0, 0];
-                        string dominantColor = $"#{pixel.R:X2}{pixel.G:X2}{pixel.B:X2}";
-
-                        // Update the dominant color in the database
-                        string updateQuery = "UPDATE tmpMoviePoster SET dominantColor = @DominantColor WHERE id = @Id";
-                        MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection);
-                        updateCommand.Parameters.AddWithValue("@DominantColor", dominantColor);
-                        updateCommand.Parameters.AddWithValue("@Id", insertedId);
-                        updateCommand.ExecuteNonQuery();
-
-                        // Store the dominant color in the ViewBag
-                        ViewBag.DominantColor = dominantColor;
-
-                        // Set the dominant color in the ViewBag
-                        ViewBag.DominantColorRed = pixel.R;
-                        ViewBag.DominantColorGreen = pixel.G;
-                        ViewBag.DominantColorBlue = pixel.B;
-
-                        AddTransparency(dominantColor);
-                    }
-                }
-            }
         }
 
         private void AddTransparency(string dominantColor)

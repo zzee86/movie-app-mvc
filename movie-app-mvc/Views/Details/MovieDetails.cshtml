@@ -5,6 +5,7 @@
 }
 
 
+
 <head>
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,11 +18,18 @@
 
     @Html.Partial("_NavBar")
 
+    @if (TempData["DetailsError"] != null)
+    {
+        <script>document.addEventListener('DOMContentLoaded', function () {
+                // Call the JavaScript alert when the page loads and the condition is met
+                showErrorPopup();
+            });</script>
+    }
+
     <div class="hero-section">
         <div class="detail-card">
             <div class="detail-card-image">
                 <img src="@Model.poster_path_url" alt="Movie Poster" />
-
                 <div class="details-save-button">
                     <div class="button-container">
                         @if (User.Identity.IsAuthenticated)
@@ -37,7 +45,7 @@
                             {
                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                     <input type="hidden" name="title" value="@TempData["MovieDetailsTitle"]" />
-                                    <input type="hidden" name="overview" value="@ViewBag.Media_Overview" />
+                                    <input type="hidden" name="overview" value="@TempData["Media_Overview"]" />
                                     <input type="hidden" name="poster" value="@Model.poster_path_url" />
                                     <input type="hidden" name="rating" value="@ViewBag.AverageRating" />
                                     <input type="hidden" name="movieid" value="@TempData["movieID"]" />
@@ -126,7 +134,7 @@
 
             </div>
 
-            <h3 class="media-overview">@ViewBag.Media_Overview</h3>
+            <h3 class="media-overview">@TempData["Media_Overview"]</h3>
 
             @if (ViewBag.Providers != null && ViewBag.Providers.Count > 0)
             {

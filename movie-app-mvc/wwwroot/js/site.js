@@ -2,6 +2,11 @@
     alert("You must be signed in to perform this action.");
 }
 
+function showErrorPopup() {
+    alert("Unable to view more details");
+}
+
+
 function showVideo(movieKey) {
     const overlayVideo = document.getElementById('overlay-video');
     const videoIframe = document.getElementById('video-iframe');
