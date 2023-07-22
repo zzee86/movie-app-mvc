@@ -121,8 +121,27 @@ namespace movie_app_mvc.Controllers
 
 
                 // Custom Values
+                if (media_type == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                {
+                    TempData["ReleaseTitle"] = "(" + @ViewBag.InitialReleaseDate + " - " + @ViewBag.FinalReleaseDate + ")";
+
+                    if (@ViewBag.InitialReleaseDate == @ViewBag.FinalReleaseDate)
+                    {
+                        TempData["ReleaseTitle"] = "(" + @ViewBag.InitialReleaseDate + ")";
+                    }
+                }
+
+                else if (media_type == "MovieDetailsTitle" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
+                {
+                    TempData["ReleaseTitle"] = "(" + @ViewBag.ReleaseDate + ")";
+                }
+                else
+                {
+                    TempData["ReleaseTitle"] = "(" + @ViewBag.ReleaseDate + ")";
+                }
+
+
                 TempData["MovieDetailsTitle"] = title;
-                TempData["Backup_Title"] = title;
                 TempData["Media_Key"] = media_type;
                 TempData["movieID"] = id;
                 TempData["MovieKey"] = (video != null) ? video.key : "unavailable";

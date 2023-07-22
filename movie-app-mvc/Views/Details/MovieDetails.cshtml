@@ -67,23 +67,7 @@
         <div class="detail-information">
 
             <div class="detail-title-holder">
-                @if (string.IsNullOrEmpty(Model.title))
-                {
-                    @if (TempData["Media_Key"] == "tv" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
-                    {
-                        <h2 class="detail-title">@TempData["Backup_Title"] @($"({ViewBag.InitialReleaseDate} - {ViewBag.FinalReleaseDate})")</h2>
-                    }
-
-                    else if (TempData["Media_Key"] == "movie" && !string.IsNullOrEmpty(ViewBag.ReleaseDate))
-                    {
-                        <h2 class="detail-title">@TempData["Backup_Title"] @($"({ViewBag.ReleaseDate})")</h2>
-                    }
-                }
-
-                else
-                {
-                    <h2 class="detail-title ">@TempData["Backup_Title"] (@ViewBag.ReleaseDate)</h2>
-                }
+                <h2 class="detail-title">@TempData["MovieDetailsTitle"] @TempData["ReleaseTitle"]</h2>
             </div>
 
 
@@ -176,42 +160,48 @@
         <h3>Season Runtime: @ViewBag.SeasonRuntime</h3>
     }
 
-    <div class="cast-container">
-        <div class="card-cast-container">
-            @foreach (var cast in ViewBag.CastList)
-            {
-                if (!string.IsNullOrEmpty(@cast.profile_path))
+    <div class="section-container">
+        <div class="trending-movies">
+            <h3 class="trending-text">
+                Cast
+            </h3>
+        </div>
+        <div class="cast-container">
+            <div class="card-cast-container">
+                @foreach (var cast in ViewBag.CastList)
                 {
-                    <div class="card card-cast">
-                        <div class="card-image card-cast-image">
-                            <img src="@cast.profile_path_url" alt="Movie Poster" />
-                        </div>
-                        <div class="card-cast-content">
-                            <div class="cast-titleHolder">
-                                <h2 class="cast-info">@cast.name</h2>
+                    if (!string.IsNullOrEmpty(@cast.profile_path))
+                    {
+                        <div class="card card-cast">
+                            <div class="card-image card-cast-image">
+                                <img src="@cast.profile_path_url" alt="Movie Poster" />
+                            </div>
+                            <div class="card-cast-content">
+                                <div class="cast-titleHolder">
+                                    <h2 class="cast-info">@cast.name</h2>
+                                </div>
+
+                                <div class="cast-character">
+                                    <h2>@cast.character</h2>
+                                </div>
                             </div>
 
-                            <div class="cast-character">
-                                <h2>@cast.character</h2>
-                            </div>
                         </div>
-
-                    </div>
+                    }
                 }
-            }
+            </div>
         </div>
     </div>
 
-
     @if (ViewBag.ResultList != null && ViewBag.ResultList.Count > 0)
     {
-        <div class="section-container trending-section">
-
+        <div class="section-container">
             <div class="trending-movies">
                 <h3 class="trending-text">
                     Recommendations
                 </h3>
             </div>
+
             <div class="movies-container">
                 <div class="card-container else">
                     @foreach (var movie in ViewBag.ResultList)
