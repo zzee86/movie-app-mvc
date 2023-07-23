@@ -92,6 +92,8 @@ namespace movie_app_mvc.Controllers
                 await GetMediaProviders(media_type, id);
 
 
+
+
                 if (movie_tv_details != null)
                 {
                     if (media_type == "tv")
@@ -213,6 +215,39 @@ namespace movie_app_mvc.Controllers
         private void TVShowViewBags(TvShowDetails.Root movie_tv_details)
         {
             TvShowDetails.LastEpisodeToAir season = movie_tv_details.last_episode_to_air;
+
+            if (movie_tv_details.next_episode_to_air != null)
+            {
+                TvShowDetails.NextEpisodeToAir season_next_air = movie_tv_details.next_episode_to_air;
+                DateTime nextReleaseDate = DateTime.Parse(season_next_air.air_date);
+                TempData["NextAirDate"] = nextReleaseDate.ToString("dd/MM/yyyy");
+
+                TempData["NextEpisodeName"] = season_next_air.name;
+                TempData["season_next_air"] = season_next_air.air_date;
+
+
+
+
+                DateTime nextReleaseDate2 = DateTime.Parse(movie_tv_details.next_episode_to_air.air_date);
+                // Find the next release date that is in the future and falls on the same day of the week as the current date
+                while (nextReleaseDate2 < DateTime.Now || nextReleaseDate2.DayOfWeek != DateTime.Now.DayOfWeek)
+                {
+                    nextReleaseDate2 = nextReleaseDate2.AddDays(1);
+                }
+
+                // Calculate the number of days remaining until the next release date
+                TimeSpan timeRemaining = nextReleaseDate2 - DateTime.Now;
+
+                if (timeRemaining.Ticks > 0)
+                {
+                    string remainingTime = $"{(int)timeRemaining.TotalDays}d {timeRemaining.Hours}h {timeRemaining.Minutes}m";
+                    TempData["NextEpisodeRemainingTime"] = remainingTime;
+                }
+                else
+                {
+                    TempData["NextEpisodeRemainingTime"] = "Airing today";
+                }
+            }
             ConvertRuntime(season.runtime);
 
             var seasonInfo = movie_tv_details.seasons.OrderByDescending(s => s.season_number).FirstOrDefault();
@@ -244,6 +279,8 @@ namespace movie_app_mvc.Controllers
 
             CalculateAverageRating(movie_tv_details.vote_average);
 
+            TempData["Status"] = movie_tv_details.status;
+
             if (movie_tv_details.status == "Ended" && movie_tv_details.seasons.Sum(s => s.season_number) >= 2)
             {
                 ViewBag.SeriesEnded = "yes";
@@ -260,6 +297,7 @@ namespace movie_app_mvc.Controllers
             ViewBag.FullReleaseDate = releaseDate.ToString("dd/MM/yyyy");
             CalculateAverageRating(movie_tv_details.vote_average);
 
+            TempData["Status"] = movie_tv_details.status;
 
             ConvertRuntime(movie_tv_details.runtime);
         }

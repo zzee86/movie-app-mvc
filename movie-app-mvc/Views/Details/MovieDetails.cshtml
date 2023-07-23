@@ -199,6 +199,36 @@
         </div>
     </div>
 
+
+    <div class="section-container main-detail-section">
+        <div class="moviesDetailsContainer">
+
+            <h1>Show ID: @TempData["movieID"]</h1>
+            <h1>Show Key: @TempData["MovieKey"]</h1>
+
+            @if (@TempData["Media_Type"] == "tv")
+            {
+                <h3><strong>Time remaining until next episode:</strong> @TempData["NextEpisodeRemainingTime"]</h3>
+
+                <h3><strong>Air Date:</strong> @TempData["NextAirDate"]</h3>
+
+                <h3><strong>Season:</strong> @ViewBag.SeasonNumber</h3>
+
+                <h3><strong>Episodes:</strong> @TempData["SeasonEpisodeCount"]</h3>
+
+                @*<h3><strong>Total Episode Count:</strong> @TempData["episodeTotalCount"]</h3>*@
+
+                <h3><strong>Episode Duration:</strong> @ViewBag.EpisodeRuntime minutes</h3>
+
+            }
+
+            <h3><strong>Format:</strong> @TempData["Media_Type"]</h3>
+            <h3><strong>Release Date:</strong> @TempData["ReleaseTitle"]</h3>
+            <h3><strong>Status:</strong> @TempData["Status"]</h3>
+
+        </div>
+    </div>
+
     @if (ViewBag.ResultList != null && ViewBag.ResultList.Count > 0)
     {
         <div class="section-container">

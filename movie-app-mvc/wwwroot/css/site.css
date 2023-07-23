@@ -135,8 +135,8 @@ nav {
 
 
         .search-bar input[type="text"]:focus {
-            outline: none; 
-            border-color: #86BAFF;  
+            outline: none;
+            border-color: #86BAFF;
         }
 
 
@@ -533,6 +533,12 @@ h2 {
     padding: 2em;
     color: white;
 }
+
+    .moviesDetailsContainer h3 {
+        font-size: 1.3em !important;
+    }
+
+
 
 .close-header {
     position: fixed;
