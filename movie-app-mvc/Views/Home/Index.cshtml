@@ -20,14 +20,6 @@
             });</script>
     }
 
-
-    <h1>sHOULD BE @TempData["ProcessMovieCount"]</h1>
-    
-    @if(@TempData["ProcessMovieCount"] is null)
-{
-<h1>Its null</h1>
-}
-
     <main>
 
         <div class="filters">
@@ -80,6 +72,10 @@
                     <h3 class="trending-text">
                         @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
                         {<text>Trending</text>}
+                    else if (TempData["ProcessMovieCount"] is null)
+                    {
+                        <text>No Results Found</text>
+                    }
                     else
                     {<text>Similar Results</text>}
                     </h3>

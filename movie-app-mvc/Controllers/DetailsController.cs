@@ -204,8 +204,9 @@ namespace movie_app_mvc.Controllers
                 return movieResults;
             }
 
-            return null;
+            return new List<MovieInfo.Result>();
         }
+
 
 
 
@@ -322,9 +323,9 @@ namespace movie_app_mvc.Controllers
                     movie.title = movie.name;
                 }
 
+                // Skip the movie if it has no poster and no known_for data
                 if (string.IsNullOrEmpty(movie.poster_path) && (movie.known_for == null || movie.known_for.Count == 0))
                 {
-                    // Exclude the movie if it doesn't have a poster and no known_for data
                     continue;
                 }
 
@@ -338,9 +339,6 @@ namespace movie_app_mvc.Controllers
                         continue;
                     }
                 }
-                ViewBag.ResultList = results;
-                ViewBag.MovieList = movieResults;
-
 
                 movie.IsSaved = MovieIsSaved(movie.title, userID);
                 ViewBag.IsMovieSaved = movie.IsSaved;
@@ -348,8 +346,14 @@ namespace movie_app_mvc.Controllers
                 movieResults.Add(movie);
             }
 
+            ViewBag.ResultList = results;
+            ViewBag.MovieList = movieResults;
+
             return movieResults;
         }
+
+
+
 
         private bool MovieIsSaved(string title, string userID)
         {

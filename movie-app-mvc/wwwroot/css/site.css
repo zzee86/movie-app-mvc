@@ -109,8 +109,8 @@ nav {
 .search-right-container {
     display: flex;
     justify-content: center;
-    margin: 1.5em 2em 0 2em;
-    width: 100%;
+    align-items: center;
+    margin: 1.5em 2em;
 }
 
 .search-content form {
@@ -135,8 +135,8 @@ nav {
 
 
         .search-bar input[type="text"]:focus {
-            outline: none; /* Remove the default focus outline */
-            border-color: #86BAFF; /* Add the desired border color */
+            outline: none; 
+            border-color: #86BAFF;  
         }
 
 
@@ -152,7 +152,6 @@ nav {
     justify-content: center;
     align-items: center;
     margin: 1.5em 2em;
-    width: 100%;
 }
 
     .pagination-container a {
