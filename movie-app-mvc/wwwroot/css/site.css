@@ -92,8 +92,6 @@ nav {
     }
 
 
-
-
 .trending-movies {
     margin-left: 2.5em;
 }
@@ -111,8 +109,8 @@ nav {
 .search-right-container {
     display: flex;
     justify-content: center;
-    margin-right: 2em;
-    margin-left: 2em;
+    margin: 1.5em 2em 0 2em;
+    width: 100%;
 }
 
 .search-content form {
@@ -153,7 +151,8 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin: 1.5em 2em;
+    width: 100%;
 }
 
     .pagination-container a {
@@ -420,13 +419,28 @@ nav {
         color: #FFE5E5;
     }
 /* Login Page */
+
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
     height: 100%;
     background-color: #191919;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.row {
+    width: 60%;
+    max-width: 500px;
+    margin-bottom: 10em;
+}
+
+
+@media (max-width: 1080px) {
+    .row {
+        max-width: 500px;
+    }
 }
 
 h2 {

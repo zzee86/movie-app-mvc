@@ -166,6 +166,11 @@ namespace movie_app_mvc.Controllers
                 movie.IsSaved = MovieIsSaved(movie.title, userID);
 
                 movieResults.Add(movie);
+
+                if (results.Count() >= 1)
+                {
+                    TempData["ProcessMovieCount"] = "Active";
+                }
             }
 
             return movieResults;

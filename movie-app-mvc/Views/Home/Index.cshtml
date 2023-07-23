@@ -20,6 +20,14 @@
             });</script>
     }
 
+
+    <h1>sHOULD BE @TempData["ProcessMovieCount"]</h1>
+    
+    @if(@TempData["ProcessMovieCount"] is null)
+{
+<h1>Its null</h1>
+}
+
     <main>
 
         <div class="filters">
