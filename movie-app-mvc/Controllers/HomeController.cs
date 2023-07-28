@@ -32,7 +32,7 @@ namespace movie_app_mvc.Controllers
             string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
 
             // Retrieve the user ID from the loginDetails table
-            string testing = GetUserIdByEmail(email);
+            string testing = "t";
 
             List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
             List<MovieInfo.Result> popularMovies = new List<MovieInfo.Result>();
@@ -163,7 +163,7 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                movie.IsSaved = MovieIsSaved(movie.title, userID);
+                //movie.IsSaved = MovieIsSaved(movie.title, userID);
 
                 movieResults.Add(movie);
 
@@ -465,5 +465,38 @@ namespace movie_app_mvc.Controllers
             return View(selectedMovie);
         }
 
+
+
+
+
+
+
+
+
+     /*   public ActionResult Testing()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Testing(Movie movie, User user, User_Movie user_movie)
+        {
+            try
+            {
+                using (MovieDbContext testing = new MovieDbContext())
+                {
+                    testing.Movies.Add(movie);
+                    testing.Users.Add(user);
+                    testing.Users_Movies.Add(user_movie);
+                    testing.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return View(movie);
+        }*/
     }
 }
