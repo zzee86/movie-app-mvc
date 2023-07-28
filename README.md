@@ -1,4 +1,4 @@
-# Movie App
+# Movie App MVC
 
 Explore and discover a vast collection of movies, effortlessly search through them, and conveniently save your favorites to your account 
 
