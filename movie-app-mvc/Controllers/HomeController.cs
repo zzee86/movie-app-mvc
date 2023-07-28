@@ -16,7 +16,7 @@ using System.Drawing;
 using static System.Net.WebRequestMethods;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Formatters;
-
+using movie_app_data.Models;
 
 namespace movie_app_mvc.Controllers
 {
@@ -473,7 +473,7 @@ namespace movie_app_mvc.Controllers
 
 
 
-     /*   public ActionResult Testing()
+        public ActionResult Testing()
         {
             return View();
         }
@@ -497,6 +497,37 @@ namespace movie_app_mvc.Controllers
             }
 
             return View(movie);
-        }*/
+        }
+
+        public IActionResult TestingSavedMovies(string title, int page = 1)
+        {
+            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+
+            string userId = GetUserIdByEmail(email);
+            if (userId == null)
+            {
+                // User ID not found
+                // Handle the error or redirect as needed
+                return RedirectToAction("Index");
+            }
+
+            int pageSize = 28;
+            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userId, page, pageSize);
+            ViewBag.SavedPage = page;
+            ViewBag.SearchQuery = title;
+
+            int totalCount = GetTotalMovieCount(title, userId);
+
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.TotalPages = totalPages;
+
+            bool hasNextPage = (page * pageSize) < totalCount;
+
+            ViewBag.HasNextPage = hasNextPage;
+            ViewBag.NextPage = page + 1;
+            ViewBag.PreviousPage = page - 1;
+
+            return View(savedMovies);
+        }
     }
 }
