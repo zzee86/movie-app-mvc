@@ -20,47 +20,6 @@
             });</script>
     }
 
-
-
-
-    
-<div class="card-container">
-        @foreach (var movie in Model.TrendingMovies)
-    {
-        <div class="card">
-            <div class="card-image">
-                <img src="@movie.poster_path_url" alt="Movie Poster" />
-            </div>
-            <div class="card-content">
-                <h2>@movie.title</h2>
-                <div class="button-container">
-                    <form method="post" action="@Url.Action("Testing", "Home")">
-                        <input type="hidden" name="Title" value="@movie.title" />
-                        <input type="hidden" name="Poster" value="@movie.poster_path_url" />
-                        <input type="hidden" name="TheMovieDbId" value=@movie.id />
-
-
-                        <input type="hidden" name="Email" value="fakemail@gmail.com" />
-                        <input type="hidden" name="Username" value="tester" />
-                        <input type="hidden" name="Password" value="pass" />
-
-                @*        @if (User.Identity.IsAuthenticated)
-                        {*@
-                            <button type="submit">Save</button>
-    @*                    }
-                        else
-                        {
-                            <button>Login</button>
-                        }*@
-                    </form>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-
-
     <main>
 
         <div class="filters">
@@ -105,6 +64,69 @@
                     <span>Next</span>
                 }
             </div>
+
+
+
+            <div class="section-container trending-section">
+
+                <div class="trending-movies">
+                    <h3 class="trending-text">
+                        @if (string.IsNullOrEmpty(ViewBag.SearchQuery))
+                        {<text>Testing</text>}
+                    else if (TempData["ProcessMovieCount"] is null)
+                    {
+                        <text>No Results Found</text>
+                    }
+                    else
+                    {<text>Similar Results</text>}
+                    </h3>
+                </div>
+                <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>movies-container</text>}">
+                    <div class="@if (string.IsNullOrEmpty(ViewBag.SearchQuery)) {<text>card-container</text>} else {<text>card-container-full</text>} ">
+                        @foreach (var movie in Model.TrendingMovies)
+                        {
+                            <div class="card">
+
+                                <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id})">
+                                    <div class="card-image">
+                                        <div class="overlay">
+                                            <!-- Overlay content -->
+                                            <div class="image-container">
+                                                <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
+                                            </div>
+                                            @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
+                                            <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                        </div>
+                                        <img src="@movie.poster_path_url" alt="Movie Poster" />
+                                    </div>
+                                </a>
+                                <div class="card-content">
+                                    <a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">
+
+                                        <div class="titleHolder">
+                                            <h2>@movie.title</h2>
+                                        </div>
+                                    </a>
+                                    <div class="button-container">
+                 
+                                                    <form method="post" action="@Url.Action("Testing", "Home")">
+                                                    <input type="hidden" name="Title" value="@movie.title" />
+                                                    <input type="hidden" name="Poster" value="@movie.poster_path_url" />
+                                                    <input type="hidden" name="Created" value="@TempData["CurrentDateTime"]" />
+                                                    <input type="hidden" name="TheMovieDbId" value="@movie.id" />
+                                                    <button type="submit">Save</button>
+                                                </form>
+                              
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
 
 
             <div class="section-container trending-section">
@@ -182,6 +204,7 @@
                     </div>
                 </div>
             </div>
+
 
 
 
@@ -316,6 +339,7 @@
                     </div>
                 </div>
             }
+            </div>
     </main>
 
 </body>

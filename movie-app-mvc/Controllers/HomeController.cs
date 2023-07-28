@@ -33,6 +33,7 @@ namespace movie_app_mvc.Controllers
 
             // Retrieve the user ID from the loginDetails table
             string testing = "t";
+                      TempData["CurrentDateTime"] =  DateTime.Now.ToString();
 
             List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
             List<MovieInfo.Result> popularMovies = new List<MovieInfo.Result>();
@@ -478,16 +479,14 @@ namespace movie_app_mvc.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Testing(Movie movie, User user, User_Movie user_movie)
+        public ActionResult Testing(Movie movie)
         {
             try
             {
-                using (MovieDbContext testing = new MovieDbContext())
+                using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
-                    testing.Movies.Add(movie);
-                    testing.Users.Add(user);
-                    testing.Users_Movies.Add(user_movie);
-                    testing.SaveChanges();
+                    _movieDbContext.Movies.Add(movie);
+                    _movieDbContext.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }

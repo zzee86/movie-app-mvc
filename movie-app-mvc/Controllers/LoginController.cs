@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using movie_app_mvc.Models;
+using movie_app_data.Models;
 
 namespace movie_app_mvc.Controllers
 {
