@@ -230,6 +230,11 @@ namespace movie_app_mvc.Controllers
                 }
             }
 
+            return ReloadCurrentUrl();
+        }
+        public IActionResult ReloadCurrentUrl()
+        {
+
             // Determine the referring URL to refresh the current page
             string referringUrl = Request.Headers["Referer"].ToString();
             if (string.IsNullOrEmpty(referringUrl))
@@ -340,19 +345,7 @@ namespace movie_app_mvc.Controllers
                     command.ExecuteNonQuery();
                 }
             }
-
-            // Determine the referring URL to refresh the current page
-            string referringUrl = Request.Headers["Referer"].ToString();
-            if (string.IsNullOrEmpty(referringUrl))
-            {
-                // If referring URL is empty, redirect to the home page
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Redirect back to the referring URL
-                return Redirect(referringUrl);
-            }
+            return ReloadCurrentUrl();
         }
 
         private List<SavedMovie> GetMoviesFromDatabase(string title, string userId, int page, int pageSize)
@@ -490,19 +483,7 @@ namespace movie_app_mvc.Controllers
             {
 
             }
-
-            // Determine the referring URL to refresh the current page
-            string referringUrl = Request.Headers["Referer"].ToString();
-            if (string.IsNullOrEmpty(referringUrl))
-            {
-                // If the referring URL is empty, redirect to the home page
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Redirect back to the referring URL
-                return Redirect(referringUrl);
-            }
+            return ReloadCurrentUrl();
         }
     }
 }
