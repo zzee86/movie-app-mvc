@@ -31,21 +31,13 @@ namespace movie_app_mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(User user)
         {
             // Validate login credentials
-            if (ValidateLogin(email, password))
+            if (ValidateLogin(user.Email, user.Password))
             {
-                // Get the username associated with the email
-                string username = GetUsernameByEmail(email);
 
-                // Set authentication cookie with user's name
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, email),
-            new Claim("Username", username) // Add the username as a claim
-        };
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(principal);
 
@@ -99,19 +91,11 @@ namespace movie_app_mvc.Controllers
 
         private bool ValidateLogin(string email, string password)
         {
-            using (var connection = new MySqlConnection(_connectionString))
+            using (MovieDbContext _movieDbContext = new MovieDbContext())
             {
-                connection.Open();
+                bool loginValid = _movieDbContext.Users.Any(u => u.Email == email && u.Password == password);
 
-                var query = "SELECT COUNT(*) FROM loginDetails WHERE email = @Email AND password = @Password";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@Password", password);
-
-                    var result = Convert.ToInt32(command.ExecuteScalar());
-                    return result > 0;
-                }
+                return loginValid;
             }
         }
 
