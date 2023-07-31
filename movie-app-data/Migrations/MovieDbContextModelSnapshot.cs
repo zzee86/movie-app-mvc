@@ -87,9 +87,48 @@ namespace movie_app_data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Movie_User_Id"));
 
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Movie_User_Id");
 
-                    b.ToTable("Users_Movies");
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserMovies");
+                });
+
+            modelBuilder.Entity("movie_app_data.Models.User_Movie", b =>
+                {
+                    b.HasOne("movie_app_data.Models.Movie", "movie")
+                        .WithMany("UserMovies")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("movie_app_data.Models.User", "user")
+                        .WithMany("UserMovies")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("movie");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("movie_app_data.Models.Movie", b =>
+                {
+                    b.Navigation("UserMovies");
+                });
+
+            modelBuilder.Entity("movie_app_data.Models.User", b =>
+                {
+                    b.Navigation("UserMovies");
                 });
 #pragma warning restore 612, 618
         }

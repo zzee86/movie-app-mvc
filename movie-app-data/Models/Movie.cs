@@ -27,5 +27,8 @@ namespace movie_app_data.Models
 
         [Required]
         public int TheMovieDbId { get; set; }
+
+        [Required]
+        public ICollection<User_Movie> UserMovies { get; set; }
     }
 }

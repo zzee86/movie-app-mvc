@@ -17,11 +17,17 @@ namespace movie_app_data.Models
         public int Movie_User_Id { get; set; }
 
         [Required]
+        public int UserId { get; set; }
+
+        [Required]
         [ForeignKey("UserId")]
-        public User UserId;
+        public User user { get; set; }
+
+        [Required]
+        public int MovieId { get; set; }
 
         [Required]
         [ForeignKey("MovieId")]
-        public Movie MovieId;
+        public Movie movie { get; set; }
     }
 }

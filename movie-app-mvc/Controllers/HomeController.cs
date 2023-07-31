@@ -474,18 +474,14 @@ namespace movie_app_mvc.Controllers
 
 
 
-        public ActionResult Testing()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Testing(Movie movie)
+        public IActionResult Testing(Movie movie, User user, string searchQuery, string name, int page = 1)
         {
             try
             {
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
                     _movieDbContext.Movies.Add(movie);
+                    _movieDbContext.Users.Add(user);   
                     _movieDbContext.SaveChanges();
                     return RedirectToAction("Index");
                 }
@@ -495,38 +491,18 @@ namespace movie_app_mvc.Controllers
 
             }
 
-            return View(movie);
-        }
-
-        public IActionResult TestingSavedMovies(string title, int page = 1)
-        {
-            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
-
-            string userId = GetUserIdByEmail(email);
-            if (userId == null)
+            // Determine the referring URL to refresh the current page
+            string referringUrl = Request.Headers["Referer"].ToString();
+            if (string.IsNullOrEmpty(referringUrl))
             {
-                // User ID not found
-                // Handle the error or redirect as needed
+                // If the referring URL is empty, redirect to the home page
                 return RedirectToAction("Index");
             }
-
-            int pageSize = 28;
-            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userId, page, pageSize);
-            ViewBag.SavedPage = page;
-            ViewBag.SearchQuery = title;
-
-            int totalCount = GetTotalMovieCount(title, userId);
-
-            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-            ViewBag.TotalPages = totalPages;
-
-            bool hasNextPage = (page * pageSize) < totalCount;
-
-            ViewBag.HasNextPage = hasNextPage;
-            ViewBag.NextPage = page + 1;
-            ViewBag.PreviousPage = page - 1;
-
-            return View(savedMovies);
+            else
+            {
+                // Redirect back to the referring URL
+                return Redirect(referringUrl);
+            }
         }
     }
 }

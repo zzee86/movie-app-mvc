@@ -27,5 +27,9 @@ namespace movie_app_data.Models
         [Required]
         [StringLength(50)]
         public string Password { get; set; }
+
+        [Required]
+        public ICollection<User_Movie> UserMovies { get; set; }
+
     }
 }

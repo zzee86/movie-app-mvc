@@ -19,11 +19,28 @@ namespace movie_app_data.Models
 
         public DbSet<User> Users { get; set; }
 
-        public DbSet<User_Movie> Users_Movies { get; set; }
+        public DbSet<User_Movie> UserMovies { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Movie_App;Trusted_Connection=True;");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Movie_App;Trusted_Connection=True;");
+            }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Movie>()
+                .HasMany(m => m.UserMovies)
+                .WithOne(om => om.movie)
+                .HasForeignKey(fk => fk.MovieId);
+
+            modelBuilder.Entity<User>()
+                .HasMany(m => m.UserMovies)
+                .WithOne(ou => ou.user)
+                .HasForeignKey(fk => fk.UserId);
+ 
         }
     }
 }

@@ -41,6 +41,9 @@
     <Content Remove="wwwroot\Images\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Controllers\favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\movie-app-data\movie-app-data.csproj" />
   </ItemGroup>
   <ItemGroup>
