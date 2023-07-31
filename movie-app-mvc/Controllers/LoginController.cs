@@ -37,7 +37,12 @@ namespace movie_app_mvc.Controllers
             if (ValidateLogin(user.Email, user.Password))
             {
 
-                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                var claim = new[]
+                {
+                    new Claim(ClaimTypes.Name, user.Email)
+                };
+
+                var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(principal);
 
