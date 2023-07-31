@@ -46,7 +46,7 @@ namespace movie_app_mvc.Controllers
             }
 
             // Invalid credentials
-            ViewData["ErrorMessage"] = "Invalid email or password.";
+            TempData["LoginErrorMessage"] = "Invalid email or password.";
             return View("Index");
         }
 
@@ -68,9 +68,9 @@ namespace movie_app_mvc.Controllers
         public IActionResult Register(User user)
         {
             // Check if the email already exists
-            if (IsEmailExists(user.Email))
+            if (IsUserExists(user.Email, user.Username))
             {
-                TempData["ErrorMessage"] = "Email already registered.";
+                TempData["RegisterErrorMessage"] = "Email or Username already registered.";
                 return RedirectToAction("Index");
             }
             try
@@ -99,40 +99,14 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private bool IsEmailExists(string email)
+        private bool IsUserExists(string email, string username)
         {
             using (MovieDbContext _movieDbContext = new MovieDbContext())
             {
-                bool emailExists = _movieDbContext.Users.Any(u => u.Email == email);
+                bool userexists = _movieDbContext.Users.Any(u => u.Email == email || u.Username == username);
                 
-                return emailExists;
+                return userexists;
             }
         }
-
-        private string GetUsernameByEmail(string email)
-        {
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var query = "SELECT username FROM loginDetails WHERE email = @Email";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return reader.GetString("username");
-                        }
-                    }
-                }
-            }
-
-            // Return null if the email does not have an associated username
-            return null;
-        }
-
     }
 }

@@ -16,10 +16,16 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+            @if (!string.IsNullOrEmpty(TempData["RegisterErrorMessage"] as string))
             {
                 <div class="alert alert-danger" role="alert">
-                    @TempData["ErrorMessage"]
+                    @TempData["RegisterErrorMessage"]
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(TempData["LoginErrorMessage"] as string))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["LoginErrorMessage"]
                 </div>
             }
 
@@ -75,8 +81,11 @@
         const registerForm = document.getElementById("registerForm");
         const loginForm = document.getElementById("loginForm");
 
-        const errorMessage = "@(TempData["ErrorMessage"] as string)";
-        const showRegistrationForm = errorMessage === "";
+        const registerErrorMessage = "@(TempData["RegisterErrorMessage"] as string)";
+        const loginErrorMessage = "@(TempData["LoginErrorMessage"] as string)";
+
+        const showRegistrationForm = registerErrorMessage === "";
+        const showLoginForm = loginErrorMessage === "";
 
         toggleFormButton.addEventListener("click", function () {
             if (registerForm.style.display === "none") {
@@ -100,6 +109,12 @@
             registerForm.style.display = "block";
             loginForm.style.display = "none";
             toggleFormButton.innerText = "Login";
+        }
+
+        if (!showLoginForm) {
+            registerForm.style.display = "none";
+            loginForm.style.display = "block";
+            toggleFormButton.innerText = "Register";
         }
 
     });</script>
