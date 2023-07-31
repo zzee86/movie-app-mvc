@@ -73,25 +73,28 @@ namespace movie_app_mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string email, string username, string password)
+        public IActionResult Register(User user)
         {
             // Check if the email already exists
-            if (IsEmailExists(email))
+            if (IsEmailExists(user.Email))
             {
-                ViewData["ErrorMessage"] = "Email already registered.";
-                return View();
+                TempData["ErrorMessage"] = "Email already registered.";
+                return RedirectToAction("Index");
             }
-
-            // Register the new user
-            if (CreateUser(email, username, password))
+            try
             {
-                // Successful registration
-                return RedirectToAction("Index", "Home");
+                using (MovieDbContext _movieDbContext = new MovieDbContext())
+                {
+                    _movieDbContext.Users.Add(user);
+                    _movieDbContext.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                }
             }
-
-            // Failed to register
-            ViewData["ErrorMessage"] = "Failed to register user.";
-            return View();
+            catch
+            {
+                TempData["ErrorMessage"] = "Email already registered.";
+                return RedirectToAction("Index");
+            }
         }
 
         private bool ValidateLogin(string email, string password)
@@ -114,37 +117,11 @@ namespace movie_app_mvc.Controllers
 
         private bool IsEmailExists(string email)
         {
-            using (var connection = new MySqlConnection(_connectionString))
+            using (MovieDbContext _movieDbContext = new MovieDbContext())
             {
-                connection.Open();
-
-                var query = "SELECT COUNT(*) FROM loginDetails WHERE email = @Email";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-
-                    var result = Convert.ToInt32(command.ExecuteScalar());
-                    return result > 0;
-                }
-            }
-        }
-
-        private bool CreateUser(string email, string username, string password)
-        {
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var query = "INSERT INTO loginDetails (email, username, password) VALUES (@Email, @Username, @Password)";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@Username", username);
-                    command.Parameters.AddWithValue("@Password", password);
-
-                    var rowsAffected = command.ExecuteNonQuery();
-                    return rowsAffected > 0;
-                }
+                bool emailExists = _movieDbContext.Users.Any(u => u.Email == email);
+                
+                return emailExists;
             }
         }
 
