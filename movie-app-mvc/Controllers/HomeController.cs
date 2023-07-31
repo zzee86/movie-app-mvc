@@ -467,23 +467,28 @@ namespace movie_app_mvc.Controllers
 
 
 
-        public IActionResult Testing(Movie movie, User user, string searchQuery, string name, int page = 1)
+        public IActionResult Testing(Movie movie, User user, User_Movie userMovie, string searchQuery, string name, int page = 1)
         {
             try
             {
+                userMovie.user = user;
+                userMovie.movie = movie;
+
+                userMovie.UserId = user.UserId;
+                userMovie.MovieId = movie.MovieId;
+
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
                     _movieDbContext.Movies.Add(movie);
-                    _movieDbContext.Users.Add(user);   
+                    _movieDbContext.UserMovies.Add(userMovie);
                     _movieDbContext.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
             {
-
+                return ReloadCurrentUrl();
             }
-            return ReloadCurrentUrl();
         }
     }
 }
