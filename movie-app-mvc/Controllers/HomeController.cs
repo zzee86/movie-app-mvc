@@ -413,6 +413,7 @@ namespace movie_app_mvc.Controllers
                     _movieDbContext.Movies.Add(movie);
                     _movieDbContext.UserMovies.Add(userMovie);
                     _movieDbContext.SaveChanges();
+
                     return ReloadCurrentUrl();
                 }
             }
