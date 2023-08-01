@@ -12,8 +12,8 @@ using movie_app_data.Models;
 namespace movie_app_data.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20230731130151_LinkTables")]
-    partial class LinkTables
+    [Migration("20230801094551_updated_TheMovieDbId_foreign_key")]
+    partial class updated_TheMovieDbId_foreign_key
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,12 +93,15 @@ namespace movie_app_data.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
+                    b.Property<int>("TheMovieDbId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Movie_User_Id");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("TheMovieDbId");
 
                     b.HasIndex("UserId");
 
@@ -109,7 +112,7 @@ namespace movie_app_data.Migrations
                 {
                     b.HasOne("movie_app_data.Models.Movie", "movie")
                         .WithMany("UserMovies")
-                        .HasForeignKey("MovieId")
+                        .HasForeignKey("TheMovieDbId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

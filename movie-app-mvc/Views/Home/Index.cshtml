@@ -21,7 +21,6 @@
     }
 
     <main>
-
         <div class="filters">
             <div class="search-right-container">
                 <div class="search-content">
@@ -108,14 +107,31 @@
                                         </div>
                                     </a>
                                     <div class="button-container">
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            @if (movie.IsSaved)
+                                            {
+                                                <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                                    <input type="hidden" name="title" value="@movie.title" />
+                                                    <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" action="@Url.Action("Testing", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
+                                                    <input type="hidden" name="Title" value="@movie.title" />
+                                                    <input type="hidden" name="Poster" value="@movie.poster_path_url" />
+                                                    <input type="hidden" name="Created" value="@TempData["CurrentDateTime"]" />
+                                                    <input type="hidden" name="TheMovieDbId" value="@movie.id" />
+                                                    <button type="submit">Save</button>
+                                                </form>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
 
-                                        <form method="post" action="@Url.Action("Testing", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                            <input type="hidden" name="Title" value="@movie.title" />
-                                            <input type="hidden" name="Poster" value="@movie.poster_path_url" />
-                                            <input type="hidden" name="Created" value="@TempData["CurrentDateTime"]" />
-                                            <input type="hidden" name="TheMovieDbId" value="@movie.id" />
-                                            <button type="submit">Save</button>
-                                        </form>
+                                        }
                                     </div>
                                 </div>
 

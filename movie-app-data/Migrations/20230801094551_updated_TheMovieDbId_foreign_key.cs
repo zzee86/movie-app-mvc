@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace movie_app_data.Migrations
 {
     /// <inheritdoc />
-    public partial class LinkTables : Migration
+    public partial class updated_TheMovieDbId_foreign_key : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,14 +49,15 @@ namespace movie_app_data.Migrations
                     Movie_User_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    TheMovieDbId = table.Column<int>(type: "int", nullable: false),
                     MovieId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserMovies", x => x.Movie_User_Id);
                     table.ForeignKey(
-                        name: "FK_UserMovies_Movies_MovieId",
-                        column: x => x.MovieId,
+                        name: "FK_UserMovies_Movies_TheMovieDbId",
+                        column: x => x.TheMovieDbId,
                         principalTable: "Movies",
                         principalColumn: "MovieId",
                         onDelete: ReferentialAction.Cascade);
@@ -69,9 +70,9 @@ namespace movie_app_data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserMovies_MovieId",
+                name: "IX_UserMovies_TheMovieDbId",
                 table: "UserMovies",
-                column: "MovieId");
+                column: "TheMovieDbId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserMovies_UserId",

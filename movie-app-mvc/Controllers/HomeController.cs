@@ -17,6 +17,7 @@ using static System.Net.WebRequestMethods;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using movie_app_data.Models;
+using Microsoft.Exchange.WebServices.Data;
 
 namespace movie_app_mvc.Controllers
 {
@@ -59,7 +60,6 @@ namespace movie_app_mvc.Controllers
                 PopularMovies = popularMovies,
                 TopRatedMovies = topRatedMovies
             };
-
             return View(viewModel);
         }
 
@@ -164,8 +164,10 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                //movie.IsSaved = MovieIsSaved(movie.title, userID);
-
+                if (User.Identity.IsAuthenticated)
+                {
+                    movie.IsSaved = MovieIsSaved(movie.id);
+                }
                 movieResults.Add(movie);
 
                 if (results.Count() >= 1)
@@ -392,19 +394,14 @@ namespace movie_app_mvc.Controllers
 
 
 
-        private bool MovieIsSaved(string title, string userID)
+        private bool MovieIsSaved(int movieId)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
+            using (MovieDbContext _movieDbContext = new MovieDbContext()) {
+                string currentUserEmail = User.Identity.Name;
+                User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
 
-                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @title AND userID = @userID";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@title", title);
-                command.Parameters.AddWithValue("@userID", userID);
-
-                int count = Convert.ToInt32(command.ExecuteScalar());
-                return count > 0;
+                bool isSaved = _movieDbContext.UserMovies.Any(u => u.movie.TheMovieDbId == movieId && u.UserId == currentUser.UserId);
+                return isSaved;
             }
         }
 
@@ -482,8 +479,8 @@ namespace movie_app_mvc.Controllers
 
                     userMovie.UserId = currentUser.UserId;
                     userMovie.MovieId = movie.MovieId;
-                    
-                        _movieDbContext.Movies.Add(movie);
+
+                    _movieDbContext.Movies.Add(movie);
                     _movieDbContext.UserMovies.Add(userMovie);
                     _movieDbContext.SaveChanges();
                     return RedirectToAction("Index");
