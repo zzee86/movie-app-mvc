@@ -199,41 +199,6 @@ namespace movie_app_mvc.Controllers
             return null;
         }
 
-
-        public async Task<IActionResult> SaveMovie(string title, string poster, double rating, string movieid, string searchQuery, string name, int page = 1)
-        {
-            // Get the user ID of the logged-in user
-            string email = User.Identity.Name;
-
-            // Retrieve the user ID from the loginDetails table
-            string userId = GetUserIdByEmail(email);
-            if (userId == null)
-            {
-                // User ID not found
-                // Handle the error or redirect as needed
-                return RedirectToAction("Index");
-            }
-
-            if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(movieid))
-            {
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    string query = "INSERT INTO savedMovies (title, poster, dateTimeInsertion, userId, rating, movieid) VALUES (@Title, @Poster, NOW(), @UserId, @Rating, @MovieID)";
-
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@Title", title);
-                    command.Parameters.AddWithValue("@Poster", poster);
-                    command.Parameters.AddWithValue("@UserId", userId);
-                    command.Parameters.AddWithValue("@Rating", rating);
-                    command.Parameters.AddWithValue("@movieid", movieid);
-                    command.ExecuteNonQuery();
-                }
-            }
-
-            return ReloadCurrentUrl();
-        }
         public IActionResult ReloadCurrentUrl()
         {
 
@@ -251,38 +216,11 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private string GetUserIdByEmail(string email)
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT userID FROM loginDetails WHERE email = @Email";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Email", email);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        // Return the user ID if found
-                        return reader.GetString("userID");
-                    }
-                }
-            }
-
-            // Return null if user ID not found
-            return null;
-        }
-
-
-
-
         public IActionResult SavedMovies(string title, int page = 1)
         {
             string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
 
-            string userId = GetUserIdByEmail(email);
+            string userId = email;
             if (userId == null)
             {
                 // User ID not found
@@ -335,9 +273,7 @@ namespace movie_app_mvc.Controllers
         public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
         {
             if (!string.IsNullOrEmpty(title))
-            {
-                // Remove the movie from the database
-       
+            {       
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
                    var remove = _movieDbContext.UserMovies.FirstOrDefault(x => x.movie.Title == title);
@@ -458,15 +394,7 @@ namespace movie_app_mvc.Controllers
             return View(selectedMovie);
         }
 
-
-
-
-
-
-
-
-
-        public IActionResult Testing(Movie movie, User_Movie userMovie, string searchQuery, string name, int page = 1)
+        public async Task<IActionResult> SaveMovie(Movie movie, User_Movie userMovie, string searchQuery, string name, int page = 1)
         {
             try
             {
@@ -485,7 +413,7 @@ namespace movie_app_mvc.Controllers
                     _movieDbContext.Movies.Add(movie);
                     _movieDbContext.UserMovies.Add(userMovie);
                     _movieDbContext.SaveChanges();
-                    return RedirectToAction("Index");
+                    return ReloadCurrentUrl();
                 }
             }
             catch (Exception ex)

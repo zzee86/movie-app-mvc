@@ -16,15 +16,6 @@ namespace movie_app_mvc.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString = "server=localhost;database=saved_movies;user=root;";
-
-        //public LoginController()
-        //{
-        //    _connectionString = "server=localhost;database=saved_movies;user=root;";
-        //}
-
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View();

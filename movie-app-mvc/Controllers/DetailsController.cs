@@ -12,7 +12,7 @@ using System.Drawing;
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using movie_app_data.Models;
 
 namespace movie_app_mvc.Controllers
 {
@@ -28,7 +28,7 @@ namespace movie_app_mvc.Controllers
                 // Null-conditional operator to avoid crashing
                 string email = User.Identity?.Name;
 
-                string userID = string.IsNullOrEmpty(email) ? null : GetUserIdByEmail(email);
+                string userID = email;
 
                 // Get details on the movie
                 string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
@@ -166,30 +166,6 @@ namespace movie_app_mvc.Controllers
                     return Redirect(referringUrl);
                 }
             }
-        }
-
-        private string GetUserIdByEmail(string email)
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT userID FROM loginDetails WHERE email = @Email";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Email", email);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        // Return the user ID if found
-                        return reader.GetString("userID");
-                    }
-                }
-            }
-
-            // Return null if user ID not found
-            return null;
         }
 
         private async Task<List<MovieInfo.Result>> GetMediaRecommendations(string media_type, int id, string userID)
@@ -378,8 +354,11 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                movie.IsSaved = MovieIsSaved(movie.title, userID);
-                ViewBag.IsMovieSaved = movie.IsSaved;
+                if (User.Identity.IsAuthenticated)
+                {
+                    movie.IsSaved = MovieIsSaved(movie.id);
+                    ViewBag.IsMovieSaved = movie.IsSaved;
+                }
 
                 movieResults.Add(movie);
             }
@@ -391,21 +370,15 @@ namespace movie_app_mvc.Controllers
         }
 
 
-
-
-        private bool MovieIsSaved(string title, string userID)
+        private bool MovieIsSaved(int movieId)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MovieDbContext _movieDbContext = new MovieDbContext())
             {
-                connection.Open();
+                string currentUserEmail = User.Identity.Name;
+                User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
 
-                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @title AND userID = @userID";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@title", title);
-                command.Parameters.AddWithValue("@userID", userID);
-
-                int count = Convert.ToInt32(command.ExecuteScalar());
-                return count > 0;
+                bool isSaved = _movieDbContext.UserMovies.Any(u => u.movie.TheMovieDbId == movieId && u.UserId == currentUser.UserId);
+                return isSaved;
             }
         }
 
