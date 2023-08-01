@@ -337,14 +337,16 @@ namespace movie_app_mvc.Controllers
             if (!string.IsNullOrEmpty(title))
             {
                 // Remove the movie from the database
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
+       
+                using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
-                    connection.Open();
+                   var remove = _movieDbContext.UserMovies.FirstOrDefault(x => x.movie.Title == title);
+                    if (remove != null)
+                    {
+                        _movieDbContext.UserMovies.Remove(remove);
+                        _movieDbContext.SaveChanges();
+                    }
 
-                    string query = "DELETE FROM savedMovies WHERE title = @Title";
-                    MySqlCommand command = new MySqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@Title", title);
-                    command.ExecuteNonQuery();
                 }
             }
             return ReloadCurrentUrl();
