@@ -12,7 +12,8 @@ using System.Drawing;
 using System.Net;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using movie_app_data.Models;
+using MovieApp.Data.Context;
+using MovieApp.Data.Models;
 
 namespace movie_app_mvc.Controllers
 {
@@ -354,11 +355,11 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                if (User.Identity.IsAuthenticated)
+            /*    if (User.Identity.IsAuthenticated)
                 {
                     movie.IsSaved = MovieIsSaved(movie.id);
                     ViewBag.IsMovieSaved = movie.IsSaved;
-                }
+                }*/
 
                 movieResults.Add(movie);
             }
@@ -370,7 +371,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        private bool MovieIsSaved(int movieId)
+      /*  private bool MovieIsSaved(int movieId)
         {
             using (MovieDbContext _movieDbContext = new MovieDbContext())
             {
@@ -380,7 +381,7 @@ namespace movie_app_mvc.Controllers
                 bool isSaved = _movieDbContext.UserMovies.Any(u => u.movie.TheMovieDbId == movieId && u.UserId == currentUser.UserId);
                 return isSaved;
             }
-        }
+        }*/
 
         private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)
         {

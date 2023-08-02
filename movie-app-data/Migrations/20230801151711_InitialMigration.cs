@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace movie_app_data.Migrations
+namespace MovieApp.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class updated_TheMovieDbId_foreign_key : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,23 +15,23 @@ namespace movie_app_data.Migrations
                 name: "Movies",
                 columns: table => new
                 {
-                    MovieId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    MovieDbId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Poster = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TheMovieDbId = table.Column<int>(type: "int", nullable: false)
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Movies", x => x.MovieId);
+                    table.PrimaryKey("PK_Movies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -39,52 +39,44 @@ namespace movie_app_data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserMovies",
+                name: "MovieUser",
                 columns: table => new
                 {
-                    Movie_User_Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    TheMovieDbId = table.Column<int>(type: "int", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false)
+                    MoviesId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserMovies", x => x.Movie_User_Id);
+                    table.PrimaryKey("PK_MovieUser", x => new { x.MoviesId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_UserMovies_Movies_TheMovieDbId",
-                        column: x => x.TheMovieDbId,
+                        name: "FK_MovieUser_Movies_MoviesId",
+                        column: x => x.MoviesId,
                         principalTable: "Movies",
-                        principalColumn: "MovieId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserMovies_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_MovieUser_Users_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserMovies_TheMovieDbId",
-                table: "UserMovies",
-                column: "TheMovieDbId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserMovies_UserId",
-                table: "UserMovies",
-                column: "UserId");
+                name: "IX_MovieUser_UsersId",
+                table: "MovieUser",
+                column: "UsersId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "UserMovies");
+                name: "MovieUser");
 
             migrationBuilder.DropTable(
                 name: "Movies");

@@ -16,8 +16,8 @@ using System.Drawing;
 using static System.Net.WebRequestMethods;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using movie_app_data.Models;
-using Microsoft.Exchange.WebServices.Data;
+using MovieApp.Data.Context;
+using MovieApp.Data.Models;
 
 namespace movie_app_mvc.Controllers
 {
@@ -270,7 +270,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
+      /*  public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
         {
             if (!string.IsNullOrEmpty(title))
             {       
@@ -286,7 +286,7 @@ namespace movie_app_mvc.Controllers
                 }
             }
             return ReloadCurrentUrl();
-        }
+        }*/
 
         private List<SavedMovie> GetMoviesFromDatabase(string title, string userId, int page, int pageSize)
         {
@@ -394,7 +394,7 @@ namespace movie_app_mvc.Controllers
             return View(selectedMovie);
         }
 
-        public async Task<IActionResult> SaveMovie(Movie movie, User_Movie userMovie, string searchQuery, string name, int page = 1)
+       /* public async Task<IActionResult> SaveMovie(Movie movie, User_Movie userMovie, string searchQuery, string name, int page = 1)
         {
             try
             {
@@ -421,6 +421,6 @@ namespace movie_app_mvc.Controllers
             {
                 return ReloadCurrentUrl();
             }
-        }
+        }*/
     }
 }

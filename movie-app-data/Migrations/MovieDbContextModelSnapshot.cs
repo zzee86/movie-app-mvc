@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using movie_app_data.Models;
+using MovieApp.Data.Context;
 
 #nullable disable
 
-namespace movie_app_data.Migrations
+namespace MovieApp.Data.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
     partial class MovieDbContextModelSnapshot : ModelSnapshot
@@ -22,42 +22,42 @@ namespace movie_app_data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("movie_app_data.Models.Movie", b =>
+            modelBuilder.Entity("MovieApp.Data.Models.Movie", b =>
                 {
-                    b.Property<int>("MovieId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovieId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieDbId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Poster")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("TheMovieDbId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("MovieId");
+                    b.HasKey("Id");
 
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("movie_app_data.Models.User", b =>
+            modelBuilder.Entity("MovieApp.Data.Models.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -74,61 +74,39 @@ namespace movie_app_data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("movie_app_data.Models.User_Movie", b =>
+            modelBuilder.Entity("MovieUser", b =>
                 {
-                    b.Property<int>("Movie_User_Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("MoviesId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Movie_User_Id"));
-
-                    b.Property<int>("MovieId")
+                    b.Property<int>("UsersId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.HasKey("MoviesId", "UsersId");
 
-                    b.HasKey("Movie_User_Id");
+                    b.HasIndex("UsersId");
 
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserMovies");
+                    b.ToTable("MovieUser");
                 });
 
-            modelBuilder.Entity("movie_app_data.Models.User_Movie", b =>
+            modelBuilder.Entity("MovieUser", b =>
                 {
-                    b.HasOne("movie_app_data.Models.Movie", "movie")
-                        .WithMany("UserMovies")
-                        .HasForeignKey("MovieId")
+                    b.HasOne("MovieApp.Data.Models.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MoviesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("movie_app_data.Models.User", "user")
-                        .WithMany("UserMovies")
-                        .HasForeignKey("UserId")
+                    b.HasOne("MovieApp.Data.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("movie");
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("movie_app_data.Models.Movie", b =>
-                {
-                    b.Navigation("UserMovies");
-                });
-
-            modelBuilder.Entity("movie_app_data.Models.User", b =>
-                {
-                    b.Navigation("UserMovies");
                 });
 #pragma warning restore 612, 618
         }

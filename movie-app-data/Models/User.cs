@@ -7,15 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace movie_app_data.Models
+namespace MovieApp.Data.Models
 {
-    public class User
+    public class User : EntityBase
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-
         [Required]
         [StringLength(100)]
         public string Email { get; set; }
@@ -28,8 +23,7 @@ namespace movie_app_data.Models
         [StringLength(50)]
         public string Password { get; set; }
 
-        [Required]
-        public ICollection<User_Movie> UserMovies { get; set; }
+        public ICollection<Movie> Movies { get; set; }
 
     }
 }

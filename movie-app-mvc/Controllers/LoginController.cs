@@ -10,7 +10,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using movie_app_mvc.Models;
-using movie_app_data.Models;
+using MovieApp.Data.Context;
+using MovieApp.Data.Models;
+using movie_app_mvc.Models.Users;
+using MovieApp.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace movie_app_mvc.Controllers
 {
@@ -61,7 +65,7 @@ namespace movie_app_mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(CreateUser createUser)
         {
             // Check if the email already exists
             if (IsUserExists(user.Email, user.Username))
@@ -69,6 +73,10 @@ namespace movie_app_mvc.Controllers
                 TempData["RegisterErrorMessage"] = "Email or Username already registered.";
                 return RedirectToAction("Index");
             }
+
+            var userService = new UserService();
+            await userService.CreateUser(createUser);
+
             try
             {
                 using (MovieDbContext _movieDbContext = new MovieDbContext())

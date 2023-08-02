@@ -16,7 +16,6 @@
     <None Remove="Views\Details\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="Views\Login\" />
@@ -44,7 +43,7 @@
     <Content Include="Controllers\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\movie-app-data\movie-app-data.csproj" />
+    <ProjectReference Include="..\movie-app-data\MovieApp.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Drawing.Common, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51" />

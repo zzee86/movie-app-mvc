@@ -6,13 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace movie_app_data.Models
+namespace MovieApp.Data.Models
 {
-    public class Movie
+    public class Movie : EntityBase
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int MovieId { get; set; }
+        [Required]
+        public int MovieDbId { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -25,10 +24,6 @@ namespace movie_app_data.Models
         [Required]
         public DateTime Created { get; set; }
 
-        [Required]
-        public int TheMovieDbId { get; set; }
-
-        [Required]
-        public ICollection<User_Movie> UserMovies { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }
