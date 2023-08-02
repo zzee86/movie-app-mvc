@@ -31,18 +31,7 @@ namespace movie_app_mvc.Controllers
             // Validate login credentials
             if (ValidateLogin(user.Email, user.Password))
             {
-
-                var claim = new[]
-                {
-                    new Claim(ClaimTypes.Name, user.Email)
-                };
-
-                var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-                await HttpContext.SignInAsync(principal);
-
-                // Successful login
-                return RedirectToAction("Index", "Home");
+              return await SetupCookies(user.Email);
             }
 
             // Invalid credentials
@@ -72,9 +61,9 @@ namespace movie_app_mvc.Controllers
                 var userService = new UserService();
                 await userService.CreateUser(createUser);
 
-                return Redirect("Index");
+                return await SetupCookies(createUser.Email);
             }
-            catch(DuplicateUserException ex)
+            catch (DuplicateUserException ex)
             {
                 TempData["RegisterErrorMessage"] = ex.Message;
                 return RedirectToAction("Index");
@@ -89,6 +78,20 @@ namespace movie_app_mvc.Controllers
 
                 return loginValid;
             }
+        }
+        public async Task<RedirectToActionResult> SetupCookies(string userEmail)
+        {
+            var claim = new[]
+{
+                    new Claim(ClaimTypes.Name, userEmail)
+                };
+
+            var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(principal);
+
+            // Successful login
+            return RedirectToAction("Index", "Home");
         }
     }
 }

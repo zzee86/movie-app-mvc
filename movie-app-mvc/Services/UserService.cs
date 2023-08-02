@@ -1,6 +1,8 @@
 ﻿using MovieApp.Data.Models;
 using MovieApp.Data.Context;
 using movie_app_mvc.Models.Users;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace MovieApp.Services
 {
@@ -42,8 +44,6 @@ namespace MovieApp.Services
                 _movieDbContext.SaveChanges();
             }
         }
-
-
 
         private bool IsUserExists(string email, string username)
         {
