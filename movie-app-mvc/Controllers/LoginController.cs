@@ -67,31 +67,19 @@ namespace movie_app_mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(CreateUser createUser)
         {
-            // Check if the email already exists
-            if (IsUserExists(user.Email, user.Username))
-            {
-                TempData["RegisterErrorMessage"] = "Email or Username already registered.";
-                return RedirectToAction("Index");
-            }
-
-            var userService = new UserService();
-            await userService.CreateUser(createUser);
-
             try
             {
-                using (MovieDbContext _movieDbContext = new MovieDbContext())
-                {
-                    _movieDbContext.Users.Add(user);
-                    _movieDbContext.SaveChanges();
-                    return RedirectToAction("Index", "Home");
-                }
+                var userService = new UserService();
+                await userService.CreateUser(createUser);
+
+                return Redirect("Index");
             }
-            catch
+            catch(DuplicateUserException ex)
             {
-                TempData["ErrorMessage"] = "Email already registered.";
+                TempData["RegisterErrorMessage"] = ex.Message;
                 return RedirectToAction("Index");
             }
-        }
+         }
 
         private bool ValidateLogin(string email, string password)
         {
@@ -100,16 +88,6 @@ namespace movie_app_mvc.Controllers
                 bool loginValid = _movieDbContext.Users.Any(u => u.Email == email && u.Password == password);
 
                 return loginValid;
-            }
-        }
-
-        private bool IsUserExists(string email, string username)
-        {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
-                bool userexists = _movieDbContext.Users.Any(u => u.Email == email || u.Username == username);
-                
-                return userexists;
             }
         }
     }
