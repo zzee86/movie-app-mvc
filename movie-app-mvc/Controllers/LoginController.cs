@@ -26,19 +26,21 @@ namespace movie_app_mvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(User user)
+        public async Task<IActionResult> Login(LoginUser loginUser)
         {
-            // Validate login credentials
-            if (ValidateLogin(user.Email, user.Password))
+            try
             {
-              return await SetupCookies(user.Email);
+                var userService = new UserService();
+                await userService.LoginUser(loginUser);
+
+                return await SetupCookies(loginUser.Email);
             }
-
-            // Invalid credentials
-            TempData["LoginErrorMessage"] = "Invalid email or password.";
-            return View("Index");
+            catch (DuplicateUserException ex)
+            {
+                TempData["LoginErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
+            }
         }
-
 
         public async Task<IActionResult> Logout()
         {
@@ -70,15 +72,6 @@ namespace movie_app_mvc.Controllers
             }
          }
 
-        private bool ValidateLogin(string email, string password)
-        {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
-                bool loginValid = _movieDbContext.Users.Any(u => u.Email == email && u.Password == password);
-
-                return loginValid;
-            }
-        }
         public async Task<RedirectToActionResult> SetupCookies(string userEmail)
         {
             var claim = new[]

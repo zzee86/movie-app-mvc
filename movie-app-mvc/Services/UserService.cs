@@ -22,7 +22,27 @@ namespace MovieApp.Services
         //    }
         //}
 
+        public async Task LoginUser(LoginUser loginUser)
+        {
+            using (MovieDbContext _movieDbContext = new MovieDbContext())
+            {
 
+                if (!ValidateLogin(loginUser.Email, loginUser.Password))
+                {
+                    throw new DuplicateUserException("Invalid email or password.");
+                }
+            }
+        }
+
+        private bool ValidateLogin(string email, string password)
+        {
+            using (MovieDbContext _movieDbContext = new MovieDbContext())
+            {
+                bool loginValid = _movieDbContext.Users.Any(u => u.Email == email && u.Password == password);
+
+                return loginValid;
+            }
+        }
 
         public async Task CreateUser(CreateUser createUser)
         {
@@ -56,7 +76,6 @@ namespace MovieApp.Services
         }
     }
 
-    // Custom exception to handle duplicate user registration
     public class DuplicateUserException : Exception
     {
         public DuplicateUserException(string message) : base(message)

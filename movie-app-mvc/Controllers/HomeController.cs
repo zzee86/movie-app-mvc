@@ -18,6 +18,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
+using movie_app_mvc.Models.Users;
 
 namespace movie_app_mvc.Controllers
 {
@@ -394,24 +395,14 @@ namespace movie_app_mvc.Controllers
             return View(selectedMovie);
         }
 
-       /* public async Task<IActionResult> SaveMovie(Movie movie, User_Movie userMovie, string searchQuery, string name, int page = 1)
+        /*public async Task<IActionResult> SaveMovie(Movie movie, User user, string searchQuery, string name, int page = 1)
         {
             try
             {
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
-                    // Get the currently signed in User
-                    string currentUserEmail = User.Identity.Name;
-                    User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
-
-                    userMovie.user = currentUser;
-                    userMovie.movie = movie;
-
-                    userMovie.UserId = currentUser.UserId;
-                    userMovie.MovieId = movie.MovieId;
 
                     _movieDbContext.Movies.Add(movie);
-                    _movieDbContext.UserMovies.Add(userMovie);
                     _movieDbContext.SaveChanges();
 
                     return ReloadCurrentUrl();
