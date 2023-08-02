@@ -395,14 +395,30 @@ namespace movie_app_mvc.Controllers
             return View(selectedMovie);
         }
 
-        /*public async Task<IActionResult> SaveMovie(Movie movie, User user, string searchQuery, string name, int page = 1)
+        public async Task<IActionResult> SaveMovie(Movie movie, string searchQuery, string name, int page = 1)
         {
             try
             {
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
+                    string userEmail = User.Identity.Name;
+                    User user = _movieDbContext.Users.FirstOrDefault(u =>  u.Email == userEmail);
 
-                    _movieDbContext.Movies.Add(movie);
+                    Movie existingMovie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movie.MovieDbId);
+
+                    if (existingMovie != null)
+                    {
+                        movie = existingMovie;
+                    }
+                    else
+                    {
+                        _movieDbContext.Movies.Add(movie);
+                    }
+
+                    movie.Users = new List<User> { user };
+                    user.Movies = new List<Movie> { movie };
+                    user.Movies.Add(movie);
+
                     _movieDbContext.SaveChanges();
 
                     return ReloadCurrentUrl();
@@ -412,6 +428,6 @@ namespace movie_app_mvc.Controllers
             {
                 return ReloadCurrentUrl();
             }
-        }*/
+        }
     }
 }
