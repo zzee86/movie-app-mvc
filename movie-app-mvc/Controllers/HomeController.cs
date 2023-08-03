@@ -431,6 +431,14 @@ namespace movie_app_mvc.Controllers
                     User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
 
                     Movie? movie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
+
+/* Checks to work with tv shows
+                    string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={movieTitle}";
+                    MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
+                    MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
+                    string media_type = (movieDetailsResult.media_type == "movie") ? "movie" : "tv";
+*/
+
                     
                     if (movie != null)
                     {
@@ -439,8 +447,7 @@ namespace movie_app_mvc.Controllers
                     }
                     else
                     {
-                        /* Testing */
-                        string apiUrl = $" https://api.themoviedb.org/3/movie/{movieDbId}?api_key={apiKey}";
+                        string apiUrl = $"https://api.themoviedb.org/3/movie/{movieDbId}?api_key={apiKey}";
 
                         var movieFromApi = await FetchMovie(apiUrl);
                         if (movieFromApi != null)
