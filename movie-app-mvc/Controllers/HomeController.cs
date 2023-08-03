@@ -165,10 +165,10 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                //if (User.Identity.IsAuthenticated)
-                //{
-                //    movie.IsSaved = MovieIsSaved(movie.id);
-                //}
+ /*               if (User.Identity.IsAuthenticated)
+                {
+                    movie.IsSaved = MovieIsSaved(movie);
+                }*/
                 movieResults.Add(movie);
 
                 if (results.Count() >= 1)
@@ -333,16 +333,18 @@ namespace movie_app_mvc.Controllers
 
 
 
-        //private bool MovieIsSaved(int movieId)
-        //{
-        //    using (MovieDbContext _movieDbContext = new MovieDbContext()) {
-        //        string currentUserEmail = User.Identity.Name;
-        //        User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
+/*        private bool MovieIsSaved(MovieInfo.Result movie)
+        {
+            using (MovieDbContext _movieDbContext = new MovieDbContext())
+            {
+                string currentUserEmail = User.Identity.Name;
+                User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
 
-        //        bool isSaved = _movieDbContext.UserMovies.Any(u => u.movie.TheMovieDbId == movieId && u.UserId == currentUser.UserId);
-        //        return isSaved;
-        //    }
-        //}
+                bool isSaved = _movieDbContext.Movies.Any(u => u.MovieDbId == movie.id && u.Users == currentUser);
+
+                return isSaved;
+            }
+        }*/
 
         public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {
@@ -417,7 +419,6 @@ namespace movie_app_mvc.Controllers
 
                     movie.Users = new List<User> { user };
                     user.Movies = new List<Movie> { movie };
-                    user.Movies.Add(movie);
 
                     _movieDbContext.SaveChanges();
 

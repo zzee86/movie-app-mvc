@@ -24,6 +24,8 @@ namespace MovieApp.Data.Models
         [Required]
         public DateTime Created { get; set; }
 
+        public double Rating { get; set; }
+
         public ICollection<User> Users { get; set; }
     }
 }
