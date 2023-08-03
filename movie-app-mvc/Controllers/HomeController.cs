@@ -265,24 +265,16 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        private int GetTotalMovieCount(string title, string userId)
+        private int GetTotalMovieCount(string title, string userEmail)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using(MovieDbContext movieDbContext = new MovieDbContext())
             {
-                connection.Open();
-
-                string query = string.IsNullOrEmpty(title)
-                    ? "SELECT COUNT(*) FROM savedMovies WHERE userId = @UserId"
-                    : "SELECT COUNT(*) FROM savedMovies WHERE userId = @UserId AND title LIKE @Title";
-
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@UserId", userId);
+                var query = movieDbContext.Movies.Where(m => m.Users.Any(u => u.Email == userEmail));
                 if (!string.IsNullOrEmpty(title))
                 {
-                    command.Parameters.AddWithValue("@Title", $"%{title}%");
+                    query = query.Where(m=>m.Title.Contains(title));
                 }
-
-                return Convert.ToInt32(command.ExecuteScalar());
+                return query.Count();
             }
         }
 
@@ -318,46 +310,36 @@ namespace movie_app_mvc.Controllers
             return ReloadCurrentUrl();
         }
      
-        private List<SavedMovie> GetMoviesFromDatabase(string title, string userId, int page, int pageSize)
+        private List<SavedMovie> GetMoviesFromDatabase(string title, string userEmail, int page, int pageSize)
         {
-            List<SavedMovie> movies = new List<SavedMovie>();
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            List<SavedMovie> movies;
+           using (MovieDbContext movieDbContext = new MovieDbContext())
             {
-                connection.Open();
+                var query = movieDbContext.Movies.Where(m => m.Users.Any(u => u.Email == userEmail));
 
-                string query = string.IsNullOrEmpty(title)
-                    ? "SELECT * FROM savedMovies WHERE userId = @UserId"
-                    : "SELECT * FROM savedMovies WHERE userId = @UserId AND title LIKE @Title";
-
-                query += $" ORDER BY dateTimeInsertion DESC LIMIT {pageSize} OFFSET {(page - 1) * pageSize}";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@UserId", userId);
                 if (!string.IsNullOrEmpty(title))
                 {
-                    command.Parameters.AddWithValue("@Title", $"%{title}%");
+                    query = query.Where(m => m.Title.Contains(title));
                 }
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                 movies = query.OrderByDescending(m => m.Created)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(m => new SavedMovie
                     {
-                        SavedMovie movie = new SavedMovie
-                        {
-                            Id = reader.GetInt32("id"),
-                            Title = reader.GetString("title"),
-                            Poster = reader.GetString("poster"),
-                            Rating = reader.GetDouble("rating"),
-                            MovieID = reader.GetInt32("movieid")
-                        };
+                        Id = m.Id,
+                        Title = m.Title,
+                        MovieDbId = m.MovieDbId,
+                        Poster = m.Poster,
+                        Rating = m.Rating,
+                        Created = m.Created,
+                    })
+                    .ToList();
+               // TempData["TestingSavePage"] = movies;
 
-                        movies.Add(movie);
-                    }
+                return movies;
                 }
-            }
-
-            return movies;
         }
+    
 
 
 
@@ -374,7 +356,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
+      /*  public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
 
@@ -423,7 +405,7 @@ namespace movie_app_mvc.Controllers
             await detailsController.MovieDetails(title, movieid);
 
             return View(selectedMovie);
-        }
+        }*/
 
         public async Task<IActionResult> SaveMovie(int movieDbId)
         {
