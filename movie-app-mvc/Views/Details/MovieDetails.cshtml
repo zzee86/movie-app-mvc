@@ -45,18 +45,14 @@
                             @if (Model.IsSaved)
                             {
                                 <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="title" value="@Model.title" />
+                                    <input type="hidden" name="MovieDbId" value="@Model.id" />
                                     <button type="submit" class="@(Model.IsSaved ? "saved" : "")">Remove</button>
                                 </form>
                             }
                             else
                             {
                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                    <input type="hidden" name="Title" value="@Model.title" />
-                                    <input type="hidden" name="Poster" value="@Model.poster_path_url" />
-                                    <input type="hidden" name="Created" value="@TempData["CurrentDateTime"]" />
-                                    <input type="hidden" name="TheMovieDbId" value="@Model.id" />
-                                    <input type="hidden" name="Rating" value="@Math.Round(Model.vote_average, 1)" />
+                                    <input type="hidden" name="MovieDbId" value="@Model.id" />
                                     <button type="submit">Save</button>
                                 </form>
                             }
@@ -64,7 +60,6 @@
                         else
                         {
                             <button type="button" class="@(Model.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
-
                         }
                     </div>
                 </div>
@@ -271,18 +266,14 @@
                                         @if (movie.IsSaved)
                                         {
                                             <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                <input type="hidden" name="title" value="@movie.title" />
+                                                <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                 <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
                                             </form>
                                         }
                                         else
                                         {
                                             <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                <input type="hidden" name="Title" value="@movie.title" />
-                                                <input type="hidden" name="Poster" value="@movie.poster_path_url" />
-                                                <input type="hidden" name="Created" value="@TempData["CurrentDateTime"]" />
-                                                <input type="hidden" name="TheMovieDbId" value="@movie.id" />
-                                                <input type="hidden" name="Rating" value="@Math.Round(movie.vote_average, 1)" />
+                                                <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                 <button type="submit">Save</button>
                                             </form>
                                         }
@@ -290,7 +281,6 @@
                                     else
                                     {
                                         <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
-
                                     }
                                 </div>
                             </div>
