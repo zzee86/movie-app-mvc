@@ -312,8 +312,8 @@ namespace movie_app_mvc.Controllers
 
                 }
             return ReloadCurrentUrl();
-        }*/
-
+        }
+     */
         private List<SavedMovie> GetMoviesFromDatabase(string title, string userId, int page, int pageSize)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
