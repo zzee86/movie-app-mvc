@@ -70,7 +70,7 @@
                 @foreach (var movie in Model)
                 {
                     <div class="card">
-                        <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title, movieid = movie.MovieDbId })">
+                        <a href="@Url.Action("MovieDetails", "Details", new { title = movie.Title, id = movie.MovieDbId })">
                             <div class="card-image">
                                 <div class="overlay">
                                     <!-- Overlay content -->
@@ -83,8 +83,7 @@
                             </div>
                         </a>
                         <div class="card-content">
-                            <a href="@Url.Action("SavedMovieDetails", "Home", new { title = movie.Title, movieid = movie.MovieDbId })">
-                                    @*<a href="@Url.Action("MovieDetails", "Details", new { title = movie.title, id = movie.id })">*@
+                            <a href="@Url.Action("MovieDetails", "Details", new { title = movie.Title, id = movie.MovieDbId })">
 
                                 <div class="titleHolder">
                                     <h2>@movie.Title</h2>

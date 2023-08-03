@@ -28,7 +28,6 @@ namespace movie_app_mvc.Controllers
         private string connectionString = "server=localhost;database=saved_movies;user=root;";
         private const int PageSize = 20;
         private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
-        DateTime currentTime;
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
             // Get the user ID of the logged-in user
@@ -37,7 +36,6 @@ namespace movie_app_mvc.Controllers
             // Retrieve the user ID from the loginDetails table
             string testing = "t";
                       TempData["CurrentDateTime"] =  DateTime.Now.ToString();
-            currentTime = DateTime.Now;
 
             List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
             List<MovieInfo.Result> popularMovies = new List<MovieInfo.Result>();
@@ -438,6 +436,7 @@ namespace movie_app_mvc.Controllers
                         var movieFromApi = await FetchMovie(apiUrl);
                         if (movieFromApi != null)
                         {
+                            DateTime currentTime = DateTime.Now;
                             movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
                         
                             movie.Users.Add(user);
