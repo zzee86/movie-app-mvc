@@ -113,19 +113,19 @@
                                             @if (movie.IsSaved)
                                             {
                                                 <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                    <input type="hidden" name="title" value="@movie.title" />
+                                                    <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                     <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
                                                 </form>
                                             }
                                             else
                                             {
                                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                    <input type="hidden" name="Title" value="@movie.title" />
+@*                                                    <input type="hidden" name="Title" value="@movie.title" />
                                                     <input type="hidden" name="Poster" value="@movie.poster_path_url" />
                                                     <input type="hidden" name="Created" value="@TempData["CurrentDateTime"]" />
-                                                    <input type="hidden" name="MovieDbId" value="@movie.id" />
-                                                    <input type="hidden" name="Rating" value="@Math.Round(movie.vote_average, 1)" />
-                                                    <button type="submit">Save</button>
+*@                                                    <input type="hidden" name="MovieDbId" value="@movie.id" />
+@*                                                    <input type="hidden" name="Rating" value="@Math.Round(movie.vote_average, 1)" />
+*@                                                    <button type="submit">Save</button>
                                                 </form>
                                             }
                                         }

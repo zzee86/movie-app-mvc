@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
 using movie_app_mvc.Models.Users;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace movie_app_mvc.Controllers
 {
@@ -26,8 +27,8 @@ namespace movie_app_mvc.Controllers
     {
         private string connectionString = "server=localhost;database=saved_movies;user=root;";
         private const int PageSize = 20;
-
-
+        private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
+        DateTime currentTime;
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
             // Get the user ID of the logged-in user
@@ -36,6 +37,7 @@ namespace movie_app_mvc.Controllers
             // Retrieve the user ID from the loginDetails table
             string testing = "t";
                       TempData["CurrentDateTime"] =  DateTime.Now.ToString();
+            currentTime = DateTime.Now;
 
             List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
             List<MovieInfo.Result> popularMovies = new List<MovieInfo.Result>();
@@ -67,7 +69,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<List<MovieInfo.Result>> LoadMovies(int page, string userID)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+            string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key={apiKey}&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
@@ -86,7 +88,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<List<MovieInfo.Result>> LoadPopularMovies(int page, string userID)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key={apiKey}&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
@@ -105,7 +107,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<List<MovieInfo.Result>> LoadTopRatedMovies(int page, string userID)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&page={page}";
+            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key={apiKey}&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
@@ -131,6 +133,20 @@ namespace movie_app_mvc.Controllers
 
                 var json = await response.Content.ReadAsStringAsync();
                 var info = JsonConvert.DeserializeObject<MovieInfo.Root>(json);
+
+                return info;
+            }
+        }
+
+        private async Task<MovieInfo.Result> FetchMovie(string url)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+                var info = JsonConvert.DeserializeObject<MovieInfo.Result>(json);
 
                 return info;
             }
@@ -165,10 +181,10 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
- /*               if (User.Identity.IsAuthenticated)
+                if (User.Identity.IsAuthenticated)
                 {
-                    movie.IsSaved = MovieIsSaved(movie);
-                }*/
+                    movie.IsSaved = MovieIsSaved(movie.id);
+                }
                 movieResults.Add(movie);
 
                 if (results.Count() >= 1)
@@ -183,7 +199,7 @@ namespace movie_app_mvc.Controllers
 
         private async Task<List<MovieInfo.Result>> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
         {
-            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={searchQuery}&page={pageNumber}";
+            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={searchQuery}&page={pageNumber}";
             MovieInfo.Root movieInfo = await FetchMovies(url);
 
             if (movieInfo != null)
@@ -271,21 +287,30 @@ namespace movie_app_mvc.Controllers
         }
 
 
-      /*  public IActionResult RemoveMovie(string title, string searchQuery, int page = 1)
+     /*   public IActionResult RemoveMovie(int MovieDbId, string searchQuery, int page = 1)
         {
-            if (!string.IsNullOrEmpty(title))
-            {       
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
-                   var remove = _movieDbContext.UserMovies.FirstOrDefault(x => x.movie.Title == title);
-                    if (remove != null)
+
+                string userEmail = User.Identity?.Name ?? string.Empty;
+                User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
+
+                var remove = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
+
+                var moviesLinked = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
+
+                bool testing = moviesLinked != null && moviesLinked.Users.Contains(user);
+
+
+                if (testing)
                     {
-                        _movieDbContext.UserMovies.Remove(remove);
-                        _movieDbContext.SaveChanges();
+                   var another = _movieDbContext.Users.Include(x => x.Movies).FirstOrDefault(x=> x.Email == user.Email);
+                    
+                   another.Movies.Remove(moviesLinked);
+                   _movieDbContext.SaveChanges();
                     }
 
                 }
-            }
             return ReloadCurrentUrl();
         }*/
 
@@ -333,18 +358,17 @@ namespace movie_app_mvc.Controllers
 
 
 
-/*        private bool MovieIsSaved(MovieInfo.Result movie)
+        private bool MovieIsSaved(int movieDbId)
         {
             using (MovieDbContext _movieDbContext = new MovieDbContext())
             {
-                string currentUserEmail = User.Identity.Name;
-                User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
-
-                bool isSaved = _movieDbContext.Movies.Any(u => u.MovieDbId == movie.id && u.Users == currentUser);
-
+                string userEmail = User.Identity?.Name ?? string.Empty;
+                User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
+                Movie? movie = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(u => u.MovieDbId == movieDbId);
+                bool isSaved = movie != null && movie.Users.Contains(user);
                 return isSaved;
             }
-        }*/
+        }
 
         public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
         {
@@ -397,29 +421,36 @@ namespace movie_app_mvc.Controllers
             return View(selectedMovie);
         }
 
-        public async Task<IActionResult> SaveMovie(Movie movie, string searchQuery, string name, int page = 1)
+        public async Task<IActionResult> SaveMovie(int movieDbId)
         {
             try
             {
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
-                    string userEmail = User.Identity.Name;
-                    User user = _movieDbContext.Users.FirstOrDefault(u =>  u.Email == userEmail);
+                    string userEmail = User.Identity?.Name ?? string.Empty;
+                    User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
 
-                    Movie existingMovie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movie.MovieDbId);
-
-                    if (existingMovie != null)
+                    Movie? movie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
+                    
+                    if (movie != null)
                     {
-                        movie = existingMovie;
+                        movie.Users = new List<User> { user };
+                        movie.Users.Add(user);
                     }
                     else
                     {
-                        _movieDbContext.Movies.Add(movie);
+                        /* Testing */
+                        string apiUrl = $" https://api.themoviedb.org/3/movie/{movieDbId}?api_key={apiKey}";
+
+                        var movieFromApi = await FetchMovie(apiUrl);
+                        if (movieFromApi != null)
+                        {
+                            movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
+                        
+                            movie.Users.Add(user);
+                            _movieDbContext.Movies.Add(movie);
                     }
-
-                    movie.Users = new List<User> { user };
-                    user.Movies = new List<Movie> { movie };
-
+                }
                     _movieDbContext.SaveChanges();
 
                     return ReloadCurrentUrl();
@@ -429,6 +460,19 @@ namespace movie_app_mvc.Controllers
             {
                 return ReloadCurrentUrl();
             }
+        }
+
+        private Movie CreateMovieFromApiResult(MovieInfo.Result apiResult, User user, DateTime createdTime)
+        {
+            return new Movie
+            {
+                MovieDbId = apiResult.id,
+                Title = apiResult.title,
+                Poster = apiResult.poster_path_url,
+                Rating = Math.Round(apiResult.vote_average, 1),
+                Created = createdTime,
+                Users = new List<User> { user }
+            };
         }
     }
 }
