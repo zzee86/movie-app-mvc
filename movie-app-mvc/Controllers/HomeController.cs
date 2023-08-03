@@ -287,7 +287,7 @@ namespace movie_app_mvc.Controllers
         }
 
 
-     /*   public IActionResult RemoveMovie(int MovieDbId, string searchQuery, int page = 1)
+        public IActionResult RemoveMovie(int MovieDbId, string searchQuery, int page = 1)
         {
                 using (MovieDbContext _movieDbContext = new MovieDbContext())
                 {
@@ -295,25 +295,29 @@ namespace movie_app_mvc.Controllers
                 string userEmail = User.Identity?.Name ?? string.Empty;
                 User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
 
-                var remove = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
+                var movieToRemove = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
 
-                var moviesLinked = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
-
-                bool testing = moviesLinked != null && moviesLinked.Users.Contains(user);
-
-
-                if (testing)
+                if(movieToRemove != null)
+                {
+                    // Remove association with user
+                    if (movieToRemove.Users.Contains(user))
                     {
-                   var another = _movieDbContext.Users.Include(x => x.Movies).FirstOrDefault(x=> x.Email == user.Email);
-                    
-                   another.Movies.Remove(moviesLinked);
-                   _movieDbContext.SaveChanges();
+                        movieToRemove.Users.Remove(user);
                     }
 
+                    // If no user reference with movie then remove it
+                    bool isReferenced = movieToRemove.Users.Any();
+                    if(!isReferenced)
+                    {
+                        _movieDbContext.Movies.Remove(movieToRemove);
+                    }
+                    _movieDbContext.SaveChanges();
+
                 }
+            }
             return ReloadCurrentUrl();
         }
-     */
+     
         private List<SavedMovie> GetMoviesFromDatabase(string title, string userId, int page, int pageSize)
         {
             List<SavedMovie> movies = new List<SavedMovie>();
