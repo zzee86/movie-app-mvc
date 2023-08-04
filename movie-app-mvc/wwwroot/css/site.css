@@ -256,7 +256,12 @@ nav {
     margin-bottom: .8em;
     margin-left: .5em;
 }
-
+.overlay-vote-base {
+    font-size: 1em;
+}
+.overlay-vote-details{
+    font-size: 2em;
+}
 
 .image-container {
     width: 18px;
