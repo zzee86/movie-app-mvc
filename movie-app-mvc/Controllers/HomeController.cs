@@ -354,57 +354,6 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-      /*  public async Task<ActionResult> SavedMovieDetails(string title, int movieid)
-        {
-            List<SavedMovie> movies = new List<SavedMovie>();
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT * FROM savedMovies WHERE title = @Title";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Title", title);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        SavedMovie movie = new SavedMovie
-                        {
-                            Id = reader.GetInt32("id"),
-                            Title = reader.GetString("title"),
-                            Poster = reader.GetString("poster"),
-                            Rating = reader.GetDouble("rating"),
-                            MovieID = reader.GetInt32("movieid")
-                        };
-
-                        movies.Add(movie);
-                    }
-                }
-            }
-            ViewBag.SavedMovieTitle = (title != null) ? title : "not shown";
-            ViewBag.SavedMovieID = (movieid != null) ? movieid : 9999;
-
-
-
-            SavedMovie selectedMovie = movies.FirstOrDefault();
-
-            if (selectedMovie == null)
-            {
-                // Handle the case when no movie is found with the given title
-                return RedirectToAction("Index", "Home");
-            }
-
-            // Get the current controller context
-            ControllerContext controllerContext = this.ControllerContext;
-            DetailsController detailsController = new DetailsController();
-            detailsController.ControllerContext = controllerContext;
-            await detailsController.MovieDetails(title, movieid);
-
-            return View(selectedMovie);
-        }*/
-
         public async Task<IActionResult> SaveMovie(int movieDbId)
         {
             try
