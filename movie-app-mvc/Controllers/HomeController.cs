@@ -354,7 +354,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        public async Task<IActionResult> SaveMovie(int movieDbId)
+        public async Task<IActionResult> SaveMovie(int movieDbId, string Title)
         {
             try
             {
@@ -365,14 +365,13 @@ namespace movie_app_mvc.Controllers
 
                     Movie? movie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
 
-/* Checks to work with tv shows
-                    string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={movieTitle}";
+/* Checks to work with tv shows */
+                    string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={Title}";
                     MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
                     MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
                     string media_type = (movieDetailsResult.media_type == "movie") ? "movie" : "tv";
-*/
 
-                    
+
                     if (movie != null)
                     {
                         movie.Users = new List<User> { user };
@@ -380,18 +379,22 @@ namespace movie_app_mvc.Controllers
                     }
                     else
                     {
-                        string apiUrl = $"https://api.themoviedb.org/3/movie/{movieDbId}?api_key={apiKey}";
+                        string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{movieDbId}?api_key={apiKey}";
 
-                        var movieFromApi = await FetchMovie(apiUrl);
+                    
+                            MovieInfo.Result movieFromApi = await FetchMovie(apiUrl);
+  
                         if (movieFromApi != null)
-                        {
-                            DateTime currentTime = DateTime.Now;
-                            movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
-                        
-                            movie.Users.Add(user);
-                            _movieDbContext.Movies.Add(movie);
-                    }
-                }
+                            {
+                                DateTime currentTime = DateTime.Now;
+
+                                movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
+
+                                movie.Users.Add(user);
+                                _movieDbContext.Movies.Add(movie);
+                            }
+                        }
+                
                     _movieDbContext.SaveChanges();
 
                     return ReloadCurrentUrl();
@@ -405,6 +408,15 @@ namespace movie_app_mvc.Controllers
 
         private Movie CreateMovieFromApiResult(MovieInfo.Result apiResult, User user, DateTime createdTime)
         {
+            if(apiResult.title == null)
+            {
+                apiResult.title = apiResult.name;
+            } 
+            else if(apiResult.title == null && apiResult.name == null)
+            {
+                apiResult.title = apiResult.original_title;
+            }
+
             return new Movie
             {
                 MovieDbId = apiResult.id,

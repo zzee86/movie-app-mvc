@@ -29,20 +29,10 @@
                         <div class="search-bar">
                             <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" value="@ViewBag.SearchQuery" />
                         </div>
-
-                        <!--<div class="page-info">-->
-                        <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
-                        <!--@if (@User.Identity.IsAuthenticated)
-                                {
-                                    <h4>@User.FindFirst("Username")?.Value</h4>
-                                }
-                        </div>-->
                     </form>
                 </div>
             </div>
-
-
-
+            <h1>
 
             <!-- Next and Back buttons -->
             <div class="pagination-container">
@@ -119,6 +109,7 @@
                                             {
                                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
                                                     <input type="hidden" name="MovieDbId" value="@movie.id" />
+                                                    <input type="hidden" name="Title" value="@movie.title" />
                                                     <button type="submit">Save</button>
                                                 </form>
                                             }
