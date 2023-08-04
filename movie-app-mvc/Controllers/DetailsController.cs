@@ -28,9 +28,7 @@ namespace movie_app_mvc.Controllers
             try
             {
                 // Null-conditional operator to avoid crashing
-                string email = User.Identity?.Name;
-
-                string userID = email;
+                string userEmail = User.Identity?.Name;
 
                 // Get details on the movie
                 string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={title}";
@@ -88,9 +86,9 @@ namespace movie_app_mvc.Controllers
                 }
 
                 // For save button on details page overriden with GetMediaRecommendations method
-                ProcessMovieResults(movieDetails.results, userID);
+                ProcessMovieResults(movieDetails.results, userEmail);
 
-                await GetMediaRecommendations(media_type, id, userID);
+                await GetMediaRecommendations(media_type, id, userEmail);
                 await GetMediaProviders(media_type, id);
 
 
@@ -170,7 +168,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private async Task<List<MovieInfo.Result>> GetMediaRecommendations(string media_type, int id, string userID)
+        private async Task<List<MovieInfo.Result>> GetMediaRecommendations(string media_type, int id, string userEmail)
         {
             // Use URL to get recommendations https://api.themoviedb.org/3/{media_type}/{id}/recommendations
             // Use MovieInfo Model for both tv and movies
@@ -180,7 +178,7 @@ namespace movie_app_mvc.Controllers
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userEmail);
                 return movieResults;
             }
 
@@ -327,7 +325,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userEmail)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
 

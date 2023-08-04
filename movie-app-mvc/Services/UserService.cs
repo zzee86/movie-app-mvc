@@ -8,20 +8,6 @@ namespace MovieApp.Services
 {
     public class UserService
     {
-        //public async Task<UserViewModel> GetUser(int userId)
-        //{
-        //    using (MovieDbContext _movieDbContext = new MovieDbContext())
-        //    {
-        //        return _movieDbContext.Users
-        //            .Select(u => new UserViewModel
-        //            {
-        //                Email = u.Email,
-        //                Username = u.Username
-        //            })
-        //            .FirstOrDefault(u => u.Id == userId);
-        //    }
-        //}
-
         public async Task LoginUser(LoginUser loginUser)
         {
             using (MovieDbContext _movieDbContext = new MovieDbContext())

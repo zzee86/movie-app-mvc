@@ -233,10 +233,9 @@ namespace movie_app_mvc.Controllers
 
         public IActionResult SavedMovies(string title, int page = 1)
         {
-            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
+            string userEmail = User.Identity.Name; // Assuming the email is stored in the "Name" claim
 
-            string userId = email;
-            if (userId == null)
+            if (userEmail == null)
             {
                 // User ID not found
                 // Handle the error or redirect as needed
@@ -244,11 +243,11 @@ namespace movie_app_mvc.Controllers
             }
 
             int pageSize = 28;
-            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userId, page, pageSize);
+            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userEmail, page, pageSize);
             ViewBag.SavedPage = page;
             ViewBag.SearchQuery = title;
 
-            int totalCount = GetTotalMovieCount(title, userId);
+            int totalCount = GetTotalMovieCount(title, userEmail);
 
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
             ViewBag.TotalPages = totalPages;
@@ -332,7 +331,6 @@ namespace movie_app_mvc.Controllers
                         Created = m.Created,
                     })
                     .ToList();
-               // TempData["TestingSavePage"] = movies;
 
                 return movies;
                 }
@@ -362,10 +360,8 @@ namespace movie_app_mvc.Controllers
                 {
                     string userEmail = User.Identity?.Name ?? string.Empty;
                     User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
-
                     Movie? movie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
 
-/* Checks to work with tv shows */
                     string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={Title}";
                     MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
                     MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
