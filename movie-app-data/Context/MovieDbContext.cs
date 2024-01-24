@@ -26,7 +26,7 @@ namespace MovieApp.Data.Context
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=Movie_App;Trusted_Connection=True;");
+                optionsBuilder.UseNpgsql("Host=localhost; Database=postgres; Username=postgres; Password=password123");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

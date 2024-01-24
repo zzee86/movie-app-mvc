@@ -25,7 +25,7 @@ namespace movie_app_mvc.Controllers
 {
     public class HomeController : Controller
     {
-        private string connectionString = "server=localhost;database=saved_movies;user=root;";
+        // private string connectionString = "Host=localhost; Database=postgres; Username=postgres; Password=password123";
         private const int PageSize = 20;
         private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
@@ -382,7 +382,7 @@ namespace movie_app_mvc.Controllers
   
                         if (movieFromApi != null)
                             {
-                                DateTime currentTime = DateTime.Now;
+                                DateTime currentTime = DateTime.UtcNow;
 
                                 movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
 
