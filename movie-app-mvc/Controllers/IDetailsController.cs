@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using movie_app_mvc.Models;
 
 namespace movie_app_mvc.Controllers
 {

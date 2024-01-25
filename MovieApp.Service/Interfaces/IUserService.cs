@@ -1,6 +1,6 @@
-﻿using movie_app_mvc.Models.Users;
+﻿using MovieApp.Service.APIModels.Users;
 
-namespace MovieApp.Services
+namespace MovieApp.Service.Interfaces
 {
     public interface IUserService
     {

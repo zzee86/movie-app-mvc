@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 //using System.Linq;
 //using System.Net.Http;
 //using System.Threading.Tasks;
-using movie_app_mvc.Models;
 //using System.Web;
 using Microsoft.EntityFrameworkCore;
 //using static movie_app_mvc.Models.TvShowDetails;
@@ -19,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
 using System.Drawing.Printing;
+using MovieApp.Service.APIModels;
 //using movie_app_mvc.Models.Users;
 //using Microsoft.EntityFrameworkCore.Internal;
 
@@ -36,9 +36,8 @@ namespace movie_app_mvc.Controllers
         {
             // Get the user ID of the logged-in user
             string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
-
+            var testing = "testing";
             // Retrieve the user ID from the loginDetails table
-            string testing = "t";
             TempData["CurrentDateTime"] = DateTime.Now.ToString();
 
             List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
@@ -53,7 +52,7 @@ namespace movie_app_mvc.Controllers
             }
             else
             {
-                trendingMovies = await SearchMovies(searchQuery, testing, page);
+                trendingMovies = await SearchMovies(searchQuery, searchQuery, page);
             }
 
             ViewBag.CurrentPage = page;

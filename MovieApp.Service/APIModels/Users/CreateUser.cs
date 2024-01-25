@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace movie_app_mvc.Models.Users
+namespace MovieApp.Service.APIModels.Users
 {
     public class CreateUser
     {

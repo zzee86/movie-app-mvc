@@ -12,17 +12,18 @@ using System.Security.Claims;
 //using movie_app_mvc.Models;
 //using MovieApp.Data.Context;
 //using MovieApp.Data.Models;
-using movie_app_mvc.Models.Users;
-using MovieApp.Services;
+using MovieApp.Data.Context;
+using MovieApp.Service.Interfaces;
+using MovieApp.Service.APIModels.Users;
+using MovieApp.Service.Services;
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace movie_app_mvc.Controllers
 {
     public class LoginController : Controller, ILoginController
     {
-        private UserService UserService { get; set; }
-
-        public LoginController(UserService userService)
+        private readonly IUserService UserService;
+        public LoginController(IUserService userService)
         {
             this.UserService = userService;
         }

@@ -3,7 +3,7 @@
 //using System.Linq;
 //using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using movie_app_mvc.Models.Users;
+using MovieApp.Service.APIModels.Users;
 
 namespace movie_app_mvc.Controllers
 {

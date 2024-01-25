@@ -1,5 +1,5 @@
 ﻿using System;
-namespace movie_app_mvc.Models
+namespace MovieApp.Service.APIModels
 {
     public class MovieInfo
     {

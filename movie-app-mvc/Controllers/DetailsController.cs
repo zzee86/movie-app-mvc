@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using movie_app_mvc.Models;
 using ColorThiefDotNet;
 using System.Drawing;
 using System.Net;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
+using MovieApp.Service.APIModels;
 
 namespace movie_app_mvc.Controllers
 {

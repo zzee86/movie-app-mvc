@@ -1,7 +1,6 @@
 ﻿using System;
-using static movie_app_mvc.Models.MoviePGRating;
 
-namespace movie_app_mvc.Models
+namespace MovieApp.Service.APIModels
 {
     public class TvPGRating
     {

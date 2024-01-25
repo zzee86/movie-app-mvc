@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace movie_app_mvc.Models
+namespace MovieApp.Service.APIModels
 {
     public class SavedMovie
     {

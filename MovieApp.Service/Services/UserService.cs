@@ -1,10 +1,12 @@
-﻿using MovieApp.Data.Models;
+﻿
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MovieApp.Data.Context;
-using movie_app_mvc.Models.Users;
-//using Microsoft.AspNetCore.Authentication.Cookies;
-//using System.Security.Claims;
+using MovieApp.Data.Models;
+using MovieApp.Service.APIModels.Users;
+using MovieApp.Service.Interfaces;
+using System.Security.Claims;
 
-namespace MovieApp.Services
+namespace MovieApp.Service.Services
 {
     public class UserService : IUserService
     {
