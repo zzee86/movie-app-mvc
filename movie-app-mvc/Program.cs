@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using movie_app_mvc.Controllers;
 using MovieApp.Data.Context;
+using MovieApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddDbContext<MovieDbContext>();
 builder.Services.AddScoped<IMovieDbContext, MovieDbContext>();
 builder.Services.AddScoped<IDetailsController, DetailsController>();
 builder.Services.AddScoped<ILoginController, LoginController>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

@@ -38,7 +38,6 @@ namespace movie_app_mvc.Controllers
             try
             {
                 await UserService.LoginUser(loginUser);
-
                 return await SetupCookies(loginUser.Email);
             }
             catch (DuplicateUserException ex)
@@ -52,7 +51,6 @@ namespace movie_app_mvc.Controllers
         {
             // Perform the logout logic
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -67,7 +65,6 @@ namespace movie_app_mvc.Controllers
             try
             {
                 await UserService.CreateUser(createUser);
-
                 return await SetupCookies(createUser.Email);
             }
             catch (DuplicateUserException ex)

@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 //using Microsoft.AspNetCore.Mvc.Formatters;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
+using System.Drawing.Printing;
 //using movie_app_mvc.Models.Users;
 //using Microsoft.EntityFrameworkCore.Internal;
 
@@ -31,9 +32,6 @@ namespace movie_app_mvc.Controllers
             this.MovieDbContext = movieDbContext;
         }
 
-        // private string connectionString = "Host=localhost; Database=postgres; Username=postgres; Password=password123";
-        private const int PageSize = 20;
-        private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
             // Get the user ID of the logged-in user
@@ -73,7 +71,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<List<MovieInfo.Result>> LoadMovies(int page, string userID)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key={apiKey}&page={page}";
+            string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
@@ -92,7 +90,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<List<MovieInfo.Result>> LoadPopularMovies(int page, string userID)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key={apiKey}&page={page}";
+            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
@@ -111,7 +109,7 @@ namespace movie_app_mvc.Controllers
 
         public async Task<List<MovieInfo.Result>> LoadTopRatedMovies(int page, string userID)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key={apiKey}&page={page}";
+            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
@@ -203,7 +201,7 @@ namespace movie_app_mvc.Controllers
 
         private async Task<List<MovieInfo.Result>> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
         {
-            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={searchQuery}&page={pageNumber}";
+            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={Constants.Constants.apiKey}&query={searchQuery}&page={pageNumber}";
             MovieInfo.Root movieInfo = await FetchMovies(url);
 
             if (movieInfo != null)
@@ -248,17 +246,17 @@ namespace movie_app_mvc.Controllers
                 return RedirectToAction("Index");
             }
 
-            int pageSize = 28;
-            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userEmail, page, pageSize);
+            // int pageSize = 28;
+            List<SavedMovie> savedMovies = GetMoviesFromDatabase(title, userEmail, page, Constants.Constants.PageSize);
             ViewBag.SavedPage = page;
             ViewBag.SearchQuery = title;
 
             int totalCount = GetTotalMovieCount(title, userEmail);
 
-            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            int totalPages = (int)Math.Ceiling((double)totalCount / Constants.Constants.PageSize);
             ViewBag.TotalPages = totalPages;
 
-            bool hasNextPage = (page * pageSize) < totalCount;
+            bool hasNextPage = (page * Constants.Constants.PageSize) < totalCount;
 
             ViewBag.HasNextPage = hasNextPage;
             ViewBag.NextPage = page + 1;
@@ -352,7 +350,7 @@ namespace movie_app_mvc.Controllers
                 User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
                 Movie? movie = MovieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
 
-                string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={Title}";
+                string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={Constants.Constants.apiKey}&query={Title}";
                 MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
                 MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
                 string media_type = (movieDetailsResult.media_type == "movie") ? "movie" : "tv";
@@ -365,7 +363,7 @@ namespace movie_app_mvc.Controllers
                 }
                 else
                 {
-                    string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{movieDbId}?api_key={apiKey}";
+                    string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{movieDbId}?api_key={Constants.Constants.apiKey}";
                     MovieInfo.Result movieFromApi = await FetchMovie(apiUrl);
 
                     if (movieFromApi != null)

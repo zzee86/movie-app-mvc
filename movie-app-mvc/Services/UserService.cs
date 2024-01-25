@@ -1,64 +1,60 @@
 ﻿using MovieApp.Data.Models;
 using MovieApp.Data.Context;
 using movie_app_mvc.Models.Users;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
+//using Microsoft.AspNetCore.Authentication.Cookies;
+//using System.Security.Claims;
 
 namespace MovieApp.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
+        private IMovieDbContext MovieDbContext { get; set; }
+
+        public UserService(IMovieDbContext movieDbContext)
+        {
+            this.MovieDbContext = movieDbContext;
+        }
+
         public async Task LoginUser(LoginUser loginUser)
         {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
+            // test
+            //using (MovieDbContext _movieDbContext = new MovieDbContext())
+            //{
 
-                if (!ValidateLogin(loginUser.Email, loginUser.Password))
-                {
-                    throw new DuplicateUserException("Invalid email or password.");
-                }
+            if (!ValidateLogin(loginUser.Email, loginUser.Password))
+            {
+                throw new DuplicateUserException("Invalid email or password.");
             }
         }
 
         private bool ValidateLogin(string email, string password)
         {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
-                bool loginValid = _movieDbContext.Users.Any(u => u.Email == email && u.Password == password);
+            bool loginValid = MovieDbContext.Users.Any(u => u.Email == email && u.Password == password);
 
-                return loginValid;
-            }
+            return loginValid;
         }
 
         public async Task CreateUser(CreateUser createUser)
         {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
+            if (IsUserExists(createUser.Email, createUser.Username))
             {
-
-                if (IsUserExists(createUser.Email, createUser.Username))
-                {
-                    throw new DuplicateUserException("Email or Username already registered.");
-                }
-
-                await _movieDbContext.Users.AddAsync(new User
-                {
-                    Email = createUser.Email,
-                    Username = createUser.Username,
-                    Password = createUser.Password
-                });
-
-                _movieDbContext.SaveChanges();
+                throw new DuplicateUserException("Email or Username already registered.");
             }
+
+            await MovieDbContext.Users.AddAsync(new User
+            {
+                Email = createUser.Email,
+                Username = createUser.Username,
+                Password = createUser.Password
+            });
+
+            MovieDbContext.SaveChanges();
         }
 
         private bool IsUserExists(string email, string username)
         {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
-                bool userexists = _movieDbContext.Users.Any(u => u.Email == email || u.Username == username);
-
-                return userexists;
-            }
+            bool userexists = MovieDbContext.Users.Any(u => u.Email == email || u.Username == username);
+            return userexists;
         }
     }
 
