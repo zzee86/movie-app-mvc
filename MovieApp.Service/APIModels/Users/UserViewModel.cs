@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieApp.Service.APIModels.Users
+namespace MovieApp.Services.APIModels.Users
 {
     public class UserViewModel
     {

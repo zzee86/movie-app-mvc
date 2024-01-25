@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using movie_app_mvc.Controllers;
 using MovieApp.Data.Context;
-using MovieApp.Service.Interfaces;
-using MovieApp.Service.Services;
+using MovieApp.Services.Interfaces;
+using MovieApp.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

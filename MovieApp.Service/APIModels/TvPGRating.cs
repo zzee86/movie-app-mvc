@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MovieApp.Service.APIModels
+namespace MovieApp.Services.APIModels
 {
     public class TvPGRating
     {

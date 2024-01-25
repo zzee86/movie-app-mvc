@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\movie-app-data\MovieApp.Data.csproj" />
-    <ProjectReference Include="..\MovieApp.Service\MovieApp.Service.csproj">
+    <ProjectReference Include="..\MovieApp.Service\MovieApp.Services.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

@@ -13,9 +13,9 @@ using System.Security.Claims;
 //using MovieApp.Data.Context;
 //using MovieApp.Data.Models;
 using MovieApp.Data.Context;
-using MovieApp.Service.Interfaces;
-using MovieApp.Service.APIModels.Users;
-using MovieApp.Service.Services;
+using MovieApp.Services.Interfaces;
+using MovieApp.Services.APIModels.Users;
+using MovieApp.Services.Services;
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace movie_app_mvc.Controllers

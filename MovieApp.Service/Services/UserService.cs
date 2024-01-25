@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
-using MovieApp.Service.APIModels.Users;
-using MovieApp.Service.Interfaces;
+using MovieApp.Services.APIModels.Users;
+using MovieApp.Services.Interfaces;
 using System.Security.Claims;
 
-namespace MovieApp.Service.Services
+namespace MovieApp.Services.Services
 {
     public class UserService : IUserService
     {

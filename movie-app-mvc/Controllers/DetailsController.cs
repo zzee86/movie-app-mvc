@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
-using MovieApp.Service.APIModels;
+using MovieApp.Services.APIModels;
 
 namespace movie_app_mvc.Controllers
 {
