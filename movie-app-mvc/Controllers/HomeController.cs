@@ -25,6 +25,12 @@ namespace movie_app_mvc.Controllers
 {
     public class HomeController : Controller
     {
+        private IMovieDbContext MovieDbContext { get; set; }
+        public HomeController(IMovieDbContext movieDbContext)
+        {
+            this.MovieDbContext = movieDbContext;
+        }
+
         // private string connectionString = "Host=localhost; Database=postgres; Username=postgres; Password=password123";
         private const int PageSize = 20;
         private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
@@ -356,11 +362,14 @@ namespace movie_app_mvc.Controllers
         {
             try
             {
-                using (MovieDbContext _movieDbContext = new MovieDbContext())
-                {
+                string userEmailt = User.Identity?.Name ?? string.Empty;
+
+                User usertemp = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmailt) ?? throw new Exception("User not found");
+                //using (MovieDbContext _movieDbContext = new MovieDbContext())
+                //{
                     string userEmail = User.Identity?.Name ?? string.Empty;
-                    User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
-                    Movie? movie = _movieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
+                    User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
+                    Movie? movie = MovieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
 
                     string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={Title}";
                     MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
@@ -387,14 +396,13 @@ namespace movie_app_mvc.Controllers
                                 movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
 
                                 movie.Users.Add(user);
-                                _movieDbContext.Movies.Add(movie);
+                        MovieDbContext.Movies.Add(movie);
                             }
-                        }
-                
-                    _movieDbContext.SaveChanges();
+                     }
 
+                    MovieDbContext.SaveChanges();
                     return ReloadCurrentUrl();
-                }
+                //}
             }
             catch (Exception ex)
             {

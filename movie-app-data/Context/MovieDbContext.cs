@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MovieApp.Data.Context
 {
-    public class MovieDbContext : DbContext
+    public class MovieDbContext : DbContext, IMovieDbContext
     {
         public MovieDbContext()
         {
@@ -42,6 +42,10 @@ namespace MovieApp.Data.Context
             //    .WithOne(ou => ou.user)
             //    .HasForeignKey(fk => fk.UserId);
 
+        }
+        public int SaveChanges()
+        {
+            return base.SaveChanges();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using MovieApp.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,10 @@ builder.Services.AddAuthentication(options =>
     options.LoginPath = "/Login/Index"; // Replace with your login page URL
     options.AccessDeniedPath = "/Home/Error"; // Replace with your error page URL
 });
+
+builder.Services.AddDbContext<MovieDbContext>();
+
+builder.Services.AddScoped<IMovieDbContext, MovieDbContext>();
 
 var app = builder.Build();
 
