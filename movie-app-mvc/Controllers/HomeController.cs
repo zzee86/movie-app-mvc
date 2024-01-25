@@ -17,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 //using Microsoft.AspNetCore.Mvc.Formatters;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
-using System.Drawing.Printing;
 using MovieApp.Services.APIModels;
 //using movie_app_mvc.Models.Users;
 //using Microsoft.EntityFrameworkCore.Internal;

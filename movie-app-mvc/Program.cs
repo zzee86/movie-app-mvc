@@ -2,7 +2,7 @@
 using movie_app_mvc.Controllers;
 using MovieApp.Data.Context;
 using MovieApp.Services.Interfaces;
-using MovieApp.Services.Services;
+using MovieApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

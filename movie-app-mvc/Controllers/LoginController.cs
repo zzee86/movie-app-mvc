@@ -12,10 +12,9 @@ using System.Security.Claims;
 //using movie_app_mvc.Models;
 //using MovieApp.Data.Context;
 //using MovieApp.Data.Models;
-using MovieApp.Data.Context;
 using MovieApp.Services.Interfaces;
 using MovieApp.Services.APIModels.Users;
-using MovieApp.Services.Services;
+using MovieApp.Services;
 //using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace movie_app_mvc.Controllers
