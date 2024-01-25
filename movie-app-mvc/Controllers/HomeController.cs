@@ -1,25 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Net.Http;
+//using System.Threading.Tasks;
 using movie_app_mvc.Models;
-using System.Web;
+//using System.Web;
 using Microsoft.EntityFrameworkCore;
-using static movie_app_mvc.Models.TvShowDetails;
-using System.Net;
-using ColorThiefDotNet;
-using System.Drawing;
-using static System.Net.WebRequestMethods;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.Formatters;
+//using static movie_app_mvc.Models.TvShowDetails;
+//using System.Net;
+//using ColorThiefDotNet;
+//using System.Drawing;
+//using static System.Net.WebRequestMethods;
+//using System.Linq;
+//using Microsoft.AspNetCore.Mvc.Formatters;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
-using movie_app_mvc.Models.Users;
-using Microsoft.EntityFrameworkCore.Internal;
+//using movie_app_mvc.Models.Users;
+//using Microsoft.EntityFrameworkCore.Internal;
 
 namespace movie_app_mvc.Controllers
 {
@@ -41,7 +41,7 @@ namespace movie_app_mvc.Controllers
 
             // Retrieve the user ID from the loginDetails table
             string testing = "t";
-                      TempData["CurrentDateTime"] =  DateTime.Now.ToString();
+            TempData["CurrentDateTime"] = DateTime.Now.ToString();
 
             List<MovieInfo.Result> trendingMovies = new List<MovieInfo.Result>();
             List<MovieInfo.Result> popularMovies = new List<MovieInfo.Result>();
@@ -267,95 +267,78 @@ namespace movie_app_mvc.Controllers
             return View(savedMovies);
         }
 
-
         private int GetTotalMovieCount(string title, string userEmail)
         {
-            using(MovieDbContext movieDbContext = new MovieDbContext())
+            var query = MovieDbContext.Movies.Where(m => m.Users.Any(u => u.Email == userEmail));
+            if (!string.IsNullOrEmpty(title))
             {
-                var query = movieDbContext.Movies.Where(m => m.Users.Any(u => u.Email == userEmail));
-                if (!string.IsNullOrEmpty(title))
-                {
-                    query = query.Where(m=>m.Title.Contains(title));
-                }
-                return query.Count();
+                query = query.Where(m => m.Title.Contains(title));
             }
+            return query.Count();
         }
 
 
         public IActionResult RemoveMovie(int MovieDbId, string searchQuery, int page = 1)
         {
-                using (MovieDbContext _movieDbContext = new MovieDbContext())
+            string userEmail = User.Identity?.Name ?? string.Empty;
+            User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
+
+            var movieToRemove = MovieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
+
+            if (movieToRemove != null)
+            {
+                // Remove association with user
+                if (movieToRemove.Users.Contains(user))
                 {
-
-                string userEmail = User.Identity?.Name ?? string.Empty;
-                User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
-
-                var movieToRemove = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(x => x.MovieDbId == MovieDbId);
-
-                if(movieToRemove != null)
-                {
-                    // Remove association with user
-                    if (movieToRemove.Users.Contains(user))
-                    {
-                        movieToRemove.Users.Remove(user);
-                    }
-
-                    // If no user reference with movie then remove it
-                    bool isReferenced = movieToRemove.Users.Any();
-                    if(!isReferenced)
-                    {
-                        _movieDbContext.Movies.Remove(movieToRemove);
-                    }
-                    _movieDbContext.SaveChanges();
-
+                    movieToRemove.Users.Remove(user);
                 }
+
+                // If no user reference with movie then remove it
+                bool isReferenced = movieToRemove.Users.Any();
+                if (!isReferenced)
+                {
+                    MovieDbContext.Movies.Remove(movieToRemove);
+                }
+                MovieDbContext.SaveChanges();
+
             }
             return ReloadCurrentUrl();
         }
-     
+
         private List<SavedMovie> GetMoviesFromDatabase(string title, string userEmail, int page, int pageSize)
         {
             List<SavedMovie> movies;
-           using (MovieDbContext movieDbContext = new MovieDbContext())
+            var query = MovieDbContext.Movies.Where(m => m.Users.Any(u => u.Email == userEmail));
+
+            if (!string.IsNullOrEmpty(title))
             {
-                var query = movieDbContext.Movies.Where(m => m.Users.Any(u => u.Email == userEmail));
+                query = query.Where(m => m.Title.Contains(title));
+            }
+            movies = query.OrderByDescending(m => m.Created)
+               .Skip((page - 1) * pageSize)
+               .Take(pageSize)
+               .Select(m => new SavedMovie
+               {
+                   Id = m.Id,
+                   Title = m.Title,
+                   MovieDbId = m.MovieDbId,
+                   Poster = m.Poster,
+                   Rating = m.Rating,
+                   Created = m.Created,
+               })
+               .ToList();
 
-                if (!string.IsNullOrEmpty(title))
-                {
-                    query = query.Where(m => m.Title.Contains(title));
-                }
-                 movies = query.OrderByDescending(m => m.Created)
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .Select(m => new SavedMovie
-                    {
-                        Id = m.Id,
-                        Title = m.Title,
-                        MovieDbId = m.MovieDbId,
-                        Poster = m.Poster,
-                        Rating = m.Rating,
-                        Created = m.Created,
-                    })
-                    .ToList();
-
-                return movies;
-                }
+            return movies;
         }
-    
-
-
-
 
         private bool MovieIsSaved(int movieDbId)
         {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
-                string userEmail = User.Identity?.Name ?? string.Empty;
-                User user = _movieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
-                Movie? movie = _movieDbContext.Movies.Include(x => x.Users).FirstOrDefault(u => u.MovieDbId == movieDbId);
-                bool isSaved = movie != null && movie.Users.Contains(user);
-                return isSaved;
-            }
+            string userEmail = User.Identity?.Name ?? string.Empty;
+            User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
+            Movie? movie = MovieDbContext.Movies.Include(x => x.Users).FirstOrDefault(u => u.MovieDbId == movieDbId);
+            bool isSaved = movie != null && movie.Users.Contains(user);
+            return isSaved;
+
         }
 
         public async Task<IActionResult> SaveMovie(int movieDbId, string Title)
@@ -365,44 +348,38 @@ namespace movie_app_mvc.Controllers
                 string userEmailt = User.Identity?.Name ?? string.Empty;
 
                 User usertemp = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmailt) ?? throw new Exception("User not found");
-                //using (MovieDbContext _movieDbContext = new MovieDbContext())
-                //{
-                    string userEmail = User.Identity?.Name ?? string.Empty;
-                    User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
-                    Movie? movie = MovieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
+                string userEmail = User.Identity?.Name ?? string.Empty;
+                User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
+                Movie? movie = MovieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
 
-                    string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={Title}";
-                    MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
-                    MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
-                    string media_type = (movieDetailsResult.media_type == "movie") ? "movie" : "tv";
+                string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={Title}";
+                MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
+                MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
+                string media_type = (movieDetailsResult.media_type == "movie") ? "movie" : "tv";
 
 
-                    if (movie != null)
+                if (movie != null)
+                {
+                    movie.Users = new List<User> { user };
+                    movie.Users.Add(user);
+                }
+                else
+                {
+                    string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{movieDbId}?api_key={apiKey}";
+                    MovieInfo.Result movieFromApi = await FetchMovie(apiUrl);
+
+                    if (movieFromApi != null)
                     {
-                        movie.Users = new List<User> { user };
+                        DateTime currentTime = DateTime.UtcNow;
+                        movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
+
                         movie.Users.Add(user);
-                    }
-                    else
-                    {
-                        string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{movieDbId}?api_key={apiKey}";
-
-                    
-                            MovieInfo.Result movieFromApi = await FetchMovie(apiUrl);
-  
-                        if (movieFromApi != null)
-                            {
-                                DateTime currentTime = DateTime.UtcNow;
-
-                                movie = CreateMovieFromApiResult(movieFromApi, user, currentTime);
-
-                                movie.Users.Add(user);
                         MovieDbContext.Movies.Add(movie);
-                            }
-                     }
+                    }
+                }
+                MovieDbContext.SaveChanges();
 
-                    MovieDbContext.SaveChanges();
-                    return ReloadCurrentUrl();
-                //}
+                return ReloadCurrentUrl();
             }
             catch (Exception ex)
             {
@@ -412,11 +389,11 @@ namespace movie_app_mvc.Controllers
 
         private Movie CreateMovieFromApiResult(MovieInfo.Result apiResult, User user, DateTime createdTime)
         {
-            if(apiResult.title == null)
+            if (apiResult.title == null)
             {
                 apiResult.title = apiResult.name;
-            } 
-            else if(apiResult.title == null && apiResult.name == null)
+            }
+            else if (apiResult.title == null && apiResult.name == null)
             {
                 apiResult.title = apiResult.original_title;
             }

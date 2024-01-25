@@ -17,9 +17,16 @@ using MovieApp.Data.Models;
 
 namespace movie_app_mvc.Controllers
 {
-    public class DetailsController : Controller
+    public class DetailsController : Controller, IDetailsController
     {
-        private string connectionString = "server=localhost;database=saved_movies;user=root;";
+        private IMovieDbContext MovieDbContext { get; set; }
+
+        public DetailsController(IMovieDbContext movieDbContext)
+        {
+            this.MovieDbContext = movieDbContext;
+        }
+
+        //private string connectionString = "server=localhost;database=saved_movies;user=root;";
         private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
 
         public async Task<ActionResult> MovieDetails(string title, int id)
@@ -372,16 +379,13 @@ namespace movie_app_mvc.Controllers
 
         private bool MovieIsSaved(MovieInfo.Result movie)
         {
-            using (MovieDbContext _movieDbContext = new MovieDbContext())
-            {
-                string currentUserEmail = User.Identity.Name;
-                User currentUser = _movieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
+            string currentUserEmail = User.Identity.Name;
+            User currentUser = MovieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
 
-                //bool isSaved = _movieDbContext.Movies.Any(u => u.MovieDbId == movie.id && u.Users == currentUser);
-                bool isSaved = _movieDbContext.Movies.Any(u => u.MovieDbId == movie.id);
+            //bool isSaved = _movieDbContext.Movies.Any(u => u.MovieDbId == movie.id && u.Users == currentUser);
+            bool isSaved = MovieDbContext.Movies.Any(u => u.MovieDbId == movie.id);
 
-                return isSaved;
-            }
+            return isSaved;
         }
 
         private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)

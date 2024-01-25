@@ -1,25 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
-using Microsoft.AspNetCore.Http;
+//using Microsoft.Extensions.Configuration;
+//using MySql.Data.MySqlClient;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using movie_app_mvc.Models;
-using MovieApp.Data.Context;
-using MovieApp.Data.Models;
+//using movie_app_mvc.Models;
+//using MovieApp.Data.Context;
+//using MovieApp.Data.Models;
 using movie_app_mvc.Models.Users;
 using MovieApp.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+//using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace movie_app_mvc.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : Controller, ILoginController
     {
+        private UserService UserService { get; set; }
+
+        public LoginController(UserService userService)
+        {
+            this.UserService = userService;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -30,8 +37,7 @@ namespace movie_app_mvc.Controllers
         {
             try
             {
-                var userService = new UserService();
-                await userService.LoginUser(loginUser);
+                await UserService.LoginUser(loginUser);
 
                 return await SetupCookies(loginUser.Email);
             }
@@ -60,8 +66,7 @@ namespace movie_app_mvc.Controllers
         {
             try
             {
-                var userService = new UserService();
-                await userService.CreateUser(createUser);
+                await UserService.CreateUser(createUser);
 
                 return await SetupCookies(createUser.Email);
             }
@@ -70,14 +75,14 @@ namespace movie_app_mvc.Controllers
                 TempData["RegisterErrorMessage"] = ex.Message;
                 return RedirectToAction("Index");
             }
-         }
+        }
 
         public async Task<RedirectToActionResult> SetupCookies(string userEmail)
         {
             var claim = new[]
-{
-                    new Claim(ClaimTypes.Name, userEmail)
-                };
+            {
+                new Claim(ClaimTypes.Name, userEmail)
+            };
 
             var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
