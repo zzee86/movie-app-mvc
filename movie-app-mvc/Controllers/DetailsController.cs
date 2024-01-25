@@ -1,24 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using movie_app_mvc.Models;
-using ColorThiefDotNet;
-using System.Drawing;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Net.Http;
+//using System.Threading.Tasks;
+//using ColorThiefDotNet;
+//using System.Drawing;
 using System.Net;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using MovieApp.Data.Context;
+using MovieApp.Data.Models;
+using MovieApp.Services.APIModels;
 
 namespace movie_app_mvc.Controllers
 {
-    public class DetailsController : Controller
+    public class DetailsController : Controller, IDetailsController
     {
-        private string connectionString = "server=localhost;database=saved_movies;user=root;";
+        private IMovieDbContext MovieDbContext { get; set; }
+
+        public DetailsController(IMovieDbContext movieDbContext)
+        {
+            this.MovieDbContext = movieDbContext;
+        }
+
+        //private string connectionString = "server=localhost;database=saved_movies;user=root;";
+        private const string apiKey = "ca80dfbe1afe5a1a97e4401ff534c4e4";
 
         public async Task<ActionResult> MovieDetails(string title, int id)
         {
@@ -26,12 +33,10 @@ namespace movie_app_mvc.Controllers
             try
             {
                 // Null-conditional operator to avoid crashing
-                string email = User.Identity?.Name;
-
-                string userID = string.IsNullOrEmpty(email) ? null : GetUserIdByEmail(email);
+                string userEmail = User.Identity?.Name;
 
                 // Get details on the movie
-                string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4&query={title}";
+                string apiUrl = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={apiKey}&query={title}";
                 MovieInfo.Root movieDetails = await FetchMovies(apiUrl);
                 MovieInfo.Result movie = movieDetails.results.FirstOrDefault();
 
@@ -47,10 +52,10 @@ namespace movie_app_mvc.Controllers
                 ViewBag.MovieKey = (video != null) ? video.key : "unavailable";
 
                 // Main content on details page
-                string movie_tv_url = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+                string movie_tv_url = $"https://api.themoviedb.org/3/{media_type}/{id}?api_key={apiKey}";
                 TvShowDetails.Root movie_tv_details = await FetchTvShows(movie_tv_url);
 
-                string media_pg_rating_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}/content_ratings?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4" : $"https://api.themoviedb.org/3/{media_type}/{id}/release_dates?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+                string media_pg_rating_url = (media_type == "tv") ? $"https://api.themoviedb.org/3/{media_type}/{id}/content_ratings?api_key={apiKey}" : $"https://api.themoviedb.org/3/{media_type}/{id}/release_dates?api_key={apiKey}";
 
                 if (media_type == "tv")
                 {
@@ -86,9 +91,9 @@ namespace movie_app_mvc.Controllers
                 }
 
                 // For save button on details page overriden with GetMediaRecommendations method
-                ProcessMovieResults(movieDetails.results, userID);
+                ProcessMovieResults(movieDetails.results, userEmail);
 
-                await GetMediaRecommendations(media_type, id, userID);
+                await GetMediaRecommendations(media_type, id, userEmail);
                 await GetMediaProviders(media_type, id);
 
 
@@ -168,41 +173,17 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private string GetUserIdByEmail(string email)
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT userID FROM loginDetails WHERE email = @Email";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Email", email);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        // Return the user ID if found
-                        return reader.GetString("userID");
-                    }
-                }
-            }
-
-            // Return null if user ID not found
-            return null;
-        }
-
-        private async Task<List<MovieInfo.Result>> GetMediaRecommendations(string media_type, int id, string userID)
+        private async Task<List<MovieInfo.Result>> GetMediaRecommendations(string media_type, int id, string userEmail)
         {
             // Use URL to get recommendations https://api.themoviedb.org/3/{media_type}/{id}/recommendations
             // Use MovieInfo Model for both tv and movies
 
-            string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{id}/recommendations?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{id}/recommendations?api_key={apiKey}";
             MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userEmail);
                 return movieResults;
             }
 
@@ -349,7 +330,7 @@ namespace movie_app_mvc.Controllers
             }
         }
 
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
+        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userEmail)
         {
             List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
 
@@ -378,8 +359,11 @@ namespace movie_app_mvc.Controllers
                     }
                 }
 
-                movie.IsSaved = MovieIsSaved(movie.title, userID);
-                ViewBag.IsMovieSaved = movie.IsSaved;
+                if (User.Identity.IsAuthenticated)
+                {
+                    movie.IsSaved = MovieIsSaved(movie);
+                    ViewBag.IsMovieSaved = movie.IsSaved;
+                }
 
                 movieResults.Add(movie);
             }
@@ -391,27 +375,20 @@ namespace movie_app_mvc.Controllers
         }
 
 
-
-
-        private bool MovieIsSaved(string title, string userID)
+        private bool MovieIsSaved(MovieInfo.Result movie)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
+            string currentUserEmail = User.Identity.Name;
+            User currentUser = MovieDbContext.Users.FirstOrDefault(x => x.Email == currentUserEmail);
 
-                string query = "SELECT COUNT(*) FROM savedMovies WHERE title = @title AND userID = @userID";
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@title", title);
-                command.Parameters.AddWithValue("@userID", userID);
+            //bool isSaved = _movieDbContext.Movies.Any(u => u.MovieDbId == movie.id && u.Users == currentUser);
+            bool isSaved = MovieDbContext.Movies.Any(u => u.MovieDbId == movie.id);
 
-                int count = Convert.ToInt32(command.ExecuteScalar());
-                return count > 0;
-            }
+            return isSaved;
         }
 
         private async Task<VideoInfo.Result> GetTrailer(string mediaType, int id)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/{mediaType}/{id}/videos?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            string apiUrl = $"https://api.themoviedb.org/3/{mediaType}/{id}/videos?api_key={apiKey}";
             VideoInfo.Root videoDetails = await FetchVideos(apiUrl);
             VideoInfo.Result video = videoDetails.results.FirstOrDefault(v => v.type.Equals("Trailer", StringComparison.OrdinalIgnoreCase));
 
@@ -421,7 +398,7 @@ namespace movie_app_mvc.Controllers
 
         private async Task<List<Actors.Cast>> GetCastInfo(string mediaType, int id)
         {
-            string castApi = $"https://api.themoviedb.org/3/{mediaType}/{id}/credits?language=en-US&api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            string castApi = $"https://api.themoviedb.org/3/{mediaType}/{id}/credits?language=en-US&api_key={apiKey}";
             Actors.Root castDetails = await FetchActors(castApi);
             List<Actors.Cast> castInfo = castDetails.cast.Take(10).ToList();
 
@@ -529,7 +506,7 @@ namespace movie_app_mvc.Controllers
 
         private async Task<List<MediaWatchProviders.Buy>> GetMediaProviders(string media_type, int id)
         {
-            string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{id}/watch/providers?api_key=ca80dfbe1afe5a1a97e4401ff534c4e4";
+            string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{id}/watch/providers?api_key={apiKey}";
             MediaWatchProviders.Root movieInfo = await FetchMediaProviders(apiUrl);
 
             if (movieInfo != null)

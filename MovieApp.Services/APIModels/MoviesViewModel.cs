@@ -1,7 +1,7 @@
 ﻿using System;
-namespace movie_app_mvc.Models
+namespace MovieApp.Services.APIModels
 {
-	public class MoviesViewModel
+    public class MoviesViewModel
     {
         public List<MovieInfo.Result> TrendingMovies { get; set; }
         public List<MovieInfo.Result> PopularMovies { get; set; }

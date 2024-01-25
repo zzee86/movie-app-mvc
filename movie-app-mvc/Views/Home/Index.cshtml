@@ -21,7 +21,7 @@
     }
 
     <main>
-
+        <h1>dis @TempData["Dismovies"]</h1>
         <div class="filters">
             <div class="search-right-container">
                 <div class="search-content">
@@ -29,20 +29,10 @@
                         <div class="search-bar">
                             <input type="text" name="searchQuery" placeholder="Search Movies / TV Shows" value="@ViewBag.SearchQuery" />
                         </div>
-
-                        <!--<div class="page-info">-->
-                        <!--<h4>Page @(ViewBag.CurrentPage) of @(ViewBag.TotalPages)</h4>-->
-                        <!--@if (@User.Identity.IsAuthenticated)
-                                {
-                                    <h4>@User.FindFirst("Username")?.Value</h4>
-                                }
-                        </div>-->
                     </form>
                 </div>
             </div>
-
-
-
+            <h1>
 
             <!-- Next and Back buttons -->
             <div class="pagination-container">
@@ -64,7 +54,6 @@
                     <span>Next</span>
                 }
             </div>
-
 
             <div class="section-container trending-section">
 
@@ -94,7 +83,7 @@
                                                 <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
                                             </div>
                                             @*<h2>@Math.Round(movie.vote_average, 1)</h2>*@
-                                            <h2>@Math.Round(movie.vote_average, 1)</h2>
+                                                    <h2 class="overlay-vote-base">@Math.Round(movie.vote_average, 1)</h2>
                                         </div>
                                         <img src="@movie.poster_path_url" alt="Movie Poster" />
                                     </div>
@@ -112,26 +101,22 @@
                                             @if (movie.IsSaved)
                                             {
                                                 <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                    <input type="hidden" name="title" value="@movie.title" />
+                                                    <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                     <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
                                                 </form>
                                             }
                                             else
                                             {
                                                 <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                    <input type="hidden" name="title" value="@movie.title" />
-                                                    <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                                    <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
-                                                    <input type="hidden" name="movieid" value="@movie.id" />
+                                                    <input type="hidden" name="MovieDbId" value="@movie.id" />
+                                                    <input type="hidden" name="Title" value="@movie.title" />
                                                     <button type="submit">Save</button>
                                                 </form>
                                             }
                                         }
                                         else
                                         {
-                                            @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
                                             <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
-
                                         }
                                     </div>
                                 </div>
@@ -141,6 +126,7 @@
                     </div>
                 </div>
             </div>
+
 
 
 
@@ -164,8 +150,8 @@
                                                 <div class="image-container">
                                                     <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
                                                 </div>
-                                                <h2>@Math.Round(movie.vote_average, 1)</h2>
-                                            </div>
+                                                    <h2 class="overlay-vote-base">@Math.Round(movie.vote_average, 1)</h2>
+                                                </div>
                                             <img src="@movie.poster_path_url" alt="Movie Poster" />
                                         </div>
                                     </a>
@@ -182,26 +168,21 @@
                                                 @if (movie.IsSaved)
                                                 {
                                                     <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                        <input type="hidden" name="title" value="@movie.title" />
+                                                        <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                         <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
                                                     </form>
                                                 }
                                                 else
                                                 {
                                                     <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                        <input type="hidden" name="title" value="@movie.title" />
-                                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                                        <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
-                                                        <input type="hidden" name="movieid" value="@movie.id" />
+                                                        <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                         <button type="submit">Save</button>
                                                     </form>
                                                 }
                                             }
                                             else
                                             {
-                                                @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
                                                 <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
-
                                             }
                                         </div>
                                     </div>
@@ -229,8 +210,8 @@
                                                 <div class="image-container">
                                                     <img src="@Url.Content("~/Images/star.png")" class="star" alt="Star" />
                                                 </div>
-                                                <h2>@Math.Round(movie.vote_average, 1)</h2>
-                                            </div>
+                                                    <h2 class="overlay-vote-base">@Math.Round(movie.vote_average, 1)</h2>
+                                                </div>
                                             <img src="@movie.poster_path_url" alt="Movie Poster" />
                                         </div>
                                     </a>
@@ -246,26 +227,21 @@
                                                 @if (movie.IsSaved)
                                                 {
                                                     <form method="post" action="@Url.Action("RemoveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                        <input type="hidden" name="title" value="@movie.title" />
+                                                        <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                         <button type="submit" class="@(movie.IsSaved ? "saved" : "")">Remove</button>
                                                     </form>
                                                 }
                                                 else
                                                 {
                                                     <form method="post" action="@Url.Action("SaveMovie", "Home", new { searchQuery = ViewBag.SearchQuery, page = ViewBag.CurrentPage })">
-                                                        <input type="hidden" name="title" value="@movie.title" />
-                                                        <input type="hidden" name="poster" value="@movie.poster_path_url" />
-                                                        <input type="hidden" name="rating" value="@Math.Round(movie.vote_average, 1)" />
-                                                        <input type="hidden" name="movieid" value="@movie.id" />
+                                                        <input type="hidden" name="MovieDbId" value="@movie.id" />
                                                         <button type="submit">Save</button>
                                                     </form>
                                                 }
                                             }
                                             else
                                             {
-                                                @*<button type="submit" class="@(movie.IsSaved ? "saved" : "")">User must be logged in</button>*@
                                                 <button type="button" class="@(movie.IsSaved ? "saved" : "")" onclick="showSignInPopup()">Save</button>
-
                                             }
                                         </div>
                                     </div>
@@ -275,6 +251,7 @@
                     </div>
                 </div>
             }
+            </div>
     </main>
 
 </body>

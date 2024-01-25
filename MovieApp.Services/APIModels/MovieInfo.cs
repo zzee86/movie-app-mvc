@@ -1,5 +1,5 @@
 ﻿using System;
-namespace movie_app_mvc.Models
+namespace MovieApp.Services.APIModels
 {
     public class MovieInfo
     {
@@ -40,6 +40,10 @@ namespace movie_app_mvc.Models
 
             public string type { get; set; }
 
+            public static explicit operator List<object>(Result? v)
+            {
+                throw new NotImplementedException();
+            }
         }
 
 

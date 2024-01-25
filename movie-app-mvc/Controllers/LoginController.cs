@@ -1,68 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
-using Microsoft.AspNetCore.Http;
+//using Microsoft.Extensions.Configuration;
+//using MySql.Data.MySqlClient;
+//using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
-using movie_app_mvc.Models;
+//using movie_app_mvc.Models;
+//using MovieApp.Data.Context;
+//using MovieApp.Data.Models;
+using MovieApp.Services.Interfaces;
+using MovieApp.Services.APIModels.Users;
+using MovieApp.Services;
+//using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace movie_app_mvc.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : Controller, ILoginController
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString = "server=localhost;database=saved_movies;user=root;";
+        private readonly IUserService UserService;
+        public LoginController(IUserService userService)
+        {
+            this.UserService = userService;
+        }
 
-        //public LoginController()
-        //{
-        //    _connectionString = "server=localhost;database=saved_movies;user=root;";
-        //}
-
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(LoginUser loginUser)
         {
-            // Validate login credentials
-            if (ValidateLogin(email, password))
+            try
             {
-                // Get the username associated with the email
-                string username = GetUsernameByEmail(email);
-
-                // Set authentication cookie with user's name
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, email),
-            new Claim("Username", username) // Add the username as a claim
-        };
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-                await HttpContext.SignInAsync(principal);
-
-                // Successful login
-                return RedirectToAction("Index", "Home");
+                await UserService.LoginUser(loginUser);
+                return await SetupCookies(loginUser.Email);
             }
-
-            // Invalid credentials
-            ViewData["ErrorMessage"] = "Invalid email or password.";
-            return View("Index");
+            catch (DuplicateUserException ex)
+            {
+                TempData["LoginErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
+            }
         }
-
 
         public async Task<IActionResult> Logout()
         {
             // Perform the logout logic
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -72,105 +60,33 @@ namespace movie_app_mvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string email, string username, string password)
+        public async Task<IActionResult> Register(CreateUser createUser)
         {
-            // Check if the email already exists
-            if (IsEmailExists(email))
+            try
             {
-                ViewData["ErrorMessage"] = "Email already registered.";
-                return View();
+                await UserService.CreateUser(createUser);
+                return await SetupCookies(createUser.Email);
             }
-
-            // Register the new user
-            if (CreateUser(email, username, password))
+            catch (DuplicateUserException ex)
             {
-                // Successful registration
-                return RedirectToAction("Index", "Home");
-            }
-
-            // Failed to register
-            ViewData["ErrorMessage"] = "Failed to register user.";
-            return View();
-        }
-
-        private bool ValidateLogin(string email, string password)
-        {
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var query = "SELECT COUNT(*) FROM loginDetails WHERE email = @Email AND password = @Password";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@Password", password);
-
-                    var result = Convert.ToInt32(command.ExecuteScalar());
-                    return result > 0;
-                }
+                TempData["RegisterErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
             }
         }
 
-        private bool IsEmailExists(string email)
+        public async Task<RedirectToActionResult> SetupCookies(string userEmail)
         {
-            using (var connection = new MySqlConnection(_connectionString))
+            var claim = new[]
             {
-                connection.Open();
+                new Claim(ClaimTypes.Name, userEmail)
+            };
 
-                var query = "SELECT COUNT(*) FROM loginDetails WHERE email = @Email";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
+            var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(principal);
 
-                    var result = Convert.ToInt32(command.ExecuteScalar());
-                    return result > 0;
-                }
-            }
+            // Successful login
+            return RedirectToAction("Index", "Home");
         }
-
-        private bool CreateUser(string email, string username, string password)
-        {
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var query = "INSERT INTO loginDetails (email, username, password) VALUES (@Email, @Username, @Password)";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@Username", username);
-                    command.Parameters.AddWithValue("@Password", password);
-
-                    var rowsAffected = command.ExecuteNonQuery();
-                    return rowsAffected > 0;
-                }
-            }
-        }
-
-        private string GetUsernameByEmail(string email)
-        {
-            using (var connection = new MySqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                var query = "SELECT username FROM loginDetails WHERE email = @Email";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@Email", email);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return reader.GetString("username");
-                        }
-                    }
-                }
-            }
-
-            // Return null if the email does not have an associated username
-            return null;
-        }
-
     }
 }
