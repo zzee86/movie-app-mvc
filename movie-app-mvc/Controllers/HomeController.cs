@@ -18,6 +18,9 @@ using Microsoft.EntityFrameworkCore;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
 using MovieApp.Services.APIModels;
+using MovieApp.Services.Services;
+using MovieApp.Services.Interfaces;
+using System.Security.Claims;
 //using movie_app_mvc.Models.Users;
 //using Microsoft.EntityFrameworkCore.Internal;
 
@@ -25,17 +28,24 @@ namespace movie_app_mvc.Controllers
 {
     public class HomeController : Controller
     {
-        private IMovieDbContext MovieDbContext { get; set; }
-        public HomeController(IMovieDbContext movieDbContext)
+        private readonly IMovieDbContext MovieDbContext;
+        private readonly IMovieService MovieService;
+        private readonly IHttpContextAccessor HttpContextAccessor;
+
+
+        public HomeController(IMovieDbContext movieDbContext, IMovieService movieService, IHttpContextAccessor httpContextAccessor)
         {
             this.MovieDbContext = movieDbContext;
+            this.MovieService = movieService;
+            this.HttpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IActionResult> Index(string searchQuery, int page = 1)
         {
             // Get the user ID of the logged-in user
-            string email = User.Identity.Name; // Assuming the email is stored in the "Name" claim
-            var testing = "testing";
+            // Assuming the email is stored in the "Name" claim
+            // string email = User.Identity.Name; 
+            // var testing = "testing";
             // Retrieve the user ID from the loginDetails table
             TempData["CurrentDateTime"] = DateTime.Now.ToString();
 
@@ -45,13 +55,13 @@ namespace movie_app_mvc.Controllers
 
             if (string.IsNullOrEmpty(searchQuery))
             {
-                trendingMovies = await LoadMovies(page, testing);
-                popularMovies = await LoadPopularMovies(page, testing);
-                topRatedMovies = await LoadTopRatedMovies(page, testing);
+                trendingMovies = await LoadMovies(page);
+                popularMovies = await LoadPopularMovies(page);
+                topRatedMovies = await LoadTopRatedMovies(page);
             }
             else
             {
-                trendingMovies = await SearchMovies(searchQuery, searchQuery, page);
+                trendingMovies = await SearchMovies(searchQuery, page);
             }
 
             ViewBag.CurrentPage = page;
@@ -67,144 +77,94 @@ namespace movie_app_mvc.Controllers
         }
 
 
-        public async Task<List<MovieInfo.Result>> LoadMovies(int page, string userID)
+        public async Task<List<MovieInfo.Result>> LoadMovies(int page)
         {
             string apiUrl = $"https://api.themoviedb.org/3/trending/all/day?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
-            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
+            MovieInfo.Root movieInfo = await MovieService.FetchMovies(apiUrl);
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+                List<MovieInfo.Result> movieResults = MovieService.ProcessMovieResults(movieInfo.results, User.Identity.IsAuthenticated);
 
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = movieInfo.total_pages;
-                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
-
-                return movieResults;
-            }
-
-            return null;
-        }
-
-        public async Task<List<MovieInfo.Result>> LoadPopularMovies(int page, string userID)
-        {
-            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
-            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
-
-            if (movieInfo != null)
-            {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
-
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = movieInfo.total_pages;
-                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
-
-                return movieResults;
-            }
-
-            return null;
-        }
-
-        public async Task<List<MovieInfo.Result>> LoadTopRatedMovies(int page, string userID)
-        {
-            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
-            MovieInfo.Root movieInfo = await FetchMovies(apiUrl);
-
-            if (movieInfo != null)
-            {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
-
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = movieInfo.total_pages;
-                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
-
-                return movieResults;
-            }
-
-            return null;
-        }
-
-        private async Task<MovieInfo.Root> FetchMovies(string url)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                var info = JsonConvert.DeserializeObject<MovieInfo.Root>(json);
-
-                return info;
-            }
-        }
-
-        private async Task<MovieInfo.Result> FetchMovie(string url)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                var response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                var json = await response.Content.ReadAsStringAsync();
-                var info = JsonConvert.DeserializeObject<MovieInfo.Result>(json);
-
-                return info;
-            }
-        }
-
-        private List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, string userID)
-        {
-            List<MovieInfo.Result> movieResults = new List<MovieInfo.Result>();
-
-            foreach (var movie in results)
-            {
-                if (string.IsNullOrEmpty(movie.title))
-                {
-                    // Use the name property if title is empty
-                    movie.title = movie.name;
-                }
-
-                if (string.IsNullOrEmpty(movie.poster_path) && (movie.known_for == null || movie.known_for.Count == 0))
-                {
-                    // Exclude the movie if it doesn't have a poster and no known_for data
-                    continue;
-                }
-
-                if (movie.known_for != null && movie.known_for.Count > 0)
-                {
-                    bool hasValidKnownFor = movie.known_for.Any(k => !string.IsNullOrEmpty(k.title) && !string.IsNullOrEmpty(k.poster_path));
-
-                    if (hasValidKnownFor)
-                    {
-                        // Filter out the movie if it has a valid known_for
-                        continue;
-                    }
-                }
-
-                if (User.Identity.IsAuthenticated)
-                {
-                    movie.IsSaved = MovieIsSaved(movie.id);
-                }
-                movieResults.Add(movie);
-
-                if (results.Count() >= 1)
+                if (movieInfo.results.Count() >= 1)
                 {
                     TempData["ProcessMovieCount"] = "Active";
                 }
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = movieInfo.total_pages;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
+                return movieResults;
             }
 
-            return movieResults;
+            return null;
         }
 
-
-        private async Task<List<MovieInfo.Result>> SearchMovies(string searchQuery, string userID, int pageNumber = 1)
+        public async Task<List<MovieInfo.Result>> LoadPopularMovies(int page)
         {
-            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={Constants.Constants.apiKey}&query={searchQuery}&page={pageNumber}";
-            MovieInfo.Root movieInfo = await FetchMovies(url);
+            string apiUrl = $"https://api.themoviedb.org/3/movie/popular?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
+
+            MovieInfo.Root movieInfo = await MovieService.FetchMovies(apiUrl);
 
             if (movieInfo != null)
             {
-                List<MovieInfo.Result> movieResults = ProcessMovieResults(movieInfo.results, userID);
+                List<MovieInfo.Result> movieResults = MovieService.ProcessMovieResults(movieInfo.results, User.Identity.IsAuthenticated);
+
+                if (movieInfo.results.Count() >= 1)
+                {
+                    TempData["ProcessMovieCount"] = "Active";
+                }
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = movieInfo.total_pages;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
+                return movieResults;
+            }
+
+            return null;
+        }
+
+        public async Task<List<MovieInfo.Result>> LoadTopRatedMovies(int page)
+        {
+            string apiUrl = $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&api_key={Constants.Constants.apiKey}&page={page}";
+            MovieInfo.Root movieInfo = await MovieService.FetchMovies(apiUrl);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = MovieService.ProcessMovieResults(movieInfo.results, User.Identity.IsAuthenticated);
+
+                if (movieInfo.results.Count() >= 1)
+                {
+                    TempData["ProcessMovieCount"] = "Active";
+                }
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = movieInfo.total_pages;
+                //ViewBag.TotalPages = (int)Math.Ceiling((double)movieInfo.total_results / PageSize);
+
+                return movieResults;
+            }
+
+            return null;
+        }
+
+
+        private async Task<List<MovieInfo.Result>> SearchMovies(string searchQuery, int pageNumber = 1)
+        {
+            string url = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={Constants.Constants.apiKey}&query={searchQuery}&page={pageNumber}";
+            MovieInfo.Root movieInfo = await MovieService.FetchMovies(url);
+
+            if (movieInfo != null)
+            {
+                List<MovieInfo.Result> movieResults = MovieService.ProcessMovieResults(movieInfo.results, User.Identity.IsAuthenticated);
+
+
+                if (movieInfo.results.Count() >= 1)
+                {
+                    TempData["ProcessMovieCount"] = "Active";
+                }
 
                 ViewBag.CurrentPage = pageNumber;
                 ViewBag.TotalPages = movieInfo.total_pages;
@@ -327,16 +287,6 @@ namespace movie_app_mvc.Controllers
             return movies;
         }
 
-        private bool MovieIsSaved(int movieDbId)
-        {
-            string userEmail = User.Identity?.Name ?? string.Empty;
-            User user = MovieDbContext.Users.FirstOrDefault(u => u.Email == userEmail) ?? throw new Exception("User not found");
-            Movie? movie = MovieDbContext.Movies.Include(x => x.Users).FirstOrDefault(u => u.MovieDbId == movieDbId);
-            bool isSaved = movie != null && movie.Users.Contains(user);
-            return isSaved;
-
-        }
-
         public async Task<IActionResult> SaveMovie(int movieDbId, string Title)
         {
             try
@@ -349,7 +299,7 @@ namespace movie_app_mvc.Controllers
                 Movie? movie = MovieDbContext.Movies.FirstOrDefault(m => m.MovieDbId == movieDbId);
 
                 string apiUrlExtra = $"https://api.themoviedb.org/3/search/multi?language=en-US&api_key={Constants.Constants.apiKey}&query={Title}";
-                MovieInfo.Root movieExtra = await FetchMovies(apiUrlExtra);
+                MovieInfo.Root movieExtra = await MovieService.FetchMovies(apiUrlExtra);
                 MovieInfo.Result movieDetailsResult = movieExtra.results.FirstOrDefault();
                 string media_type = (movieDetailsResult.media_type == "movie") ? "movie" : "tv";
 
@@ -362,7 +312,7 @@ namespace movie_app_mvc.Controllers
                 else
                 {
                     string apiUrl = $"https://api.themoviedb.org/3/{media_type}/{movieDbId}?api_key={Constants.Constants.apiKey}";
-                    MovieInfo.Result movieFromApi = await FetchMovie(apiUrl);
+                    MovieInfo.Result movieFromApi = await MovieService.FetchMovie(apiUrl);
 
                     if (movieFromApi != null)
                     {

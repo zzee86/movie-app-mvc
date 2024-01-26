@@ -3,6 +3,7 @@ using movie_app_mvc.Controllers;
 using MovieApp.Data.Context;
 using MovieApp.Services.Interfaces;
 using MovieApp.Services;
+using MovieApp.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddScoped<IMovieDbContext, MovieDbContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDetailsController, DetailsController>();
 builder.Services.AddScoped<ILoginController, LoginController>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
