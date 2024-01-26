@@ -2,8 +2,8 @@
 using MovieApp.Data.Context;
 using MovieApp.Services.APIModels.Users;
 using MovieApp.Services.Interfaces;
-//using Microsoft.AspNetCore.Authentication.Cookies;
-//using System.Security.Claims;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace MovieApp.Services
 {
@@ -16,19 +16,15 @@ namespace MovieApp.Services
             this.MovieDbContext = movieDbContext;
         }
 
-        public async Task LoginUser(LoginUser loginUser)
+        public void LoginUser(LoginUser loginUser)
         {
-            // test
-            //using (MovieDbContext _movieDbContext = new MovieDbContext())
-            //{
-
             if (!ValidateLogin(loginUser.Email, loginUser.Password))
             {
                 throw new DuplicateUserException("Invalid email or password.");
             }
         }
 
-        private bool ValidateLogin(string email, string password)
+        public bool ValidateLogin(string email, string password)
         {
             bool loginValid = MovieDbContext.Users.Any(u => u.Email == email && u.Password == password);
 
@@ -56,6 +52,17 @@ namespace MovieApp.Services
         {
             bool userexists = MovieDbContext.Users.Any(u => u.Email == email || u.Username == username);
             return userexists;
+        }
+
+        public ClaimsPrincipal SetupCookies(string userEmail)
+        {
+            var claim = new[]
+            {
+                new Claim(ClaimTypes.Name, userEmail)
+            };
+
+            var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
+            return new ClaimsPrincipal(identity);
         }
     }
 

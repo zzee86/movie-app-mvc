@@ -37,7 +37,7 @@ namespace movie_app_mvc.Controllers
         {
             try
             {
-                await UserService.LoginUser(loginUser);
+                UserService.LoginUser(loginUser);
                 return await SetupCookies(loginUser.Email);
             }
             catch (DuplicateUserException ex)
@@ -76,16 +76,9 @@ namespace movie_app_mvc.Controllers
 
         public async Task<RedirectToActionResult> SetupCookies(string userEmail)
         {
-            var claim = new[]
-            {
-                new Claim(ClaimTypes.Name, userEmail)
-            };
+            var cookieDetails = UserService.SetupCookies(userEmail);
+            await HttpContext.SignInAsync(cookieDetails);
 
-            var identity = new ClaimsIdentity(claim, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(principal);
-
-            // Successful login
             return RedirectToAction("Index", "Home");
         }
     }

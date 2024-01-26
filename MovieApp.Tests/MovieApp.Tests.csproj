@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
+    <PackageReference Include="coverlet.collector" Version="3.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.9" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="LoginTests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LoginTests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\movie-app-data\MovieApp.Data.csproj" />
+    <ProjectReference Include="..\MovieApp.Services\MovieApp.Services.csproj" />
+    <ProjectReference Include="..\movie-app-mvc\movie-app-mvc.csproj" />
+  </ItemGroup>
+</Project>
