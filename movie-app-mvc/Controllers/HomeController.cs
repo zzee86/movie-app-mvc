@@ -21,6 +21,7 @@ using MovieApp.Services.APIModels;
 using MovieApp.Services.Services;
 using MovieApp.Services.Interfaces;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Routing;
 //using movie_app_mvc.Models.Users;
 //using Microsoft.EntityFrameworkCore.Internal;
 
@@ -31,7 +32,6 @@ namespace movie_app_mvc.Controllers
         private readonly IMovieDbContext MovieDbContext;
         private readonly IMovieService MovieService;
         private readonly IHttpContextAccessor HttpContextAccessor;
-
 
         public HomeController(IMovieDbContext movieDbContext, IMovieService movieService, IHttpContextAccessor httpContextAccessor)
         {
@@ -176,23 +176,6 @@ namespace movie_app_mvc.Controllers
             return null;
         }
 
-        public IActionResult ReloadCurrentUrl()
-        {
-
-            // Determine the referring URL to refresh the current page
-            string referringUrl = Request.Headers["Referer"].ToString();
-            if (string.IsNullOrEmpty(referringUrl))
-            {
-                // If the referring URL is empty, redirect to the home page
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Redirect back to the referring URL
-                return Redirect(referringUrl);
-            }
-        }
-
         public IActionResult SavedMovies(string title, int page = 1)
         {
             string userEmail = User.Identity.Name; // Assuming the email is stored in the "Name" claim
@@ -258,7 +241,7 @@ namespace movie_app_mvc.Controllers
                 MovieDbContext.SaveChanges();
 
             }
-            return ReloadCurrentUrl();
+            return MovieService.ReloadCurrentUrl();
         }
 
         private List<SavedMovie> GetMoviesFromDatabase(string title, string userEmail, int page, int pageSize)
@@ -325,11 +308,11 @@ namespace movie_app_mvc.Controllers
                 }
                 MovieDbContext.SaveChanges();
 
-                return ReloadCurrentUrl();
+                return MovieService.ReloadCurrentUrl();
             }
             catch (Exception ex)
             {
-                return ReloadCurrentUrl();
+                return MovieService.ReloadCurrentUrl();
             }
         }
 

@@ -1,11 +1,18 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Data.Context;
 using MovieApp.Data.Models;
 using MovieApp.Services.APIModels;
 using MovieApp.Services.Interfaces;
 using Newtonsoft.Json;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
 
 namespace MovieApp.Services.Services
 {
@@ -14,12 +21,14 @@ namespace MovieApp.Services.Services
         private readonly IUserService UserService;
         private readonly IMovieDbContext MovieDbContext;
         private readonly IHttpContextAccessor HttpContextAccessor;
+        private readonly IUrlHelperFactory UrlHelperFactory;
 
-        public MovieService(IUserService userService, IMovieDbContext movieDbContext, IHttpContextAccessor httpContextAccessor)
+        public MovieService(IUserService userService, IMovieDbContext movieDbContext, IHttpContextAccessor httpContextAccessor, IUrlHelperFactory urlHelperFactory)
         {
             this.UserService = userService;
             this.MovieDbContext = movieDbContext;
-            HttpContextAccessor = httpContextAccessor;
+            this.HttpContextAccessor = httpContextAccessor;
+            this.UrlHelperFactory = urlHelperFactory;
         }
 
         public async Task<MovieInfo.Result> FetchMovie(string url)
@@ -96,6 +105,30 @@ namespace MovieApp.Services.Services
             bool isSaved = movie != null && movie.Users.Contains(user);
             return isSaved;
 
+        }
+
+        public IActionResult ReloadCurrentUrl()
+        {
+            IUrlHelper urlHelper = UrlHelperFactory.GetUrlHelper(new ActionContext(
+                HttpContextAccessor.HttpContext,
+                HttpContextAccessor.HttpContext.GetRouteData(),
+                new ControllerActionDescriptor()
+            ));
+
+            string referringUrl = urlHelper.ActionContext.HttpContext.Request.Headers["Referer"].ToString();
+
+
+            // Determine the referring URL to refresh the current page
+            if (string.IsNullOrEmpty(referringUrl))
+            {
+                // If the referring URL is empty, redirect to the home page
+                return new RedirectResult(urlHelper.Action("Index", "Home"));
+            }
+            else
+            {
+                // Redirect back to the referring URL
+                return new RedirectResult(referringUrl);
+            }
         }
     }
 }

@@ -4,6 +4,8 @@ using MovieApp.Data.Context;
 using MovieApp.Services.Interfaces;
 using MovieApp.Services;
 using MovieApp.Services.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +25,9 @@ builder.Services.AddAuthentication(options =>
     options.LoginPath = "/Login/Index"; // Replace with your login page URL
     options.AccessDeniedPath = "/Home/Error"; // Replace with your error page URL
 });
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<MovieDbContext>();
-
 builder.Services.AddScoped<IMovieDbContext, MovieDbContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDetailsController, DetailsController>();

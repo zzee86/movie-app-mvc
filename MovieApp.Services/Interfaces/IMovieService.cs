@@ -1,4 +1,5 @@
-﻿using MovieApp.Services.APIModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieApp.Services.APIModels;
 
 namespace MovieApp.Services.Interfaces
 {
@@ -7,5 +8,6 @@ namespace MovieApp.Services.Interfaces
         Task<MovieInfo.Result> FetchMovie(string url);
         Task<MovieInfo.Root> FetchMovies(string url);
         List<MovieInfo.Result> ProcessMovieResults(List<MovieInfo.Result> results, bool isUserAuthenticated);
+        IActionResult ReloadCurrentUrl();
     }
 }
