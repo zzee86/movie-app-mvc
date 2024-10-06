@@ -2,8 +2,6 @@
 using MovieApp.Data.Context;
 using MovieApp.Services.APIModels.Users;
 using MovieApp.Services.Interfaces;
-//using Microsoft.AspNetCore.Authentication.Cookies;
-//using System.Security.Claims;
 
 namespace MovieApp.Services
 {
@@ -18,14 +16,10 @@ namespace MovieApp.Services
 
         public async Task LoginUser(LoginUser loginUser)
         {
-            // test
-            //using (MovieDbContext _movieDbContext = new MovieDbContext())
-            //{
-
             if (!ValidateLogin(loginUser.Email, loginUser.Password))
             {
                 throw new DuplicateUserException("Invalid email or password.");
-            }
+            }        
         }
 
         private bool ValidateLogin(string email, string password)
